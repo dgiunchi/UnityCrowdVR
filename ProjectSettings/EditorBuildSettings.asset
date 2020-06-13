@@ -4,5 +4,12 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
-  m_configObjects: {}
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Oculus/Avatar/Samples/LocalAvatar/LocalAvatar.unity
+    guid: c65ef87480e70eb43931036c9c66d08d
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 10fd3cf6e90fb6541af008bf8baf3279,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 6902e03297a6008488ab92ca39f9879d,
+      type: 2}
