@@ -338,7 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rig: {fileID: 5211673386017298477, guid: 3fa225cb5d055de48b6295b8fbac7923, type: 3}
   loading: {fileID: 0}
-  observer: 0
+  observer: 1
   voiceDebug: 0
   avatarRecorder: {fileID: 0}
 --- !u!4 &942820806
