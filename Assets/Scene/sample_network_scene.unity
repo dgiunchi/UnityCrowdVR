@@ -333,11 +333,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 942820804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9d3366b7cc726d42a86518b9e9261a7, type: 3}
+  m_Script: {fileID: 11500000, guid: aeda83d87a2e463498618499e831999c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rig: {fileID: 0}
+  loading: {fileID: 0}
   observer: 0
-  voiceDebug: 0
+  voiceDebug: 1
+  avatarRecorder: {fileID: 0}
 --- !u!4 &942820806
 Transform:
   m_ObjectHideFlags: 0
@@ -405,6 +408,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: EnableRotation
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
