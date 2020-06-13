@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -28,6 +29,7 @@ public class PhotonAvatarView : MonoBehaviour, IPunObservable
 		else
 		{
 			remoteDriver = GetComponent<OvrAvatarRemoteDriver>();
+
 		}
 	}
 
@@ -69,14 +71,20 @@ public class PhotonAvatarView : MonoBehaviour, IPunObservable
 	{
 		using (MemoryStream inputStream = new MemoryStream(data))
 		{
+			
 			BinaryReader reader = new BinaryReader(inputStream);
 			int remoteSequence = reader.ReadInt32();
 
 			int size = reader.ReadInt32();
+			
 			byte[] sdkData = reader.ReadBytes(size);
 
+			if (OvrAvatarSDKManager.Instance == null) return;
+
 			System.IntPtr packet = Oculus.Avatar.CAPI.ovrAvatarPacket_Read((System.UInt32)data.Length, sdkData);
+
 			remoteDriver.QueuePacket(remoteSequence, new OvrAvatarPacket { ovrNativePacket = packet });
+
 		}
 	}
 
@@ -101,6 +109,7 @@ public class PhotonAvatarView : MonoBehaviour, IPunObservable
 
 		if (stream.IsReading)
 		{
+
 			int num = (int)stream.ReceiveNext();
 
 			for (int counter = 0; counter < num; ++counter)

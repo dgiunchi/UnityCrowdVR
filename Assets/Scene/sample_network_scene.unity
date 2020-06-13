@@ -333,14 +333,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 942820804}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeda83d87a2e463498618499e831999c, type: 3}
+  m_Script: {fileID: 11500000, guid: b9d3366b7cc726d42a86518b9e9261a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rig: {fileID: 5211673386017298477, guid: 3fa225cb5d055de48b6295b8fbac7923, type: 3}
-  loading: {fileID: 0}
-  observer: 1
+  observer: 0
   voiceDebug: 0
-  avatarRecorder: {fileID: 0}
 --- !u!4 &942820806
 Transform:
   m_ObjectHideFlags: 0

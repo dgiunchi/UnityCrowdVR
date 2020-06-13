@@ -46,7 +46,6 @@ public class Launcher : MonoBehaviourPunCallbacks, IConnectionCallbacks, IMatchm
         PhotonNetwork.GameVersion = MasterManager.GameSettings.Gameversion;
         PhotonNetwork.ConnectUsingSettings();
 
-
     }
 
     public override void OnConnectedToMaster() {
@@ -114,6 +113,7 @@ public class Launcher : MonoBehaviourPunCallbacks, IConnectionCallbacks, IMatchm
 
         if (PhotonNetwork.AllocateViewID(photonView))
         {
+
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
                 CachingOption = EventCaching.AddToRoomCache,
@@ -141,7 +141,7 @@ public class Launcher : MonoBehaviourPunCallbacks, IConnectionCallbacks, IMatchm
 
         StartCoroutine(PhotonVoiceInstantiationForLocalAvatar());
 
-        inputsManager.Instance.localAvatar= localAvatar;
+        //inputsManager.Instance.localAvatar= localAvatar;
     }
    
     private IEnumerator PhotonVoiceInstantiationForLocalAvatar()
@@ -184,9 +184,6 @@ public class Launcher : MonoBehaviourPunCallbacks, IConnectionCallbacks, IMatchm
         yield return voiceView.RecorderInUse.TransmitEnabled = true;
         voiceView.RecorderInUse.StartRecording();
 
-      
-
-
     }
 
     //remote Avatar
@@ -212,7 +209,7 @@ public class Launcher : MonoBehaviourPunCallbacks, IConnectionCallbacks, IMatchm
 
         OvrAvatar.RemoteAvatarInstantiated += OvrAvatar_RemoteAvatarInstantiated;
 
-        PhotonVoiceView pvv = remoteAvatar.GetComponent<PhotonVoiceView>();
+        //PhotonVoiceView pvv = remoteAvatar.GetComponent<PhotonVoiceView>();
       
     }
 
