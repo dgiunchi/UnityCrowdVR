@@ -43,6 +43,17 @@ public class PacketRecordSettings
 
 public class OvrAvatar : MonoBehaviour
 {
+
+    /// inizio ---- aggiunti per avere una conferma l'avatar e' stato creato con sucesso 
+    /// 
+    public delegate void OnLocalAvatarInstantiated();
+    public static event OnLocalAvatarInstantiated LocalAvatarInstantiated;
+
+    public delegate GameObject OnRemoteAvatarInstantiated(GameObject g);
+    public static event OnRemoteAvatarInstantiated RemoteAvatarInstantiated;
+
+    /// fine --- 
+
     [Header("Avatar")]
     public IntPtr sdkAvatar = IntPtr.Zero;
     public string oculusUserID;
@@ -83,7 +94,7 @@ public class OvrAvatar : MonoBehaviour
     [Tooltip(
         "Enable to use combined meshes to reduce draw calls. Currently only available on mobile devices. " +
         "Will be forced to false on PC.")]
-    private bool CombineMeshes = true;
+    private bool CombineMeshes = false;
 #else
     private bool CombineMeshes = false;
 #endif
@@ -1224,6 +1235,8 @@ public class OvrAvatar : MonoBehaviour
             lipsyncContext.skipAudioSource = !CanOwnMicrophone;
 
             StartCoroutine(WaitForMouthAudioSource());
+
+            LocalAvatarInstantiated?.Invoke();
         }
 
         if (GetComponent<OvrAvatarRemoteDriver>() != null)
@@ -1255,6 +1268,8 @@ public class OvrAvatar : MonoBehaviour
                 handTarget.Type = ovrAvatarGazeTargetType.AvatarHand;
                 AvatarLogger.Log("Added right hand as gaze target");
             }
+
+            RemoteAvatarInstantiated?.Invoke(gameObject);
         }
     }
 
