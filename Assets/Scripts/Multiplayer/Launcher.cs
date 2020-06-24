@@ -65,9 +65,22 @@ public class Launcher : MonoBehaviourPunCallbacks, IConnectionCallbacks, IMatchm
     {
         Debug.Log("[PUN] joined room " + PhotonNetwork.CurrentRoom);
 
-        if (observer) ObserverInstantiation();
-        else  InstantiateLocalAvatar();
+        StartCoroutine(waitForSdkManagerInstantiated());
     }
+
+    private IEnumerator waitForSdkManagerInstantiated()
+    {
+
+        //get audiosource from the localavatar       
+        while (OvrAvatarSDKManager.Instance == null)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        if (observer) ObserverInstantiation();
+        else InstantiateLocalAvatar();
+    }
+
 
     void IOnEventCallback.OnEvent(EventData photonEvent)
     {
