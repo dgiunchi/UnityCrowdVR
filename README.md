@@ -1,6 +1,6 @@
 # UnityCrowdVR
 
-Oculus software for remote experiments with simulated crowd.
+Oculus software for remote experiments with simulated crowd. Can support remote players.
 
 Unity version: 2019.40f1
 
