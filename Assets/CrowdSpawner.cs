@@ -79,6 +79,11 @@ public class CrowdSpawner : SingletonBehaviour<CrowdSpawner>
     // Start is called before the first frame update
     void Start()
     {
+        Init();
+    }
+
+    void Init()
+    {
         //init
         area = GetComponent<BoxCollider>();
 

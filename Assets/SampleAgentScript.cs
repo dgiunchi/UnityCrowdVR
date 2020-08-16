@@ -8,6 +8,7 @@ public class SampleAgentScript : MonoBehaviour
     public Transform target;
     NavMeshAgent agent;
 
+
     // Start is called before the first frame update
     void Start()
     {

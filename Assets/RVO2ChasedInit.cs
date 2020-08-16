@@ -7,17 +7,16 @@ public class RVO2ChasedInit : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Init();
+    }
+
+    public void Init()
+    {
         ActivateRVO2();
     }
 
     void ActivateRVO2()
     {
         GameObject.Find("InitCrowdArea").GetComponent<CrowdSpawner>().CreatRVO2Agent(transform.position, GetComponent<GameAgent>());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

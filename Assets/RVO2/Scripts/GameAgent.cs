@@ -16,6 +16,11 @@ public class GameAgent : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        Init();
+    }
+
+    public void Init()
+    {
         Simulator.Instance.setAgentPrefVelocity(sid, new Vector2(0, 0)); // was in update
     }
 
