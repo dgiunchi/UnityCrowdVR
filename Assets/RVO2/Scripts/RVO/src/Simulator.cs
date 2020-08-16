@@ -49,7 +49,6 @@ namespace RVO
             private ManualResetEvent doneEvent_;
             private int end_;
             private int start_;
-
             /**
              * <summary>Constructs and initializes a worker.</summary>
              *
@@ -117,6 +116,8 @@ namespace RVO
         private int numWorkers_;
         private int workerAgentCount_;
         private float globalTime_;
+
+        public bool enabled = true;
 
         public static Simulator Instance
         {

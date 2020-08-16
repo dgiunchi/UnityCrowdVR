@@ -23,7 +23,7 @@ public class CrowdSpawner : SingletonBehaviour<CrowdSpawner>
     private GameObject[] Agents;
 
     // for rvo2
-    private Dictionary<int, GameAgent> m_agentMap = new Dictionary<int, GameAgent>();
+    public Dictionary<int, GameAgent> m_agentMap = new Dictionary<int, GameAgent>();
 
     void StartRVO2Simulator()
     {
@@ -52,7 +52,7 @@ public class CrowdSpawner : SingletonBehaviour<CrowdSpawner>
         m_agentMap.Remove(id);
     }
 
-    void CreatRVO2Agent(Vector3 position, GameAgent agent)
+    public void CreatRVO2Agent(Vector3 position, GameAgent agent)
     {
         int sid = Simulator.Instance.addAgent(new Vector2(position.x, position.z));
         if (sid >= 0)
@@ -63,24 +63,31 @@ public class CrowdSpawner : SingletonBehaviour<CrowdSpawner>
         }
     }
 
+    private void Awake()
+    {
+        // rvo2 simulato need to be setup only if rvo2 is implemented
+        if (agentPrefab.tag == "rvo2" || GameObject.Find("RVO2ChasedAgent"))
+        {
+            StartRVO2Simulator();
+        }
+        else
+        {
+            Simulator.Instance.enabled = false;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         //init
         area = GetComponent<BoxCollider>();
 
-        
         //create
         CreateBackgroundCrowd();
     }
 
     protected void CreateBackgroundCrowd()
     {
-        if(agentPrefab.tag == "rvo2")
-        {
-            StartRVO2Simulator();
-        }
-
         Agents = new GameObject[numberOfAgents];
         // walkers reset
         Vector3 positionToInstantiate;
@@ -154,7 +161,7 @@ public class CrowdSpawner : SingletonBehaviour<CrowdSpawner>
     // Update is called once per frame
     void Update()
     {
-        if(Simulator.Instance != null)
+        if(Simulator.Instance.enabled)
         {
             Simulator.Instance.doStep();
         }
