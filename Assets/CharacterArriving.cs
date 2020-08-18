@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CharacterArriving : MonoBehaviour
 {
@@ -22,6 +23,17 @@ public class CharacterArriving : MonoBehaviour
         {
             // experiment ended here
             // @@todo change scene, or do other
+            StartCoroutine(LoadNextScene());
         }
+    }
+
+    IEnumerator LoadNextScene()
+    {
+        
+        //yield on a new YieldInstruction that waits for 5 seconds.
+        yield return new WaitForSeconds(5);
+
+        SceneManager.LoadScene("sample_network_scene_end", LoadSceneMode.Single);
+        
     }
 }
