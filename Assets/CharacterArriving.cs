@@ -17,9 +17,9 @@ public class CharacterArriving : MonoBehaviour
         
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void OnTriggerEnter(Collider collider)
     {
-        if(collision.gameObject.tag == "Player")
+        if(collider.gameObject.tag == "Player")
         {
             // experiment ended here
             // @@todo change scene, or do other
