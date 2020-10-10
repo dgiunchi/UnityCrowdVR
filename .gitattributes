@@ -1,0 +1,2 @@
+Assets/AnimationWalkPackage/Demo/Original/Parameters.asset filter=lfs diff=lfs merge=lfs -text
+Assets/AnimationWalkPackage/Demo/Adam/Parameters.asset filter=lfs diff=lfs merge=lfs -text
