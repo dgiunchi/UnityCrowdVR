@@ -34,7 +34,7 @@ public class InputHandler : MonoBehaviour { //@@TODO thisclass collect ALL the i
 		}
 
         HashSet<KeyCode> state = new HashSet<KeyCode>();
-#if !UNITY_ANDROID// || UNITY_EDITOR
+#if !UNITY_ANDROID || UNITY_EDITOR
 		foreach(KeyCode k in Enum.GetValues(typeof(KeyCode))) {
 			if(Input.GetKey(k)) {
                 /*if(k == KeyCode.Mouse0) // intercpt, for the mouse, for the Oculus triggr should b the same
