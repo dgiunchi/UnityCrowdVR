@@ -22,6 +22,10 @@ public class PositionSerializer : MonoBehaviour
 
     string path;
     bool record = false;
+    bool play = false;
+
+
+    float initSimulationTime = -1.0f;
     //string path = @"C:\Users\dannox\Desktop\crowdCount\CrowdVR\UnityCrowdVR\";
 
     bool end = false;
@@ -39,9 +43,8 @@ public class PositionSerializer : MonoBehaviour
         // or this to play...
         // load th dataset from file and then Play it
         LoadDatasetTest();
-        ////PlayData(); // this play like a map between the same number of skeletons in record and play phase
-        PlaySingleDataOnMultipleSkeletons(); // play the first skeleton in record phase to all the skeletons in play phase
-
+        PlayData(); // this play like a map between the same number of skeletons in record and play phase
+        
     }
 
     void Init()
@@ -76,6 +79,12 @@ public class PositionSerializer : MonoBehaviour
         {
             CumulateData();
         }
+
+        if(play)
+        {
+            //ReadDataPerFrame(); //mapping N to N
+            ReadFirstPerFrameOnMultipleSkeletons(); 
+        }
     }
 
 
@@ -83,18 +92,13 @@ public class PositionSerializer : MonoBehaviour
     {
         record = true;
         Time.captureDeltaTime = 1.0f / framerate;
-        //InvokeRepeating("CumulateData", 1.0f, 1.0f / framerate); //outdated
     }
 
     void PlayData()
     {
-        InvokeRepeating("ReadDataPerFrame", 1.0f, 1.0f / framerate);
+        play = true;
     }
 
-    void PlaySingleDataOnMultipleSkeletons()
-    {
-        InvokeRepeating("ReadFirstPerFrameOnMultipleSkeletons", 1.0f, 1.0f / framerate);
-    }
 
     void LoadDatasetTest()
     {
@@ -168,7 +172,17 @@ public class PositionSerializer : MonoBehaviour
 
     void ReadDataPerFrame()
     {
-        if (countPlay == timeTotal)
+
+        if(initSimulationTime == -1.0f)
+        {
+            initSimulationTime = Time.fixedUnscaledTime;
+        }
+
+        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
+        countPlay = (int)System.Math.Round(timeTotal * currentRatio, System.MidpointRounding.AwayFromZero);
+        
+
+        if (countPlay >= timeTotal)
         {
             return;
         }
@@ -181,7 +195,7 @@ public class PositionSerializer : MonoBehaviour
         //                                          --- 1 joint (32)
         //                                            - 1 coordinate (3)
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * positionCoord; //countplay maximum is seconds * framerate 
-        int frameEndIndex = (countPlay+1) * skeletonNumbers * jointsNumbers * positionCoord - 1;
+        //int frameEndIndex = (countPlay+1) * skeletonNumbers * jointsNumbers * positionCoord - 1;
         //skeleton indexes
         for (int s = 0; s < skeletonNumbers; s++)
         {
@@ -205,7 +219,16 @@ public class PositionSerializer : MonoBehaviour
 
     void ReadFirstPerFrameOnMultipleSkeletons()
     {
-        if (countPlay == timeTotal)
+        if (initSimulationTime == -1.0f)
+        {
+            initSimulationTime = Time.fixedUnscaledTime;
+        }
+
+        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
+        countPlay = (int)System.Math.Round(timeTotal * currentRatio, System.MidpointRounding.AwayFromZero);
+
+
+        if (countPlay >= timeTotal)
         {
             return;
         }
@@ -218,7 +241,7 @@ public class PositionSerializer : MonoBehaviour
         //                                          --- 1 joint (32)
         //                                            - 1 coordinate (3)
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * positionCoord; //countplay maximum is seconds * framerate 
-        int frameEndIndex = (countPlay + 1) * skeletonNumbers * jointsNumbers * positionCoord - 1;
+        //int frameEndIndex = (countPlay + 1) * skeletonNumbers * jointsNumbers * positionCoord - 1;
         //skeleton indexes
 
         int currentSkeletonNumber = GameObject.FindGameObjectsWithTag("skeleton").Length;
