@@ -18,12 +18,13 @@ public class PositionSerializer : MonoBehaviour
     private static int positionCoord = 3;
     private static int timeTotal = seconds * framerate;
     private static int total = seconds* framerate * skeletonNumbers* jointsNumbers * positionCoord;
-    public float[] coordinates;
+    private float[] coordinates;
+
+    enum STATUS { RECORD, PLAY };
+
+    STATUS status = STATUS.RECORD;
 
     string path;
-    bool record = false;
-    bool play = false;
-
 
     float initSimulationTime = -1.0f;
     //string path = @"C:\Users\dannox\Desktop\crowdCount\CrowdVR\UnityCrowdVR\";
@@ -34,16 +35,7 @@ public class PositionSerializer : MonoBehaviour
     {
 
         Init();
-
-
-        // enable this to record ...
-        // store data and serialize to a file
-        //RecordData();
-
-        // or this to play...
-        // load th dataset from file and then Play it
-        LoadDatasetTest();
-        PlayData(); // this play like a map between the same number of skeletons in record and play phase
+        Setup();
         
     }
 
@@ -75,30 +67,30 @@ public class PositionSerializer : MonoBehaviour
 
     void Update()
     {
-        if (record)
+        if (status == STATUS.RECORD)
         {
             CumulateData();
         }
-
-        if(play)
+        else if (status == STATUS.PLAY)
         {
             //ReadDataPerFrame(); //mapping N to N
-            ReadFirstPerFrameOnMultipleSkeletons(); 
+            ReadFirstPerFrameOnMultipleSkeletons();
         }
     }
 
 
-    void RecordData()
+    void Setup()
     {
-        record = true;
-        Time.captureDeltaTime = 1.0f / framerate;
+        if (status == STATUS.RECORD)
+        {
+            Time.captureDeltaTime = 1.0f / framerate;
+        }
+        else if (status == STATUS.PLAY)
+        {
+            LoadDatasetTest();
+        }
+        
     }
-
-    void PlayData()
-    {
-        play = true;
-    }
-
 
     void LoadDatasetTest()
     {
@@ -168,8 +160,6 @@ public class PositionSerializer : MonoBehaviour
         ms.Close();
     }
 
-
-
     void ReadDataPerFrame()
     {
 
@@ -221,7 +211,7 @@ public class PositionSerializer : MonoBehaviour
     {
         if (initSimulationTime == -1.0f)
         {
-            initSimulationTime = Time.fixedUnscaledTime;
+            initSimulationTime = Time.fixedTime; //before was UnscaledTime
         }
 
         float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
