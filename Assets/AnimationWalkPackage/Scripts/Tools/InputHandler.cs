@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class InputHandler : MonoBehaviour { //@@TODO thisclass collect ALL the interaction.... so manage this to make it works
 
-	private static List<HashSet<KeyCode>> Keys = new List<HashSet<KeyCode>>();
-	private static int Capacity = 2;
-	private static int Clients = 0;
-
+	private List<HashSet<KeyCode>> Keys = new List<HashSet<KeyCode>>();
+	private int Capacity = 2;
+	private int Clients = 0;
+    public HashSet<KeyCode> allowed = new HashSet<KeyCode>();
+    
 	void OnEnable() {
 		Clients += 1;
 	}
@@ -17,7 +18,7 @@ public class InputHandler : MonoBehaviour { //@@TODO thisclass collect ALL the i
 		Clients -= 1;
 	}
 
-	public static bool anyKey {
+	public bool anyKey {
 		get{
 			for(int i=0; i<Keys.Count; i++) {
 				if(Keys[i].Count > 0) {
@@ -32,11 +33,18 @@ public class InputHandler : MonoBehaviour { //@@TODO thisclass collect ALL the i
         while (Keys.Count >= Capacity) {
 			Keys.RemoveAt(0);
 		}
-
+        
         HashSet<KeyCode> state = new HashSet<KeyCode>();
 #if !UNITY_ANDROID || UNITY_EDITOR
-		foreach(KeyCode k in Enum.GetValues(typeof(KeyCode))) {
-			if(Input.GetKey(k)) {
+        
+        foreach (KeyCode k in Enum.GetValues(typeof(KeyCode))) {
+            if (Input.GetKey(k))
+            {
+                Debug.Log(this.name + " " + k.ToString() + " " + Input.GetKey(k).ToString() + " " + allowed.Contains(k));
+            }
+            
+            if (Input.GetKey(k) && allowed.Contains(k)) {
+                
                 /*if(k == KeyCode.Mouse0) // intercpt, for the mouse, for the Oculus triggr should b the same
                 {
                     state.Add(KeyCode.W);
@@ -48,6 +56,7 @@ public class InputHandler : MonoBehaviour { //@@TODO thisclass collect ALL the i
                 {
                     state.Add(k);
                 }*/
+
                 state.Add(k);               
 
             }
@@ -88,7 +97,7 @@ public class InputHandler : MonoBehaviour { //@@TODO thisclass collect ALL the i
 #endif //!UNITY_ANDROID 
     }
 
-    public static bool GetKey(KeyCode k) {
+    public bool GetKey(KeyCode k) {
 		if(Clients == 0) {
 			return Input.GetKey(k);
 		} else {

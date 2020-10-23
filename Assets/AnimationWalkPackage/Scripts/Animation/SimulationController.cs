@@ -4,10 +4,10 @@ using UnityEditor;
 #endif
 
 [System.Serializable]
-public class NavmeshController {
+public class SimulationController {
 
 	public bool Inspect = false;
-    public AnimationInputHandlerFromNavmesh handler;
+    public AnimationInputHandlerFromSimulation handler;
 	public KeyCode Forward = KeyCode.W;
 	public KeyCode Back = KeyCode.S;
 	public KeyCode Left = KeyCode.A;
@@ -100,8 +100,8 @@ public class NavmeshController {
 		public KeyCode[] Keys = new KeyCode[0];
 		public bool[] Negations = new bool[0];
 		public Multiplier[] Multipliers = new Multiplier[0];
-        public AnimationInputHandlerFromNavmesh handler;
-		public bool Query(AnimationInputHandlerFromNavmesh handler) {
+        public AnimationInputHandlerFromSimulation handler;
+		public bool Query(AnimationInputHandlerFromSimulation handler) {
 			if(Keys.Length == 0) {
 				return false;
 			}
@@ -167,7 +167,7 @@ public class NavmeshController {
 		Utility.SetGUIColor(Color.grey);
 		using(new GUILayout.VerticalScope ("Box")) {
 			Utility.ResetGUIColor();
-			if(Utility.GUIButton("NavMesh Controller", UltiDraw.DarkGrey, UltiDraw.White)) {
+			if(Utility.GUIButton("Simulation Controller", UltiDraw.DarkGrey, UltiDraw.White)) {
 				Inspect = !Inspect;
 			}
 

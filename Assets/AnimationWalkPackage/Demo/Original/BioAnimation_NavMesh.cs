@@ -13,7 +13,7 @@ namespace SIGGRAPH_2017 {
 		public float GaitTransition = 0.25f;
 		public float TrajectoryCorrection = 1f;
 
-		public NavmeshController Controller;
+		public NavmeshController controller;
 
 		private Actor Actor;
 		private PFNN NN;
@@ -40,7 +40,7 @@ namespace SIGGRAPH_2017 {
 		private const int PointDensity = 10;
 
 		void Reset() {
-			Controller = new NavmeshController();
+			controller = new NavmeshController();
 		}
 
 		void Awake() {
@@ -52,9 +52,9 @@ namespace SIGGRAPH_2017 {
 			Forwards = new Vector3[Actor.Bones.Length];
 			Ups = new Vector3[Actor.Bones.Length];
 			Velocities = new Vector3[Actor.Bones.Length];
-			Trajectory = new Trajectory(111, Controller.GetNames(), transform.position, TargetDirection);
+			Trajectory = new Trajectory(111, controller.GetNames(), transform.position, TargetDirection);
 			Trajectory.Postprocess();
-			if(Controller.Styles.Length > 0) {
+			if(controller.Styles.Length > 0) {
 				for(int i=0; i<Trajectory.Points.Length; i++) {
 					Trajectory.Points[i].Styles[0] = 1f;
 				}
@@ -71,8 +71,15 @@ namespace SIGGRAPH_2017 {
 				return;
 			}
 			NN.LoadParameters();
-
             //Time.captureDeltaTime = 1.0f / 72.0f;
+            controller.handler = GetComponent<AnimationInputHandlerFromNavmesh>();
+            controller.handler.allowed.Clear();
+            controller.handler.allowed.Add(controller.Forward);
+            controller.handler.allowed.Add(controller.Back);
+            controller.handler.allowed.Add(controller.Left);
+            controller.handler.allowed.Add(controller.Right);
+            controller.handler.allowed.Add(controller.TurnLeft);
+            controller.handler.allowed.Add(controller.TurnRight);
         }
 		void Start() {
 			Utility.SetFPS(60);
@@ -85,13 +92,14 @@ namespace SIGGRAPH_2017 {
 
             if (GetComponent<AnimationInputHandlerFromNavmesh>().isArrived())
             {
+                GetComponent<AnimationInputHandlerFromNavmesh>().navmeshGO.gameObject.active = false;
                 this.gameObject.active = false;
                 return;
             }
 
             //Update Target Direction / Velocity
-            var turn = Controller.QueryTurn();
-            var move = Controller.QueryMove();
+            var turn = controller.QueryTurn();
+            var move = controller.QueryMove();
             
             TargetDirection = Vector3.Lerp(TargetDirection, Quaternion.AngleAxis(turn * 60f, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection(), TargetBlending);
 			TargetVelocity = Vector3.Lerp(TargetVelocity, (Quaternion.LookRotation(TargetDirection, Vector3.up) * move).normalized, TargetBlending) * GetComponent<AnimationInputHandlerFromNavmesh>().navmeshGO.GetComponent<AnimationConverterFromNavmesh>().curSpeed;
@@ -99,8 +107,8 @@ namespace SIGGRAPH_2017 {
             //Debug.Log(TargetVelocity.magnitude);
 
             //Update Gait
-            for (int i=0; i<Controller.Styles.Length; i++) {
-				Trajectory.Points[RootPointIndex].Styles[i] = Utility.Interpolate(Trajectory.Points[RootPointIndex].Styles[i], Controller.Styles[i].Query() ? 1f : 0f, GaitTransition);
+            for (int i=0; i<controller.Styles.Length; i++) {
+				Trajectory.Points[RootPointIndex].Styles[i] = Utility.Interpolate(Trajectory.Points[RootPointIndex].Styles[i], controller.Styles[i].Query(controller.handler) ? 1f : 0f, GaitTransition);
 			}
 			//For Human Only
 			//Trajectory.Points[RootPointIndex].Styles[0] = Utility.Interpolate(Trajectory.Points[RootPointIndex].Styles[0], 1.0f - Mathf.Clamp(Vector3.Magnitude(TargetVelocity) / 0.1f, 0.0f, 1.0f), GaitTransition);
@@ -314,16 +322,16 @@ namespace SIGGRAPH_2017 {
 			float[] styles = Trajectory.Points[RootPointIndex].Styles;
 			float bias = 0f;
 			for(int i=0; i<styles.Length; i++) {
-				float _bias = Controller.Styles[i].Bias;
+				float _bias = controller.Styles[i].Bias;
 				float max = 0f;
-				for(int j=0; j<Controller.Styles[i].Multipliers.Length; j++) {
-					if(Input.GetKey(Controller.Styles[i].Multipliers[j].Key)) {
-						max = Mathf.Max(max, Controller.Styles[i].Bias * Controller.Styles[i].Multipliers[j].Value);
+				for(int j=0; j<controller.Styles[i].Multipliers.Length; j++) {
+					if(Input.GetKey(controller.Styles[i].Multipliers[j].Key)) {
+						max = Mathf.Max(max, controller.Styles[i].Bias * controller.Styles[i].Multipliers[j].Value);
 					}
 				}
-				for(int j=0; j<Controller.Styles[i].Multipliers.Length; j++) {
-					if(Input.GetKey(Controller.Styles[i].Multipliers[j].Key)) {
-						_bias = Mathf.Min(max, _bias * Controller.Styles[i].Multipliers[j].Value);
+				for(int j=0; j<controller.Styles[i].Multipliers.Length; j++) {
+					if(Input.GetKey(controller.Styles[i].Multipliers[j].Key)) {
+						_bias = Mathf.Min(max, _bias * controller.Styles[i].Multipliers[j].Value);
 					}
 				}
 				bias += styles[i] * _bias;
@@ -365,12 +373,12 @@ namespace SIGGRAPH_2017 {
 			GUI.color = UltiDraw.Mustard;
 			GUI.backgroundColor = UltiDraw.Black;
 			float height = 0.05f;
-			GUI.Box(Utility.GetGUIRect(0.025f, 0.05f, 0.3f, Controller.Styles.Length*height), "");
-			for(int i=0; i<Controller.Styles.Length; i++) {
-				GUI.Label(Utility.GetGUIRect(0.05f, 0.075f + i*0.05f, 0.025f, height), Controller.Styles[i].Name);
+			GUI.Box(Utility.GetGUIRect(0.025f, 0.05f, 0.3f, controller.Styles.Length*height), "");
+			for(int i=0; i<controller.Styles.Length; i++) {
+				GUI.Label(Utility.GetGUIRect(0.05f, 0.075f + i*0.05f, 0.025f, height), controller.Styles[i].Name);
 				string keys = string.Empty;
-				for(int j=0; j<Controller.Styles[i].Keys.Length; j++) {
-					keys += Controller.Styles[i].Keys[j].ToString() + " ";
+				for(int j=0; j<controller.Styles[i].Keys.Length; j++) {
+					keys += controller.Styles[i].Keys[j].ToString() + " ";
 				}
 				GUI.Label(Utility.GetGUIRect(0.075f, 0.075f + i*0.05f, 0.05f, height), keys);
 				GUI.HorizontalSlider(Utility.GetGUIRect(0.125f, 0.075f + i*0.05f, 0.15f, height), Trajectory.Points[RootPointIndex].Styles[i], 0f, 1f);
@@ -436,7 +444,7 @@ namespace SIGGRAPH_2017 {
 				Undo.RecordObject(Target, Target.name);
 
 				Inspector();
-				Target.Controller.Inspector();
+				Target.controller.Inspector();
 
 				if(GUI.changed) {
 					EditorUtility.SetDirty(Target);

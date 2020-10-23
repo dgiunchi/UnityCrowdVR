@@ -5,7 +5,7 @@ using UnityEditor;
 #endif
 
 namespace SIGGRAPH_2017 {
-	public class BioAnimation_Original : MonoBehaviour {
+	public class BioAnimation_Simulation : MonoBehaviour {
 
 		public bool Inspect = false;
 
@@ -13,7 +13,7 @@ namespace SIGGRAPH_2017 {
 		public float GaitTransition = 0.25f;
 		public float TrajectoryCorrection = 1f;
 
-		public Controller controller;
+		public SimulationController controller;
 
 		private Actor Actor;
 		private PFNN NN;
@@ -40,8 +40,8 @@ namespace SIGGRAPH_2017 {
 		private const int PointDensity = 10;
 
 		void Reset() {
-			controller = new Controller();
-        }
+			controller = new SimulationController();
+		}
 
 		void Awake() {
 			Actor = GetComponent<Actor>();
@@ -71,8 +71,8 @@ namespace SIGGRAPH_2017 {
 				return;
 			}
 			NN.LoadParameters();
-
-            controller.handler = GetComponent<InputHandler>();
+            //Time.captureDeltaTime = 1.0f / 72.0f;
+            controller.handler = GetComponent<AnimationInputHandlerFromSimulation>();
             controller.handler.allowed.Clear();
             controller.handler.allowed.Add(controller.Forward);
             controller.handler.allowed.Add(controller.Back);
@@ -81,24 +81,32 @@ namespace SIGGRAPH_2017 {
             controller.handler.allowed.Add(controller.TurnLeft);
             controller.handler.allowed.Add(controller.TurnRight);
         }
-
 		void Start() {
 			Utility.SetFPS(60);
 		}
 
 		void Update() {
+            if (SimulationManager.status != SimulationManager.STATUS.RECORD) return;
+
 			if(NN.Parameters == null) {
 				return;
 			}
 
+            if (GetComponent<AnimationInputHandlerFromSimulation>().isArrived())
+            {
+                this.gameObject.active = false;
+                return;
+            }
+
             //Update Target Direction / Velocity
             var turn = controller.QueryTurn();
             var move = controller.QueryMove();
-
+            
             TargetDirection = Vector3.Lerp(TargetDirection, Quaternion.AngleAxis(turn * 60f, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection(), TargetBlending);
 			TargetVelocity = Vector3.Lerp(TargetVelocity, (Quaternion.LookRotation(TargetDirection, Vector3.up) * move).normalized, TargetBlending);
-            //Debug.Log(Trajectory.Points.Length);
             
+            //Debug.Log(TargetVelocity.magnitude);
+
             //Update Gait
             for (int i=0; i<controller.Styles.Length; i++) {
 				Trajectory.Points[RootPointIndex].Styles[i] = Utility.Interpolate(Trajectory.Points[RootPointIndex].Styles[i], controller.Styles[i].Query(controller.handler) ? 1f : 0f, GaitTransition);
@@ -424,13 +432,13 @@ namespace SIGGRAPH_2017 {
 	}
 
 	#if UNITY_EDITOR
-	[CustomEditor(typeof(BioAnimation_Original))]
-	public class BioAnimation_Original_Editor : Editor {
+	[CustomEditor(typeof(BioAnimation_Simulation))]
+	public class BioAnimation_Simulation_Editor : Editor {
 
-			public BioAnimation_Original Target;
+			public BioAnimation_Simulation Target;
 
 			void Awake() {
-				Target = (BioAnimation_Original)target;
+				Target = (BioAnimation_Simulation)target;
 			}
 
 			public override void OnInspectorGUI() {

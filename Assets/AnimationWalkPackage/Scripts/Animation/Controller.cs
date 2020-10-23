@@ -7,7 +7,7 @@ using UnityEditor;
 public class Controller {
 
 	public bool Inspect = false;
-
+    public InputHandler handler;
 	public KeyCode Forward = KeyCode.W;
 	public KeyCode Back = KeyCode.S;
 	public KeyCode Left = KeyCode.A;
@@ -20,7 +20,7 @@ public class Controller {
 	public float[] GetStyle() {
 		float[] style = new float[Styles.Length];
 		for(int i=0; i<Styles.Length; i++) {
-			style[i] = Styles[i].Query() ? 1f : 0f;
+			style[i] = Styles[i].Query(handler) ? 1f : 0f;
 		}
 		return style;
 	}
@@ -35,16 +35,16 @@ public class Controller {
 
 	public Vector3 QueryMove() {
 		Vector3 move = Vector3.zero;
-		if(InputHandler.GetKey(Forward)) {
+		if(handler.GetKey(Forward)) {
 			move.z += 1f;
 		}
-		if(InputHandler.GetKey(Back)) {
+		if(handler.GetKey(Back)) {
 			move.z -= 1f;
 		}
-		if(InputHandler.GetKey(Left)) {
+		if(handler.GetKey(Left)) {
 			move.x -= 1f;
 		}
-		if(InputHandler.GetKey(Right)) {
+		if(handler.GetKey(Right)) {
 			move.x += 1f;
 		}
 		return move;
@@ -52,10 +52,10 @@ public class Controller {
 
 	public float QueryTurn() {
 		float turn = 0f;
-		if(InputHandler.GetKey(TurnLeft)) {
+		if(handler.GetKey(TurnLeft)) {
 			turn -= 1f;
 		}
-		if(InputHandler.GetKey(TurnRight)) {
+		if(handler.GetKey(TurnRight)) {
 			turn += 1f;
 		}
 		return turn;
@@ -74,7 +74,7 @@ public class Controller {
 
 	public bool QueryAny() {
 		for(int i=0; i<Styles.Length; i++) {
-			if(Styles[i].Query()) {
+			if(Styles[i].Query(handler)) {
 				return true;
 			}
 		}
@@ -87,12 +87,12 @@ public class Controller {
 			float _bias = Styles[i].Bias;
 			float max = 0f;
 			for(int j=0; j<Styles[i].Multipliers.Length; j++) {
-				if(InputHandler.GetKey(Styles[i].Multipliers[j].Key)) {
+				if(handler.GetKey(Styles[i].Multipliers[j].Key)) {
 					max = Mathf.Max(max, Styles[i].Bias * Styles[i].Multipliers[j].Value);
 				}
 			}
 			for(int j=0; j<Styles[i].Multipliers.Length; j++) {
-				if(InputHandler.GetKey(Styles[i].Multipliers[j].Key)) {
+				if(handler.GetKey(Styles[i].Multipliers[j].Key)) {
 					_bias = Mathf.Min(max, _bias * Styles[i].Multipliers[j].Value);
 				}
 			}
@@ -109,8 +109,8 @@ public class Controller {
 		public KeyCode[] Keys = new KeyCode[0];
 		public bool[] Negations = new bool[0];
 		public Multiplier[] Multipliers = new Multiplier[0];
-
-		public bool Query() {
+        public InputHandler handler;
+        public bool Query(InputHandler handler) {
 			if(Keys.Length == 0) {
 				return false;
 			}
@@ -120,11 +120,11 @@ public class Controller {
 			for(int i=0; i<Keys.Length; i++) {
 				if(!Negations[i]) {
 					if(Keys[i] == KeyCode.None) {
-						if(!InputHandler.anyKey) {
+						if(!handler.anyKey) {
 							active = true;
 						}
 					} else {
-						if(InputHandler.GetKey(Keys[i])) {
+						if(handler.GetKey(Keys[i])) {
 							active = true;
 						}
 					}
@@ -134,11 +134,11 @@ public class Controller {
 			for(int i=0; i<Keys.Length; i++) {
 				if(Negations[i]) {
 					if(Keys[i] == KeyCode.None) {
-						if(!InputHandler.anyKey) {
+						if(!handler.anyKey) {
 							active = false;
 						}
 					} else {
-						if(InputHandler.GetKey(Keys[i])) {
+						if(handler.GetKey(Keys[i])) {
 							active = false;
 						}
 					}
@@ -189,7 +189,9 @@ public class Controller {
 					TurnLeft = (KeyCode)EditorGUILayout.EnumPopup("Turn Left", TurnLeft);
 					TurnRight = (KeyCode)EditorGUILayout.EnumPopup("Turn Right", TurnRight);
 					SetStyleCount(EditorGUILayout.IntField("Styles", Styles.Length));
-					for(int i=0; i<Styles.Length; i++) {
+                    //handler = EditorGUILayout.ObjectField("InputHandler", handler, typeof(InputHandler), true) as InputHandler;
+
+                    for (int i=0; i<Styles.Length; i++) {
 						Utility.SetGUIColor(UltiDraw.Grey);
 						using(new EditorGUILayout.VerticalScope ("Box")) {
 
@@ -198,8 +200,9 @@ public class Controller {
 							Styles[i].Bias = EditorGUILayout.FloatField("Bias", Styles[i].Bias);
 							Styles[i].Transition = EditorGUILayout.Slider("Transition", Styles[i].Transition, 0f, 1f);
 							Styles[i].SetKeyCount(EditorGUILayout.IntField("Keys", Styles[i].Keys.Length));
+                            
 
-							for(int j=0; j<Styles[i].Keys.Length; j++) {
+                            for (int j=0; j<Styles[i].Keys.Length; j++) {
 								EditorGUILayout.BeginHorizontal();
 								Styles[i].Keys[j] = (KeyCode)EditorGUILayout.EnumPopup("Key", Styles[i].Keys[j]);
 								Styles[i].Negations[j] = EditorGUILayout.Toggle("Negate", Styles[i].Negations[j]);
