@@ -39,8 +39,8 @@ public class SimulationManager : MonoBehaviour
     public GameObject skeletonPlayPrefab;
     public List<GameObject> skeletons = new List<GameObject>();
 
-    private float currentTime;
-    private float currentTimeStep;
+    public float currentTime;
+    public float currentTimeStep;
 
     public enum STATUS { RECORD, PLAY, PAUSE, STOP, NONE};
     public static STATUS status = STATUS.NONE;
@@ -79,7 +79,7 @@ public class SimulationManager : MonoBehaviour
         serializer.UpdateSkeletonsToRecord(skeletons);
     }
 
-    void OnStartPlay()
+    public void OnStartPlay()
     {
         group = GameObject.Find("ToPlay").transform;
 
@@ -123,12 +123,6 @@ public class SimulationManager : MonoBehaviour
         //this is a trick
         serializer.Init();
         serializer.LoadFromCSV();
-        serializer.CalculateInitialAndEndingTime();
-
-        currentTimeStep = serializer.timeStep;
-        currentTime = 0.0f;
-
-        OnStartPlay();        
     }
 
     public void Pause()
@@ -158,11 +152,11 @@ public class SimulationManager : MonoBehaviour
     void Update()
     {
 
-#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID 
         if (OVRInput.Get(OVRInput.Button.Three) && triggerPlay==false)
         {
-            Play();
             triggerPlay = true;
+            Play();
         }
 #endif
 

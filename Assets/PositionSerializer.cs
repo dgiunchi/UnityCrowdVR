@@ -28,7 +28,9 @@ public class PositionSerializer : MonoBehaviour
     float initSimulationTime = -1.0f;
     //string path = @"C:\Users\dannox\Desktop\crowdCount\CrowdVR\UnityCrowdVR\";
 
+    bool fileLoaded = false;
     bool end = false;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -89,7 +91,11 @@ public class PositionSerializer : MonoBehaviour
         }
         else if (SimulationManager.status == SimulationManager.STATUS.PLAY)
         {
-            ReadDataFromSimulationPerFrame();
+            if (fileLoaded)
+            {
+                ReadDataFromSimulationPerFrame();
+            }
+            
             //ReadDataPerFrame(); //mapping N to N
             //ReadFirstPerFrameOnMultipleSkeletons();
         }
@@ -100,6 +106,7 @@ public class PositionSerializer : MonoBehaviour
 #if UNITY_EDITOR
         Deserialize(); // UNITY_EDITOR
 #elif UNITY_ANDROID
+       
         StartCoroutine(DeserializeOnAndroid());
 #endif
     }
@@ -159,6 +166,7 @@ public class PositionSerializer : MonoBehaviour
             fs.Close();
         }
         Debug.Log("End Of Deserialisation");
+        fileLoaded = true;
     }
 
 #region CSV
@@ -176,12 +184,21 @@ public class PositionSerializer : MonoBehaviour
     public float initialTime = float.MaxValue;
     public float endingTime = float.MinValue;
 
-
+    TextAsset csvAsset;
 
     public void LoadFromCSV()
     {
+#if UNITY_EDITOR
         DeserializeFromCSV();
         ConversionFromPositionsToVariations();
+        CalculateInitialAndEndingTime();
+        SimulationManager.Instance.currentTimeStep = timeStep;
+        SimulationManager.Instance.currentTime = 0.0f;
+        SimulationManager.Instance.OnStartPlay();
+              
+#elif UNITY_ANDROID
+        StartCoroutine(DeserializeFromCSVOnAndroid());
+#endif
     }
 
     void DeserializeFromCSV()
@@ -327,6 +344,75 @@ public class PositionSerializer : MonoBehaviour
         BinaryFormatter formatter = new BinaryFormatter();
         coordinates = (float[])formatter.Deserialize(ms);
         ms.Close();
+        fileLoaded = true;
+    }
+
+    IEnumerator DeserializeFromCSVOnAndroid()
+    {
+        WWW file = new WWW(Path.Combine(path, "crowds_zara01_corrected.csv"));
+        yield return file;
+        csvAsset = new TextAsset(file.text);
+        CrowdCSVReader reader = new CrowdCSVReader();
+        reader.Load(csvAsset);
+        List<CrowdCSVReader.Row> list = reader.GetRowList();
+        //
+
+        int numberOfColumns = 8;
+        dataPerPersonAndFrameFromCSVLoad = numberOfColumns;
+
+        int numberOfTotalElements = list.Count * numberOfColumns; //number of columns is 8
+        allFramesAndPersonsFromCSVLoad = list.Count;
+
+        csvCoordinates = new float[numberOfTotalElements];
+        csvNumberOfFramesPerPerson = new List<int>();
+
+        int count = 0;
+        int lastId = -1;
+        int frameCount = 0;
+
+        foreach (CrowdCSVReader.Row row in list)
+        {
+            csvCoordinates[count] = row.id != "" ? float.Parse(row.id) : float.MinValue;
+
+            if (lastId != (int)csvCoordinates[count])
+            {
+                numberOfPesonsFromCSVLoad += 1;
+                lastId = (int)csvCoordinates[count];
+
+                peopleIndexes.Add(count);
+                persons.Add(new Dictionary<float, Vector2>());
+                personsOriginal.Add(new Dictionary<float, Vector2>());
+
+                if (count != 0)
+                {
+                    csvNumberOfFramesPerPerson.Add(frameCount);
+                    frameCount = 0;
+                }
+
+            }
+
+            csvCoordinates[count + 1] = row.gid != "" ? float.Parse(row.gid) : float.MinValue;
+            csvCoordinates[count + 2] = row.x != "" ? float.Parse(row.x) : float.MinValue;
+            csvCoordinates[count + 3] = row.y != "" ? float.Parse(row.y) : float.MinValue;
+            csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) : float.MinValue;
+            csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y) : float.MinValue;
+            csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius) : float.MinValue;
+            csvCoordinates[count + 7] = row.time != "" ? float.Parse(row.time) : float.MinValue;
+
+            personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
+
+            count += numberOfColumns;
+            frameCount += 1;
+        }
+
+        csvNumberOfFramesPerPerson.Add(frameCount); //add the last
+
+        ConversionFromPositionsToVariations();
+        CalculateInitialAndEndingTime();
+
+        SimulationManager.Instance.currentTimeStep = timeStep;
+        SimulationManager.Instance.currentTime = 0.0f;
+        SimulationManager.Instance.OnStartPlay();
     }
 
     public void ReadDataFromSimulationPerFrame() // rewrite the function with a different cumulative data that take in account the timeframe
