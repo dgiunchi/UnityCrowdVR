@@ -11,6 +11,7 @@ public class PositionSerializer : MonoBehaviour
 {
     public List<List<Transform>> skeletonJoints;
     public List<Transform> rigidAvatars;
+    public string csvFileName;
     private int count = 0;
     private int countPlay = 0;
 
@@ -213,7 +214,7 @@ public class PositionSerializer : MonoBehaviour
     void DeserializeFromCSV()
     {
         CrowdCSVReader reader = new CrowdCSVReader();
-        reader.Load(Path.Combine(path, "crowds_zara01_corrected.csv"));
+        reader.Load(Path.Combine(path, csvFileName));
         List<CrowdCSVReader.Row> list = reader.GetRowList();
         //
 

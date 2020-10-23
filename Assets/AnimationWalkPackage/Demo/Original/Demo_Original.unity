@@ -4967,6 +4967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidAvatars: []
+  csvFileName: 
   timeStep: 0.04
   initialTime: 0
   endingTime: 360.564
@@ -5800,6 +5801,7 @@ MonoBehaviour:
     type: 3}
   skeletons: []
   rigidAvatars: []
+  csvFile: {fileID: 102900000, guid: 2fe879830881af346b348dd10d594a99, type: 3}
 --- !u!1 &1326487510
 GameObject:
   m_ObjectHideFlags: 0

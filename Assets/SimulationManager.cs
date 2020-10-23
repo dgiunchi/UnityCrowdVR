@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.IO;
+using UnityEngine.Windows;
+using System;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -40,6 +43,7 @@ public class SimulationManager : MonoBehaviour
     public GameObject rigidAvatarPrefab;
     public List<GameObject> skeletons = new List<GameObject>();
     public List<GameObject> rigidAvatars = new List<GameObject>();
+    public UnityEngine.Object csvFile;
 
     private float currentTime;
     private float currentTimeStep;
@@ -51,7 +55,7 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        serializer.csvFileName = csvFile.name + ".csv";
     }
 
     void OnStartRecord()
@@ -195,6 +199,69 @@ public class SimulationManager : MonoBehaviour
         //@@todo implement
     }
 
+    public void Draw()
+    {
+        serializer.Init();
+        serializer.LoadFromCSV();
+
+        GameObject trajectories = new GameObject();
+        trajectories.name = "trajectories";
+
+
+        int j = 0;
+
+        foreach (var person in serializer.personsOriginal)
+        {
+
+            Vector2 newvalue;
+            Vector2? oldValue = null;
+
+            GameObject myLine = new GameObject();
+
+            float c = UnityEngine.Random.Range(0f, 1f);
+            Color color = new Color(c, c, c);
+
+            Vector2? start = null;
+            myLine.AddComponent<LineRenderer>();
+            LineRenderer lr = myLine.GetComponent<LineRenderer>();
+
+            Material yourMaterial = (Material)Resources.Load("Arrow", typeof(Material));
+
+            lr.material = new Material(yourMaterial);
+            lr.SetColors(color, color);
+            lr.SetWidth(0.05f, 0.05f);
+
+            lr.positionCount = person.Count;
+
+            int i = 0;
+
+            foreach (var entry in person)
+            {
+                var entryValue = (Vector2)entry.Value;
+
+                if (start==null) {
+
+                    start = (Vector2)entryValue;
+                    myLine.transform.position = new Vector3(entryValue.x, 0, entryValue.y);
+                } 
+                             
+                lr.SetPosition(i, new Vector3(entryValue.x, 0, entryValue.y));
+
+                i++;
+            }
+
+            myLine.name = "person_" + j;
+            myLine.transform.parent = trajectories.transform;
+            j++;
+        }
+
+
+    }
+    
+
+
+
+
     // Update is called once per frame
     void Update()
     {
@@ -280,6 +347,7 @@ public class SimulationManager : MonoBehaviour
                     Target.skeletonRecordPrefab = EditorGUILayout.ObjectField("SkeletonRecord", Target.skeletonRecordPrefab, typeof(GameObject), true) as GameObject;
                     Target.skeletonPlayPrefab = EditorGUILayout.ObjectField("SkeletonPlay", Target.skeletonPlayPrefab, typeof(GameObject), true) as GameObject;
                     Target.rigidAvatarPrefab = EditorGUILayout.ObjectField("RigidAvatarPlayCsv", Target.rigidAvatarPrefab, typeof(GameObject), true) as GameObject;
+                    Target.csvFile = EditorGUILayout.ObjectField("csvData", Target.csvFile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
 
                     if (Utility.GUIButton("Record", UltiDraw.DarkGrey, UltiDraw.White))
                     {
@@ -305,6 +373,10 @@ public class SimulationManager : MonoBehaviour
                     if (Utility.GUIButton("Show", UltiDraw.DarkGrey, UltiDraw.White))
                     {
                         Target.Show();
+                    }
+                    if (Utility.GUIButton("Draw Trajectories", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.Draw();
                     }
 
                 }
