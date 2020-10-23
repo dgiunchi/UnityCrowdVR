@@ -5,10 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System;
 
 public class PositionSerializer : MonoBehaviour
 {
     public List<List<Transform>> skeletonJoints;
+    public List<Transform> rigidAvatars;
     private int count = 0;
     private int countPlay = 0;
 
@@ -69,16 +71,36 @@ public class PositionSerializer : MonoBehaviour
         Setup();
     }
 
+    public void UpdateRigidAvatars(List<GameObject> ra)
+    {
+        
+        rigidAvatars = new List<Transform>();
+
+        foreach (GameObject rigidAvatar in ra)
+        {          
+            rigidAvatars.Add(rigidAvatar.transform);
+        }
+
+        timeTotal = seconds * framerate;
+
+        Setup();
+    }
+
     void Setup()
     {
-        if (SimulationManager.status == SimulationManager.STATUS.RECORD)
+        if (SimulationManager.status == SimulationManager.STATUS.RECORD) 
         {
             Time.captureDeltaTime = 1.0f / framerate;
+        }
+        else if (SimulationManager.status == SimulationManager.STATUS.PLAYCSV)
+        {
+            //anything here?
         }
         else if (SimulationManager.status == SimulationManager.STATUS.PLAY)
         {
             LoadDatasetTest();
         }
+
     }
 
     void Update()
@@ -86,6 +108,10 @@ public class PositionSerializer : MonoBehaviour
         if (SimulationManager.status == SimulationManager.STATUS.RECORD)
         {
             CumulateData();
+        }
+        else if (SimulationManager.status == SimulationManager.STATUS.PLAYCSV)
+        {
+            ReadDataPerFrameCsv();
         }
         else if (SimulationManager.status == SimulationManager.STATUS.PLAY)
         {
@@ -413,6 +439,39 @@ public class PositionSerializer : MonoBehaviour
         coordinates[count + 1] = sj.position.y;
         coordinates[count + 2] = sj.position.z;
         count += 3;*/
+
+    }
+
+    public void ReadDataPerFrameCsv() // rewrite the function with a different cumulative data that take in account the timeframe
+    {
+
+        if (initSimulationTime == -1.0f)
+        {
+            initSimulationTime = Time.fixedUnscaledTime;
+        }
+
+        float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
+    
+
+        for (int i = 0; i < persons.Count; ++i)
+        {
+
+            float closest = persons[i]
+                .Select(n => new { n, distance = Math.Abs( n.Key- currenttime) })
+                .OrderBy(p => p.distance)
+                .First().n.Key;
+
+            if (Math.Abs(closest - currenttime) < 0.1)
+            {
+                //rigidAvatars[i].transform.Translate(new Vector3(persons[i][closest][0], 0, persons[i][closest][1]), Space.World);
+
+                rigidAvatars[i].transform.position = new Vector3(personsOriginal[i][closest][0], rigidAvatars[i].transform.position.y, personsOriginal[i][closest][1]);
+            }
+
+
+        }
+
+        //
 
     }
 

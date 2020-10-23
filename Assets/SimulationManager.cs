@@ -37,12 +37,14 @@ public class SimulationManager : MonoBehaviour
 
     public GameObject skeletonRecordPrefab;
     public GameObject skeletonPlayPrefab;
+    public GameObject rigidAvatarPrefab;
     public List<GameObject> skeletons = new List<GameObject>();
+    public List<GameObject> rigidAvatars = new List<GameObject>();
 
     private float currentTime;
     private float currentTimeStep;
 
-    public enum STATUS { RECORD, PLAY, PAUSE, STOP, NONE};
+    public enum STATUS { RECORD, PLAY, PLAYCSV, PAUSE, STOP, NONE};
     public static STATUS status = STATUS.NONE;
 
     bool triggerPlay = false;
@@ -103,6 +105,30 @@ public class SimulationManager : MonoBehaviour
         serializer.UpdateSkeletonsToRecord(skeletons);
     }
 
+    void OnStartPlayCsv()
+    {
+        group = GameObject.Find("ToPlay").transform;
+
+        int numberOfPersons = serializer.persons.Count;
+        for (int i = 0; i < numberOfPersons; ++i)
+        {
+
+            float initTime = serializer.personsOriginal[i].Keys.Min();
+            Vector2 initialPosition = serializer.personsOriginal[i][initTime];
+            GameObject obj = Instantiate(rigidAvatarPrefab, new Vector3(initialPosition.x, rigidAvatarPrefab.transform.position.y, initialPosition.y), Quaternion.identity);//@@TOODorientation??
+            obj.transform.parent = group;
+            obj.name = "RigidAvatar " + i.ToString();
+            rigidAvatars.Add(obj);
+
+            //if (initTime != serializer.initialTime)
+            //{
+            //    obj.SetActive(false);
+            //}
+        }
+
+        serializer.UpdateRigidAvatars(rigidAvatars);
+    }
+
     public void Record()
     {
 
@@ -129,6 +155,21 @@ public class SimulationManager : MonoBehaviour
         currentTime = 0.0f;
 
         OnStartPlay();        
+    }
+
+    public void PlayCsv() {
+
+        status = STATUS.PLAYCSV;
+        //this is a trick
+        serializer.Init();
+        serializer.LoadFromCSV();
+        serializer.CalculateInitialAndEndingTime();
+
+        currentTimeStep = serializer.timeStep;
+        currentTime = 0.0f;
+
+        OnStartPlayCsv();
+
     }
 
     public void Pause()
@@ -178,7 +219,13 @@ public class SimulationManager : MonoBehaviour
             {
                 go.GetComponent<AnimationInputHandlerFromSimulation>().SetActiveByCurrenTime();
             }
-        } else if (status == STATUS.PLAY)
+
+        }
+        else if (status == STATUS.PLAYCSV)
+        {
+            // in serializer
+        }
+        else if (status == STATUS.PLAY)
         {
             // in serializer
         }
@@ -232,6 +279,7 @@ public class SimulationManager : MonoBehaviour
                 {
                     Target.skeletonRecordPrefab = EditorGUILayout.ObjectField("SkeletonRecord", Target.skeletonRecordPrefab, typeof(GameObject), true) as GameObject;
                     Target.skeletonPlayPrefab = EditorGUILayout.ObjectField("SkeletonPlay", Target.skeletonPlayPrefab, typeof(GameObject), true) as GameObject;
+                    Target.rigidAvatarPrefab = EditorGUILayout.ObjectField("RigidAvatarPlayCsv", Target.rigidAvatarPrefab, typeof(GameObject), true) as GameObject;
 
                     if (Utility.GUIButton("Record", UltiDraw.DarkGrey, UltiDraw.White))
                     {
@@ -241,6 +289,10 @@ public class SimulationManager : MonoBehaviour
                     if (Utility.GUIButton("Play", UltiDraw.DarkGrey, UltiDraw.White))
                     {
                         Target.Play();
+                    }
+                    if (Utility.GUIButton("PlayCSV", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.PlayCsv();
                     }
                     if (Utility.GUIButton("Pause", UltiDraw.DarkGrey, UltiDraw.White))
                     {
