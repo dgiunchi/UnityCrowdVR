@@ -14,6 +14,7 @@ public class PositionSerializer : MonoBehaviour
     public string csvFileName;
     private int count = 0;
     private int countPlay = 0;
+    public float scaleValue = 1f;
 
     private int seconds = 60;
     private int framerate = 72;
@@ -213,6 +214,8 @@ public class PositionSerializer : MonoBehaviour
 
     void DeserializeFromCSV()
     {
+        numberOfPesonsFromCSVLoad = 0;
+
         CrowdCSVReader reader = new CrowdCSVReader();
         reader.Load(Path.Combine(path, csvFileName));
         List<CrowdCSVReader.Row> list = reader.GetRowList();
@@ -253,11 +256,11 @@ public class PositionSerializer : MonoBehaviour
             }
 
             csvCoordinates[count + 1] = row.gid != "" ? float.Parse(row.gid) : float.MinValue;
-            csvCoordinates[count + 2] = row.x != "" ? float.Parse(row.x) : float.MinValue;
-            csvCoordinates[count + 3] = row.y != "" ? float.Parse(row.y) : float.MinValue;
-            csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) : float.MinValue;
-            csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y) : float.MinValue;
-            csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius) : float.MinValue;
+            csvCoordinates[count + 2] = row.x != "" ? float.Parse(row.x)* scaleValue : float.MinValue ;
+            csvCoordinates[count + 3] = row.y != "" ? float.Parse(row.y)* scaleValue : float.MinValue ;
+            csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) * scaleValue : float.MinValue;
+            csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y)* scaleValue : float.MinValue ;
+            csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius)* scaleValue : float.MinValue ;
             csvCoordinates[count + 7] = row.time != "" ? float.Parse(row.time) : float.MinValue;
 
             personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
@@ -456,6 +459,7 @@ public class PositionSerializer : MonoBehaviour
 
         for (int i = 0; i < persons.Count; ++i)
         {
+            
 
             float closest = persons[i]
                 .Select(n => new { n, distance = Math.Abs( n.Key- currenttime) })
@@ -466,7 +470,13 @@ public class PositionSerializer : MonoBehaviour
             {
                 //rigidAvatars[i].transform.Translate(new Vector3(persons[i][closest][0], 0, persons[i][closest][1]), Space.World);
 
+                rigidAvatars[i].gameObject.SetActive(true);
+
                 rigidAvatars[i].transform.position = new Vector3(personsOriginal[i][closest][0], rigidAvatars[i].transform.position.y, personsOriginal[i][closest][1]);
+            }
+            else {
+
+                rigidAvatars[i].gameObject.SetActive(false);
             }
 
 
