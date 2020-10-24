@@ -94,6 +94,8 @@ public class SimulationManager : MonoBehaviour
     {
         group = GameObject.Find("ToPlay").transform;
 
+        
+
         int numberOfPersons = serializer.persons.Count;
         for (int i = 0; i < numberOfPersons; ++i)
         {
@@ -117,6 +119,8 @@ public class SimulationManager : MonoBehaviour
     void OnStartPlayCsv()
     {
         group = GameObject.Find("ToPlay").transform;
+
+        rigidAvatars.Clear();
 
         int numberOfPersons = serializer.persons.Count;
         for (int i = 0; i < numberOfPersons; ++i)

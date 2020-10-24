@@ -468,7 +468,7 @@ public class PositionSerializer : MonoBehaviour
 
             if (Math.Abs(closest - currenttime) < 0.1)
             {
-                //rigidAvatars[i].transform.Translate(new Vector3(persons[i][closest][0], 0, persons[i][closest][1]), Space.World);
+
 
                 rigidAvatars[i].gameObject.SetActive(true);
 
