@@ -192,9 +192,6 @@ public class PositionSerializer : MonoBehaviour
         DeserializeFromCSV();
         ConversionFromPositionsToVariations();
         CalculateInitialAndEndingTime();
-        SimulationManager.Instance.currentTimeStep = timeStep;
-        SimulationManager.Instance.currentTime = 0.0f;
-        SimulationManager.Instance.OnStartPlay();
               
 #elif UNITY_ANDROID
         StartCoroutine(DeserializeFromCSVOnAndroid());
@@ -248,7 +245,7 @@ public class PositionSerializer : MonoBehaviour
             csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) : float.MinValue;
             csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y) : float.MinValue;
             csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius) : float.MinValue;
-            csvCoordinates[count + 7] = row.time != "" ? float.Parse(row.time) : float.MinValue;
+            csvCoordinates[count + 7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time),2) : float.MinValue;
 
             personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
 
@@ -296,7 +293,7 @@ public class PositionSerializer : MonoBehaviour
                     csvVariationsCoordinates[yPosIndex] = 0.0f;
 
                     // calculation of timestep
-                    timeStep = (float) System.Math.Round(csvCoordinates[index + 7] - csvCoordinates[index + 7 - dataPerPersonAndFrameFromCSVLoad],3);
+                    timeStep = (float) System.Math.Round(csvCoordinates[index + 7] - csvCoordinates[index + 7 - dataPerPersonAndFrameFromCSVLoad],2);
                 }
                 
                 csvVariationsCoordinates[index + 4] = csvCoordinates[index + 4];
@@ -414,9 +411,20 @@ public class PositionSerializer : MonoBehaviour
         SimulationManager.Instance.currentTime = 0.0f;
         SimulationManager.Instance.OnStartPlay();
     }
+    private void InitDirections(int index)
+    {
+
+    }
 
     public void ReadDataFromSimulationPerFrame() // rewrite the function with a different cumulative data that take in account the timeframe
     {
+        if (initSimulationTime == -1.0f)
+        {
+            initSimulationTime = Time.fixedUnscaledTime;
+        }
+
+        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
+        countPlay = (int)System.Math.Round(timeTotal * currentRatio, System.MidpointRounding.AwayFromZero);
 
         //conversion
         //  ------------------------------------------- 1 second (30)

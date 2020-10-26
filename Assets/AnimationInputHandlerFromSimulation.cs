@@ -70,7 +70,7 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     Vector3 GetDirection()
     {
-        //Debug.Log(currentTime);
+        Debug.Log(currentTime + " " + gameObject.name);
         Vector2 value = timedPositions[currentTime];
         return new Vector3(value.x, 0.0f, value.y); 
     }
