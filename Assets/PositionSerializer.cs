@@ -5,12 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
+using System;
 
 public class PositionSerializer : MonoBehaviour
 {
     public List<List<Transform>> skeletonJoints;
+    public List<Transform> rigidAvatars;
+    public string csvFileName;
     private int count = 0;
     private int countPlay = 0;
+    public float scaleValue = 1f;
 
     private int seconds = 60;
     private int framerate = 72;
@@ -71,16 +75,36 @@ public class PositionSerializer : MonoBehaviour
         Setup();
     }
 
+    public void UpdateRigidAvatars(List<GameObject> ra)
+    {
+        
+        rigidAvatars = new List<Transform>();
+
+        foreach (GameObject rigidAvatar in ra)
+        {          
+            rigidAvatars.Add(rigidAvatar.transform);
+        }
+
+        timeTotal = seconds * framerate;
+
+        Setup();
+    }
+
     void Setup()
     {
-        if (SimulationManager.status == SimulationManager.STATUS.RECORD)
+        if (SimulationManager.status == SimulationManager.STATUS.RECORD) 
         {
             Time.captureDeltaTime = 1.0f / framerate;
+        }
+        else if (SimulationManager.status == SimulationManager.STATUS.PLAYCSV)
+        {
+            //anything here?
         }
         else if (SimulationManager.status == SimulationManager.STATUS.PLAY)
         {
             LoadDatasetTest();
         }
+
     }
 
     void Update()
@@ -88,6 +112,10 @@ public class PositionSerializer : MonoBehaviour
         if (SimulationManager.status == SimulationManager.STATUS.RECORD)
         {
             CumulateData();
+        }
+        else if (SimulationManager.status == SimulationManager.STATUS.PLAYCSV)
+        {
+            ReadDataPerFrameCsv();
         }
         else if (SimulationManager.status == SimulationManager.STATUS.PLAY)
         {
@@ -200,8 +228,10 @@ public class PositionSerializer : MonoBehaviour
 
     void DeserializeFromCSV()
     {
+        numberOfPesonsFromCSVLoad = 0;
+
         CrowdCSVReader reader = new CrowdCSVReader();
-        reader.Load(Path.Combine(path, "crowds_zara01_corrected.csv"));
+        reader.Load(Path.Combine(path, csvFileName));
         List<CrowdCSVReader.Row> list = reader.GetRowList();
         //
 
@@ -240,11 +270,11 @@ public class PositionSerializer : MonoBehaviour
             }
 
             csvCoordinates[count + 1] = row.gid != "" ? float.Parse(row.gid) : float.MinValue;
-            csvCoordinates[count + 2] = row.x != "" ? float.Parse(row.x) : float.MinValue;
-            csvCoordinates[count + 3] = row.y != "" ? float.Parse(row.y) : float.MinValue;
-            csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) : float.MinValue;
-            csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y) : float.MinValue;
-            csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius) : float.MinValue;
+            csvCoordinates[count + 2] = row.x != "" ? float.Parse(row.x)* scaleValue : float.MinValue ;
+            csvCoordinates[count + 3] = row.y != "" ? float.Parse(row.y)* scaleValue : float.MinValue ;
+            csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) * scaleValue : float.MinValue;
+            csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y)* scaleValue : float.MinValue ;
+            csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius)* scaleValue : float.MinValue ;
             csvCoordinates[count + 7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time),2) : float.MinValue;
 
             personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
@@ -507,6 +537,46 @@ public class PositionSerializer : MonoBehaviour
         coordinates[count + 1] = sj.position.y;
         coordinates[count + 2] = sj.position.z;
         count += 3;*/
+
+    }
+
+    public void ReadDataPerFrameCsv() // rewrite the function with a different cumulative data that take in account the timeframe
+    {
+
+        if (initSimulationTime == -1.0f)
+        {
+            initSimulationTime = Time.fixedUnscaledTime;
+        }
+
+        float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
+    
+
+        for (int i = 0; i < persons.Count; ++i)
+        {
+            
+
+            float closest = persons[i]
+                .Select(n => new { n, distance = Math.Abs( n.Key- currenttime) })
+                .OrderBy(p => p.distance)
+                .First().n.Key;
+
+            if (Math.Abs(closest - currenttime) < 0.1)
+            {
+
+
+                rigidAvatars[i].gameObject.SetActive(true);
+
+                rigidAvatars[i].transform.position = new Vector3(personsOriginal[i][closest][0], rigidAvatars[i].transform.position.y, personsOriginal[i][closest][1]);
+            }
+            else {
+
+                rigidAvatars[i].gameObject.SetActive(false);
+            }
+
+
+        }
+
+        //
 
     }
 
