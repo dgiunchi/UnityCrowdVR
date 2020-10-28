@@ -10,7 +10,10 @@ using System;
 public class PositionSerializer : MonoBehaviour
 {
     public List<List<Transform>> skeletonJoints;
+
     public List<Transform> rigidAvatars;
+    List<GameObject> skeletonsList;
+
     public string csvFileName;
     private int count = 0;
     private int countPlay = 0;
@@ -26,6 +29,8 @@ public class PositionSerializer : MonoBehaviour
     private float[] coordinates;
     private int timeTotal;
     private int total;
+    public static int totalPerSkeleton;
+    public static int numberOfValuesPerFrame;
 
     string path;
     float currentTime = 0;
@@ -58,18 +63,30 @@ public class PositionSerializer : MonoBehaviour
 
     public void UpdateSkeletonsToRecord(List<GameObject> sks)
     {
+        skeletonsList = new List<GameObject>(sks);
+
+        timeTotal = seconds * framerate;
+        skeletonNumbers = skeletonsList.Count;
+
+        numberOfValuesPerFrame = jointsNumbers * (timeAndIndex + positionCoord);
+        totalPerSkeleton = seconds * framerate * numberOfValuesPerFrame;
+        total = totalPerSkeleton * skeletonNumbers;
+
         List<GameObject> skeletons = new List<GameObject>(sks);
         skeletonJoints = new List<List<Transform>>();
+        int index = 0;
         foreach (GameObject skeleton in skeletons)
         {
             Transform[] children = skeleton.transform.GetComponentsInChildren<Transform>();
             List<Transform> joints = new List<Transform>(children);
             skeletonJoints.Add(joints);
+
+            // need for new serialization
+            skeleton.GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>().InitWithCSVData(index, timeStep);
+            index++;
         }
 
-        timeTotal = seconds * framerate;
-        skeletonNumbers = skeletons.Count;
-        total = seconds * framerate * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
+        
 
         coordinates = new float[total];
         Setup();
@@ -111,7 +128,8 @@ public class PositionSerializer : MonoBehaviour
     {
         if (SimulationManager.status == SimulationManager.STATUS.RECORD)
         {
-            CumulateData();
+            //CumulateData();
+            DelegatedCumulateData();
         }
         else if (SimulationManager.status == SimulationManager.STATUS.PLAYCSV)
         {
@@ -137,6 +155,16 @@ public class PositionSerializer : MonoBehaviour
        
         StartCoroutine(DeserializeOnAndroid());
 #endif
+    }
+
+    void SerializeAll()
+    {
+        // merge all the coords
+        //@@TODO
+
+
+        //call Serialize
+        Serialize();
     }
 
     void Serialize() //used in UNITY_EDITOR, SO path should be UNITY_EDITOR
@@ -207,6 +235,7 @@ public class PositionSerializer : MonoBehaviour
     private List<int> peopleIndexes = new List<int>();
     public List<Dictionary<float, Vector2>> personsOriginal = new List<Dictionary<float, Vector2>>();
     public List<Dictionary<float, Vector2>> persons = new List<Dictionary<float, Vector2>>();
+    public List<List<AnimationInputHandlerFromSimulation.TimedPosition>> personsRecord = new List<List<AnimationInputHandlerFromSimulation.TimedPosition>>();
 
     public float timeStep;
     public float initialTime = float.MaxValue;
@@ -260,6 +289,8 @@ public class PositionSerializer : MonoBehaviour
                 peopleIndexes.Add(count);
                 persons.Add(new Dictionary<float, Vector2>());
                 personsOriginal.Add(new Dictionary<float, Vector2>());
+
+                personsRecord.Add(new List<AnimationInputHandlerFromSimulation.TimedPosition>());
 
                 if (count!=0)
                 {
@@ -332,8 +363,13 @@ public class PositionSerializer : MonoBehaviour
                 csvVariationsCoordinates[index + 7] = csvCoordinates[index + 7];
 
                 persons[i][csvVariationsCoordinates[index + 7]] = new Vector2(csvVariationsCoordinates[xPosIndex], csvVariationsCoordinates[yPosIndex]);
+                AnimationInputHandlerFromSimulation.TimedPosition t = new AnimationInputHandlerFromSimulation.TimedPosition();
+                t.time = csvCoordinates[index + 7];
+                t.position = new Vector2(csvCoordinates[index + 2], csvCoordinates[index + 3]);
+                t.direction = new Vector2(csvVariationsCoordinates[xPosIndex], csvVariationsCoordinates[yPosIndex]);
+                personsRecord[i].Add(t);
 
-                
+
             }
 
         }
@@ -441,10 +477,7 @@ public class PositionSerializer : MonoBehaviour
         SimulationManager.Instance.currentTime = 0.0f;
         SimulationManager.Instance.OnStartPlay();
     }
-    private void InitDirections(int index)
-    {
-
-    }
+    
 
     public void ReadDataFromSimulationPerFrame() // rewrite the function with a different cumulative data that take in account the timeframe
     {
@@ -463,16 +496,22 @@ public class PositionSerializer : MonoBehaviour
         //                                          --- 1 joint (32)
         //                                            - 1 coordinate (3)
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
-        //int frameEndIndex = (countPlay+1) * skeletonNumbers * jointsNumbers * positionCoord - 1;
-        //skeleton indexes
+         
+
         for (int s = 0; s < skeletonNumbers; s++)
         {
+            /*float closest = persons[i]
+               .Select(n => new { n, distance = Math.Abs(n.Key - currenttime) })
+               .OrderBy(p => p.distance)
+               .First().n.Key;*/
+
             for (int j = 0; j < jointsNumbers; j++)
             {
                 int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
                 int indexX = baseIndex + 2;
                 int indexY = baseIndex + 3;
                 int indexZ = baseIndex + 4;
+
                 if(float.IsNaN(coordinates[indexX]))
                 {
                     skeletonJoints[s][j].gameObject.SetActive(false);
@@ -626,6 +665,34 @@ public class PositionSerializer : MonoBehaviour
         coordinates[count + 2] = sj.position.z;
         count += 3;*/
 
+    }
+
+    void DelegatedCumulateData()
+    {
+        //Debug.Log(skeletons.Count);
+        bool lastSerialization = true;
+
+        if (initSimulationTime == -1.0f)
+        {
+            initSimulationTime = Time.fixedTime;
+        }
+
+        currentTime += Time.deltaTime;
+
+        for (int i=0; i< skeletonsList.Count; i++)
+        {
+            AnimationInputHandlerFromSimulation component = skeletonsList[i].GetComponent<AnimationInputHandlerFromSimulation>();
+            component.SetActiveTime(currentTime);
+            if (!component.isArrived())
+            {
+                lastSerialization = false;
+            }
+        }
+
+        if (lastSerialization)
+        {
+            SerializeAll(); // serialize when finished
+        }
     }
 
     void CumulateData() //maybe check if skeleton is active or enable with simulation data

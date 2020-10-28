@@ -1,5 +1,7 @@
 ﻿using DeepLearning;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -39,7 +41,14 @@ namespace SIGGRAPH_2017 {
 		private const int PreviousPoints = 6;
 		private const int PointDensity = 10;
 
-		void Reset() {
+        float[] coordinates;
+        private int serializeCount;
+        List<Transform> skeletonJoints;
+        private float currentTimeStep;
+        private int id = -1;
+        private int indexHipJoint = 0; // J1 is the hip joint (root)
+
+        void Reset() {
 			controller = new SimulationController();
 		}
 
@@ -80,12 +89,59 @@ namespace SIGGRAPH_2017 {
             controller.handler.allowed.Add(controller.Right);
             controller.handler.allowed.Add(controller.TurnLeft);
             controller.handler.allowed.Add(controller.TurnRight);
+            
         }
+        
 		void Start() {
 			Utility.SetFPS(60);
 		}
 
-		void Update() {
+        public void InitWithCSVData(int ID, float timestep)
+        {
+            id = ID;
+            //coordinates = new float[PositionSerializer.totalPerSkeleton];
+            Transform[] children = transform.GetComponentsInChildren<Transform>();
+            skeletonJoints = new List<Transform>(children);
+            
+            coordinates = new float[GetComponent<AnimationInputHandlerFromSimulation>().timedPositions.Count * PositionSerializer.numberOfValuesPerFrame];
+            serializeCount = 0;
+            currentTimeStep = timestep;
+        }
+
+        public float distanceToTarget(Vector2 target)
+        {
+            Vector3 hipPosition = skeletonJoints[indexHipJoint].transform.position;
+            Vector2 hipPos = new Vector2(hipPosition.x, hipPosition.z);
+            return (target - hipPos).magnitude;
+        }
+
+        public Vector2 CalculateNewDirection(Vector2 target)
+        {
+            Vector2 hip = new Vector2(skeletonJoints[indexHipJoint].transform.position.x, skeletonJoints[indexHipJoint].transform.position.z);  
+            return target - hip; //epsilon to check
+        }
+
+        public void Serialize()
+        {
+            // ask to AnimationInputHandlerFromSimulation the timedposition and consider the next one to do, 
+            // grab the Vector and control the hip position and th next position, dynamic is always the same but if hip position and target are below a distance 
+            // threshold the position is serialized and the time is the currentTimeStep.
+            // if yes save the value, otherwise NaN
+            foreach (Transform sj in skeletonJoints)
+            {
+                coordinates[serializeCount] = SimulationManager.Instance.currentTime; //set the timestep
+                coordinates[serializeCount + 1] = id;
+                coordinates[serializeCount + 2] = sj.localPosition.x;
+                coordinates[serializeCount + +3] = sj.localPosition.y;
+                coordinates[serializeCount + +4] = sj.localPosition.z;
+                /*coordinates[serializeCount + 2] = float.NaN;
+                coordinates[serializeCount + +3] = float.NaN;
+                coordinates[serializeCount + +4] = float.NaN;*/   
+                serializeCount += 5;
+            }
+        }
+
+        void Update() {
             if (SimulationManager.status != SimulationManager.STATUS.RECORD) return;
 
 			if(NN.Parameters == null) {
@@ -101,9 +157,10 @@ namespace SIGGRAPH_2017 {
             //Update Target Direction / Velocity
             var turn = controller.QueryTurn();
             var move = controller.QueryMove();
-            
-            TargetDirection = Vector3.Lerp(TargetDirection, Quaternion.AngleAxis(turn * 60f, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection(), TargetBlending);
-			TargetVelocity = Vector3.Lerp(TargetVelocity, (Quaternion.LookRotation(TargetDirection, Vector3.up) * move).normalized, TargetBlending);
+
+            //TargetDirection = Vector3.Lerp(TargetDirection, Quaternion.AngleAxis(turn * 60f, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection(), TargetBlending);
+            TargetDirection = Vector3.Lerp(TargetDirection, Quaternion.AngleAxis(turn * 180/Mathf.PI, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection(), TargetBlending);
+            TargetVelocity = Vector3.Lerp(TargetVelocity, (Quaternion.LookRotation(TargetDirection, Vector3.up) * move).normalized, TargetBlending);
             
             //Debug.Log(TargetVelocity.magnitude);
 

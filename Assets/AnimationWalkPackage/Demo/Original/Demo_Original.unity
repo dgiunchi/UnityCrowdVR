@@ -47973,17 +47973,17 @@ PrefabInstance:
     - target: {fileID: 174736096809578341, guid: 633a3d7a48126e44385d49374c7db61d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.2
+      value: 9.8
       objectReference: {fileID: 0}
     - target: {fileID: 174736096809578341, guid: 633a3d7a48126e44385d49374c7db61d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4
+      value: -11.91
       objectReference: {fileID: 0}
     - target: {fileID: 174736096809578341, guid: 633a3d7a48126e44385d49374c7db61d,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0.39464998
       objectReference: {fileID: 0}
     - target: {fileID: 174736096809578341, guid: 633a3d7a48126e44385d49374c7db61d,
         type: 3}
@@ -47998,7 +47998,7 @@ PrefabInstance:
     - target: {fileID: 174736096809578341, guid: 633a3d7a48126e44385d49374c7db61d,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9188315
       objectReference: {fileID: 0}
     - target: {fileID: 174736096809578341, guid: 633a3d7a48126e44385d49374c7db61d,
         type: 3}
@@ -48008,7 +48008,7 @@ PrefabInstance:
     - target: {fileID: 174736096809578341, guid: 633a3d7a48126e44385d49374c7db61d,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 46.488003
       objectReference: {fileID: 0}
     - target: {fileID: 174736096809578341, guid: 633a3d7a48126e44385d49374c7db61d,
         type: 3}
@@ -48911,6 +48911,8 @@ MonoBehaviour:
   csvFile: {fileID: 102900000, guid: 2fe879830881af346b348dd10d594a99, type: 3}
   scaleCsv: 2
   sceneHeight: 3
+  currentTime: 0
+  currentTimeStep: 0
 --- !u!1 &1326487510
 GameObject:
   m_ObjectHideFlags: 0
@@ -61004,7 +61006,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!120 &1597309498
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -74715,7 +74717,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1940173196
 Transform:
   m_ObjectHideFlags: 0

@@ -80,7 +80,7 @@ public class SimulationManager : MonoBehaviour
             obj.transform.parent = group;
             obj.name = "Skeleton " + i.ToString();
             AnimationInputHandlerFromSimulation aihfs = obj.GetComponent<AnimationInputHandlerFromSimulation>();
-            aihfs.timedPositions = new Dictionary<float, Vector2>(serializer.persons[i]);
+            aihfs.timedPositions = new List<AnimationInputHandlerFromSimulation.TimedPosition>(serializer.personsRecord[i]);
             aihfs.SetInitalAndEningTimes();
             skeletons.Add(obj);
 
@@ -435,6 +435,7 @@ public class SimulationManager : MonoBehaviour
         return b;
     }
 
+    public float initTime = 0;
     // Update is called once per frame
     void Update()
     {
@@ -451,14 +452,17 @@ public class SimulationManager : MonoBehaviour
 
         if (status == STATUS.RECORD)
         {
-            currentTime += currentTimeStep;
+            if(initTime == 0)
+            {
+                initTime = Time.fixedTime;
+            }
+            currentTime = Time.fixedTime - initTime;
             currentTime = (float)System.Math.Round(currentTime, 2);
-            AnimationInputHandlerFromSimulation.currentTime = currentTime;
 
-            foreach (GameObject go in skeletons)
+            /*foreach (GameObject go in skeletons)
             {
                  go.GetComponent<AnimationInputHandlerFromSimulation>().SetActiveByCurrenTime();
-            }
+            }*/
 
         }
         else if (status == STATUS.PLAYCSV)

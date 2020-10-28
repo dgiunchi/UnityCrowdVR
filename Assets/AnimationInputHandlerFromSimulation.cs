@@ -6,18 +6,32 @@ using System.Linq;
 
 public class AnimationInputHandlerFromSimulation : MonoBehaviour
 {
+
+    public class TimedPosition
+    {
+        public float time;
+        public Vector2 position;
+        public Vector2 direction;
+
+    };
+
     //private static List<HashSet<KeyCode>> Keys = new List<HashSet<KeyCode>>();
     private List<Dictionary<KeyCode, float>> Keys = new List<Dictionary<KeyCode, float>>();
     private int Capacity = 2;
     private int Clients = 0;
     public HashSet<KeyCode> allowed = new HashSet<KeyCode>();
 
-    public Dictionary<float, Vector2> timedPositions;// = new Dictionary<float, Vector2>();
-    public static float currentTime = 0;
+    //public Dictionary<float, Vector2> timedPositions;// = new Dictionary<float, Vector2>();
+    public List<TimedPosition> timedPositions;
+    /*public float currentTime = 0;
+    public float currentTimeStep = 0;*/
+    public int currentIndex = 0;
+
 
     public float initialTime;
     public float endingTime;
 
+    Vector2 currentDirection;
 
     void OnEnable()
     {
@@ -46,8 +60,12 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     public void SetInitalAndEningTimes()
     {
-        initialTime = timedPositions.Keys.Min();
-        endingTime = timedPositions.Keys.Max();
+        initialTime = timedPositions[0].time;
+        endingTime = timedPositions[timedPositions.Count-1].time;
+
+        //old @@todo remove
+        //initialTime = timedPositions.Keys.Min();
+        //endingTime = timedPositions.Keys.Max();
     }
 
     public bool isSimulating(float timeStamp)
@@ -58,26 +76,58 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     public bool isArrived()
     {
-        if(currentTime > endingTime)
+        //if(currentTime > endingTime)
+        if (currentIndex >= timedPositions.Count)
             return true;
         return false;
     }
 
-    public void SetActiveByCurrenTime()
+    public void SetActiveTime(float currentTime)
     {
         gameObject.SetActive(isSimulating(currentTime));
     }
 
     Vector3 GetDirection()
     {
-        Debug.Log(currentTime + " " + gameObject.name);
-        Vector2 value = timedPositions[currentTime];
-        return new Vector3(value.x, 0.0f, value.y); 
-    }
+        //Debug.Log(currentTime + " " + gameObject.name);
+        //float currentIndex = (currentTime - initialTime) / currentTimeStep;
 
+        // if Distance( hipPosition, timedPosition[currentIndex]) < epsilon , use nextIndex
+        SIGGRAPH_2017.BioAnimation_Simulation component = GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
+        float threshold = 0.01f;
+        float distance = component.distanceToTarget(timedPositions[currentIndex].position);
+        bool arrived = distance < threshold;
+
+        /*if (gameObject.name == "Skeleton 0")
+        {
+            Debug.Log("(" + timedPositions[currentIndex].position.x.ToString() + "," + timedPositions[currentIndex].position.y.ToString() + ") " 
+                      +  distance.ToString() + " " + currentIndex.ToString() + " " + arrived.ToString());
+        }*/
+
+        currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
+        float dotProduct = Vector2.Dot(timedPositions[currentIndex].direction, currentDirection);
+
+        if (arrived || dotProduct <=0)
+        //if (arrived)
+        {
+            component.Serialize();
+            currentIndex++;
+            //recalculate
+            currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
+            //currentDirection = timedPositions[currentIndex].direction;
+        }
+
+        //Vector2 value = timedPositions[currentIndex].direction;
+        
+        return currentDirection; 
+    }
+    float sign;
+    float angle;
+    float distance;
     void Update()
     {
         if (SimulationManager.status != SimulationManager.STATUS.RECORD) return;
+
         if (isArrived()) return;
 
         while (Keys.Count >= Capacity)
@@ -88,21 +138,20 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
        
         //Vector3 direction = navmeshGO.transform.forward;
         Vector3 direction = GetDirection();
-        float distance = direction.magnitude;
-        float up = Vector3.Dot(Vector3.up, Vector3.Cross(transform.forward, direction));
-        
-        //allowed.Contains(k) //@@check if neeed
+        distance = direction.magnitude;
+        //up = Vector3.Dot(Vector3.up, Vector3.Cross(transform.forward, direction.normalized));
+        angle = (float)Math.Acos(Vector3.Dot(transform.forward, direction.normalized))/100.0f;
+
 #if !UNITY_ANDROID || UNITY_EDITOR
-        //direction
-        
-        //Debug.Log(up);
-        if (up >= 0.0f ) //left
+
+        sign = Vector3.Dot(Vector3.up, Vector3.Cross(transform.forward, direction.normalized)) >= 0.0f ? 1 : -1;
+        if (sign > 0) //left
         {
-            state[KeyCode.Q] = up;
+            state[KeyCode.Q] = angle;
         }
-        else if( up < 0.0f ) // right
+        else  // right
         {
-            state[KeyCode.E] = up;
+            state[KeyCode.E] = -angle;
         }
         Keys.Add(state);
 
@@ -196,10 +245,35 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
         }
     }
 
-    void OnDrawGizmosSelected()
+    void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward);
+        if (gameObject.name == "Skeleton 0")
+        {
+            for(int i=0; i <timedPositions.Count; ++i)
+            {
+                Vector2 where = timedPositions[i].position;
+                Gizmos.DrawSphere( new Vector3(where.x, 0.1f, where.y),0.05f);
+            }
+            Gizmos.color = Color.green;
+            Vector2 where2 = timedPositions[currentIndex].position;
+            Gizmos.DrawSphere(new Vector3(where2.x, 0.1f, where2.y), 0.1f);
+            Gizmos.DrawLine(new Vector3(transform.position.x, 1.0f, transform.position.z), new Vector3(where2.x, 1.0f, where2.y));
+
+            //foward skeleton
+            Gizmos.color = Color.black;
+            Gizmos.DrawLine(new Vector3(transform.position.x, 1.0f, transform.position.z), new Vector3(transform.position.x, 1.0f, transform.position.z)+ transform.forward);
+
+            // label
+            GUI.color = Color.black;
+            UnityEditor.Handles.color = Color.black;
+            UnityEditor.Handles.Label(new Vector3(transform.position.x, 1.0f, transform.position.z), "rotate:"+ (sign*angle).ToString() + "\n distance:" + distance.ToString()); 
+
+
+
+        }
+        
+        //Gizmos.DrawLine(transform.position, transform.position + transform.forward);
     }
 
 }
