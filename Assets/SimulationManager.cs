@@ -84,9 +84,9 @@ public class SimulationManager : MonoBehaviour
             aihfs.SetInitalAndEningTimes();
             skeletons.Add(obj);
 
-            if (initTime != serializer.initialTime) {
-                obj.SetActive(false);
-            }
+            //if (initTime != serializer.initialTime) {
+            //    obj.SetActive(false);
+            //}
         }
 
         serializer.UpdateSkeletonsToRecord(skeletons);

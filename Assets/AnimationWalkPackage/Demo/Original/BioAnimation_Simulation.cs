@@ -159,7 +159,7 @@ namespace SIGGRAPH_2017 {
             var move = controller.QueryMove();
 
             //TargetDirection = Vector3.Lerp(TargetDirection, Quaternion.AngleAxis(turn * 60f, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection(), TargetBlending);
-            TargetDirection = Vector3.Lerp(TargetDirection, Quaternion.AngleAxis(turn * 180/Mathf.PI, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection(), TargetBlending);
+            TargetDirection = Vector3.Lerp(TargetDirection, Quaternion.AngleAxis(turn, Vector3.up) * Trajectory.Points[RootPointIndex].GetDirection(), TargetBlending);
             TargetVelocity = Vector3.Lerp(TargetVelocity, (Quaternion.LookRotation(TargetDirection, Vector3.up) * move).normalized, TargetBlending);
             
             //Debug.Log(TargetVelocity.magnitude);

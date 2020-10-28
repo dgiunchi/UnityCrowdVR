@@ -24,10 +24,11 @@ namespace DeepLearning {
 
         private void Awake()
         {
-            // put here if platform
-            Folder = "jar:file://" + Application.dataPath + "!/assets";
-            //Folder = Application.dataPath + "/StreamingAssets";
-        }
+			// put here if platform
+			Folder = "jar:file://" + Application.dataPath + "!/assets";
+			//Folder = Application.dataPath + "/StreamingAssets";
+			//Folder = Application.dataPath + "/StreamingAssets/TensorFlow/trained_Original";
+		}
 
         public PFNN() {
             

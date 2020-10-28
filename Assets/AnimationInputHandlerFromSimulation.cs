@@ -89,38 +89,29 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     Vector3 GetDirection()
     {
-        //Debug.Log(currentTime + " " + gameObject.name);
-        //float currentIndex = (currentTime - initialTime) / currentTimeStep;
-
-        // if Distance( hipPosition, timedPosition[currentIndex]) < epsilon , use nextIndex
+        
         SIGGRAPH_2017.BioAnimation_Simulation component = GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
-        float threshold = 0.01f;
+        float threshold = 0.5f;
         float distance = component.distanceToTarget(timedPositions[currentIndex].position);
         bool arrived = distance < threshold;
 
-        /*if (gameObject.name == "Skeleton 0")
-        {
-            Debug.Log("(" + timedPositions[currentIndex].position.x.ToString() + "," + timedPositions[currentIndex].position.y.ToString() + ") " 
-                      +  distance.ToString() + " " + currentIndex.ToString() + " " + arrived.ToString());
-        }*/
-
         currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
-        float dotProduct = Vector2.Dot(timedPositions[currentIndex].direction, currentDirection);
+        float dotProduct = Vector2.Dot(timedPositions[currentIndex].direction.normalized, currentDirection.normalized);
 
-        if (arrived || dotProduct <=0)
-        //if (arrived)
+        if (arrived || dotProduct <=0.95)
+    
         {
             component.Serialize();
-            currentIndex++;
-            //recalculate
+            currentIndex++;        
             currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
-            //currentDirection = timedPositions[currentIndex].direction;
+            
         }
 
-        //Vector2 value = timedPositions[currentIndex].direction;
-        
-        return currentDirection; 
+        Vector3 newCurrentdirection = new Vector3(currentDirection.x,0f,currentDirection.y);
+
+        return newCurrentdirection; 
     }
+
     float sign;
     float angle;
     float distance;
@@ -139,12 +130,13 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
         //Vector3 direction = navmeshGO.transform.forward;
         Vector3 direction = GetDirection();
         distance = direction.magnitude;
-        //up = Vector3.Dot(Vector3.up, Vector3.Cross(transform.forward, direction.normalized));
-        angle = (float)Math.Acos(Vector3.Dot(transform.forward, direction.normalized))/100.0f;
+        angle = (float)Math.Abs((float)Math.Acos(Vector3.Dot(transform.forward, direction.normalized))) * 180f/(float)Math.PI;
 
 #if !UNITY_ANDROID || UNITY_EDITOR
 
-        sign = Vector3.Dot(Vector3.up, Vector3.Cross(transform.forward, direction.normalized)) >= 0.0f ? 1 : -1;
+        if (float.IsNaN(angle)) return;
+
+        sign =  Vector3.Cross(transform.forward, direction.normalized).y >= 0.0f ? 1 : -1;
         if (sign > 0) //left
         {
             state[KeyCode.Q] = angle;
@@ -267,12 +259,12 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
             // label
             GUI.color = Color.black;
             UnityEditor.Handles.color = Color.black;
-            UnityEditor.Handles.Label(new Vector3(transform.position.x, 1.0f, transform.position.z), "rotate:"+ (sign*angle).ToString() + "\n distance:" + distance.ToString()); 
+            string stringa = "rotate:" + (sign * angle).ToString() + "\n distance:" + distance.ToString() ;
+            UnityEditor.Handles.Label(new Vector3(transform.position.x, 1.0f, transform.position.z), stringa);
 
-
-
+         
         }
-        
+
         //Gizmos.DrawLine(transform.position, transform.position + transform.forward);
     }
 

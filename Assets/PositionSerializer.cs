@@ -672,17 +672,17 @@ public class PositionSerializer : MonoBehaviour
         //Debug.Log(skeletons.Count);
         bool lastSerialization = true;
 
-        if (initSimulationTime == -1.0f)
-        {
-            initSimulationTime = Time.fixedTime;
-        }
+        //if (initSimulationTime == -1.0f)
+        //{
+        //    initSimulationTime = Time.fixedTime;
+        //}
 
         currentTime += Time.deltaTime;
 
         for (int i=0; i< skeletonsList.Count; i++)
         {
             AnimationInputHandlerFromSimulation component = skeletonsList[i].GetComponent<AnimationInputHandlerFromSimulation>();
-            component.SetActiveTime(currentTime);
+            //component.SetActiveTime(currentTime);
             if (!component.isArrived())
             {
                 lastSerialization = false;
