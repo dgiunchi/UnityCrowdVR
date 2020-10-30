@@ -40,7 +40,26 @@ public class PositionSerializer : MonoBehaviour
     bool fileLoaded = false;
     bool end = false;
     bool serializationDone = false;
-    
+
+    private int allFramesAndPersonsFromCSVLoad = 0; //number of lines of the cvd
+    private int dataPerPersonAndFrameFromCSVLoad = 0; // number of columns
+    private int numberOfPesonsFromCSVLoad = 0; // total number of persons    
+    private float[] csvCoordinates;
+    List<int> csvNumberOfFramesPerPerson;
+    private float[] csvVariationsCoordinates;
+    public List<Dictionary<float, int>> timeFrameToIndex = new List<Dictionary<float, int>>();
+    private List<int> peopleIndexes = new List<int>();
+    public List<Dictionary<float, Vector2>> personsOriginal = new List<Dictionary<float, Vector2>>();
+    public List<Dictionary<float, Vector2>> persons = new List<Dictionary<float, Vector2>>();
+    public List<List<AnimationInputHandlerFromSimulation.TimedPosition>> personsRecord = new List<List<AnimationInputHandlerFromSimulation.TimedPosition>>();
+    public float timeStep;
+    [HideInInspector]
+    public float initialTime = float.MaxValue;
+    [HideInInspector]
+    public float endingTime = float.MinValue;
+
+    TextAsset csvAsset;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -149,8 +168,10 @@ public class PositionSerializer : MonoBehaviour
             //ReadDataPerFrame(); //mapping N to N
             //ReadFirstPerFrameOnMultipleSkeletons();
         }
+
     }
-    
+
+
     void LoadDatasetTest()
     {
 #if UNITY_EDITOR
@@ -290,26 +311,42 @@ public class PositionSerializer : MonoBehaviour
             fs.Close();
         }
         Debug.Log("End Of Deserialisation");
+        MapTimeFrameToIndex();
         fileLoaded = true;
     }
 
-#region CSV
-    private int allFramesAndPersonsFromCSVLoad = 0; //number of lines of the cvd
-    private int dataPerPersonAndFrameFromCSVLoad = 0; // number of columns
-    private int numberOfPesonsFromCSVLoad = 0; // total number of persons    
-    private float[] csvCoordinates;
-    List<int> csvNumberOfFramesPerPerson;
-    private float[] csvVariationsCoordinates;
-    private List<int> peopleIndexes = new List<int>();
-    public List<Dictionary<float, Vector2>> personsOriginal = new List<Dictionary<float, Vector2>>();
-    public List<Dictionary<float, Vector2>> persons = new List<Dictionary<float, Vector2>>();
-    public List<List<AnimationInputHandlerFromSimulation.TimedPosition>> personsRecord = new List<List<AnimationInputHandlerFromSimulation.TimedPosition>>();
+    void MapTimeFrameToIndex()
+    {
+        int[] framesPerSkeleton = new int[skeletonsList.Count];
 
-    public float timeStep;
-    public float initialTime = float.MaxValue;
-    public float endingTime = float.MinValue;
+        int maximum = 0;
+        for (int j = 0; j < skeletonsList.Count; j++)
+        {
+            framesPerSkeleton[j] = personsOriginal[j].Count;
+            if (maximum < framesPerSkeleton[j])
+            {
+                maximum = framesPerSkeleton[j];
+            }
+            //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
+        }
+        int totalPerSkeleton = maximum * skeletonsList.Count * numberOfValuesPerFrame;
+        //coordinates
+        //timeFrameToIndex
+        
+        for (int i = 0; i < skeletonsList.Count; ++i)
+        {
+            float currentTime = 0;
+            Dictionary<float, int> dict = new Dictionary<float, int>();
+            for(int j=0; j< totalPerSkeleton; ++j )
+            {
+                timeFrameToIndex[i][(float)Math.Round(currentTime, 2)] = j * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
+                currentTime += timeStep;
+            }
+            timeFrameToIndex.Add(dict);
+        }
+    }
 
-    TextAsset csvAsset;
+
 
     public void LoadFromCSV()
     {
@@ -464,8 +501,6 @@ public class PositionSerializer : MonoBehaviour
     }
 
 
-#endregion
-
 
     IEnumerator DeserializeOnAndroid()
     {
@@ -475,6 +510,7 @@ public class PositionSerializer : MonoBehaviour
         BinaryFormatter formatter = new BinaryFormatter();
         coordinates = (float[])formatter.Deserialize(ms);
         ms.Close();
+        MapTimeFrameToIndex();
         fileLoaded = true;
     }
 
@@ -546,33 +582,33 @@ public class PositionSerializer : MonoBehaviour
         SimulationManager.Instance.OnStartPlay();
     }
     
-
     public void ReadDataFromSimulationPerFrame() // rewrite the function with a different cumulative data that take in account the timeframe
     {
         if (initSimulationTime == -1.0f)
         {
             initSimulationTime = Time.fixedUnscaledTime;
+            
         }
 
-        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
-        countPlay = (int)System.Math.Round(timeTotal * currentRatio, System.MidpointRounding.AwayFromZero);
-
+        //float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
+        //countPlay = (int)System.Math.Round(timeTotal * currentRatio, System.MidpointRounding.AwayFromZero);
+        float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
         //conversion
         //  ------------------------------------------- 1 second (30)
         //                                  ----------- 1 frame (72)
         //                                        ----- 1 sekeleton (60)
         //                                          --- 1 joint (32)
         //                                            - 1 coordinate (3)
-        int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
+        //int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
 
 
         for (int s = 0; s < skeletonNumbers; s++)
         {
-            /*float closest = persons[i]
+            int frameStartIndex = timeFrameToIndex[s]
                .Select(n => new { n, distance = Math.Abs(n.Key - currenttime) })
                .OrderBy(p => p.distance)
-               .First().n.Key;*/
-
+               .First().n.Value;
+           
             for (int j = 0; j < jointsNumbers; j++)
             {
                 int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
@@ -580,7 +616,7 @@ public class PositionSerializer : MonoBehaviour
                 int indexY = baseIndex + 3;
                 int indexZ = baseIndex + 4;
 
-                if (float.IsNaN(coordinates[indexX]))
+                if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
                 {
                     skeletonJoints[s][j].gameObject.SetActive(false);
                 }

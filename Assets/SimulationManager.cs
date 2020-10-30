@@ -43,7 +43,9 @@ public class SimulationManager : MonoBehaviour
     public GameObject skeletonPlayPrefab;
     public GameObject rigidAvatarPrefab;
     public GameObject scenePrefab;
-    public List<GameObject> skeletons = new List<GameObject>();
+    [HideInInspector]
+    private List<GameObject> skeletons = new List<GameObject>();
+    [HideInInspector]
     public List<GameObject> rigidAvatars = new List<GameObject>();
     public UnityEngine.Object csvFile;
     public float scaleCsv =1f ;
