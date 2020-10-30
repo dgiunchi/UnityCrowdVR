@@ -56,8 +56,6 @@ sysinfo.txt
 *.unitypackage
 Parameters.asset
 DataFile.dat
-DataFile.txt
-
 
 #git merge files
 *.orig
