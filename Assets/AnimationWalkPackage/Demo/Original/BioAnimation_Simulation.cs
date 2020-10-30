@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -41,12 +42,15 @@ namespace SIGGRAPH_2017 {
 		private const int PreviousPoints = 6;
 		private const int PointDensity = 10;
 
-        float[] coordinates;
-        private int serializeCount;
+        public List<float[]> coordinates;
+        public float[] coordsToSerialize;
+        
         List<Transform> skeletonJoints;
         private float currentTimeStep;
         private int id = -1;
         private int indexHipJoint = 0; // J1 is the hip joint (root)
+
+        private int index = 0;
 
         void Reset() {
 			controller = new SimulationController();
@@ -99,13 +103,14 @@ namespace SIGGRAPH_2017 {
         public void InitWithCSVData(int ID, float timestep)
         {
             id = ID;
-            //coordinates = new float[PositionSerializer.totalPerSkeleton];
             Transform[] children = transform.GetComponentsInChildren<Transform>();
             skeletonJoints = new List<Transform>(children);
             
-            coordinates = new float[GetComponent<AnimationInputHandlerFromSimulation>().timedPositions.Count * PositionSerializer.numberOfValuesPerFrame];
-            serializeCount = 0;
+            coordinates = new List<float[]>();
+            coordsToSerialize = new float[GetComponent<AnimationInputHandlerFromSimulation>().timedPositions.Count * PositionSerializer.numberOfValuesPerFrame];
+
             currentTimeStep = timestep;
+            
         }
 
         public float distanceToTarget(Vector2 target)
@@ -115,10 +120,71 @@ namespace SIGGRAPH_2017 {
             return (target - hipPos).magnitude;
         }
 
+        public AnimationInputHandlerFromSimulation.TimedPosition GetRealTimedPosition()
+        {
+            Vector2 hip = new Vector2(skeletonJoints[indexHipJoint].transform.position.x, skeletonJoints[indexHipJoint].transform.position.z);
+            List<AnimationInputHandlerFromSimulation.TimedPosition> timedPositionList = GetComponent<AnimationInputHandlerFromSimulation>().timedPositions;
+            return timedPositionList.OrderBy(x => (hip - x.position).sqrMagnitude).First();
+        }
+
         public Vector2 CalculateNewDirection(Vector2 target)
         {
             Vector2 hip = new Vector2(skeletonJoints[indexHipJoint].transform.position.x, skeletonJoints[indexHipJoint].transform.position.z);  
             return target - hip; //epsilon to check
+        }
+
+        public void FilterSerializedData()
+        {
+            // do a one to one comparison between data from timedPositions and serialized data
+            AnimationInputHandlerFromSimulation component = GetComponent<AnimationInputHandlerFromSimulation>();
+            
+            int toIndex = 0;
+            int initialIndexFromCoordinates = 0;
+            int coordinateToSerializeIndex = 0;
+            for (int i =0; i < component.timedPositions.Count(); ++i)
+            {
+                AnimationInputHandlerFromSimulation.TimedPosition fromCSV = component.timedPositions[i];
+                float time = fromCSV.time;
+                Vector2 pos = fromCSV.position;
+                int fromIndex = -1;
+                float distance = float.MaxValue;
+
+                //
+
+                /*if (coordinateToSerializeIndex != coordsToSerialize.Length)
+                {
+                    if(initialIndexFromCoordinates >= coordinates.Count)
+                    {
+                        initialIndexFromCoordinates = coordinates.Count - PositionSerializer.jointsNumbers;
+                    }
+                }*/
+
+                for (int index= initialIndexFromCoordinates; index < coordinates.Count; index+= PositionSerializer.jointsNumbers) //the first is the hip (skeleton)
+                {
+                    Vector2 hipPos = new Vector2(coordinates[index][2], coordinates[index][4]);
+                    if((pos-hipPos).sqrMagnitude < distance)
+                    {
+                        distance = (pos - hipPos).sqrMagnitude;
+                        fromIndex = index;
+                    }
+                }
+                    
+                toIndex = fromIndex + PositionSerializer.jointsNumbers;
+                    
+                for (int j = fromIndex; j < toIndex && j >= 0; j++)
+                {
+                    //coordinates[j][1] = time;
+                    
+                    //Debug.Log(j.ToString());
+                    coordsToSerialize[coordinateToSerializeIndex] = time;
+                    coordsToSerialize[coordinateToSerializeIndex + 1] = id;
+                    coordsToSerialize[coordinateToSerializeIndex + 2] = coordinates[j][2];
+                    coordsToSerialize[coordinateToSerializeIndex + 3] = coordinates[j][3];
+                    coordsToSerialize[coordinateToSerializeIndex + 4] = coordinates[j][4];
+                    coordinateToSerializeIndex += (PositionSerializer.timeAndIndex + PositionSerializer.positionCoord);
+                }
+                initialIndexFromCoordinates = fromIndex; //conservative (toindex)
+            }
         }
 
         public void Serialize()
@@ -127,18 +193,19 @@ namespace SIGGRAPH_2017 {
             // grab the Vector and control the hip position and th next position, dynamic is always the same but if hip position and target are below a distance 
             // threshold the position is serialized and the time is the currentTimeStep.
             // if yes save the value, otherwise NaN
+            int indexJoint = 0;
             foreach (Transform sj in skeletonJoints)
             {
-                coordinates[serializeCount] = SimulationManager.Instance.currentTime; //set the timestep
-                coordinates[serializeCount + 1] = id;
-                coordinates[serializeCount + 2] = sj.localPosition.x;
-                coordinates[serializeCount + +3] = sj.localPosition.y;
-                coordinates[serializeCount + +4] = sj.localPosition.z;
-                /*coordinates[serializeCount + 2] = float.NaN;
-                coordinates[serializeCount + +3] = float.NaN;
-                coordinates[serializeCount + +4] = float.NaN;*/   
-                serializeCount += 5;
+                float[] values = new float[5];
+                values[0] = index;
+                values[1] = indexJoint; //set the sequence index, GetComponent<AnimationInputHandlerFromSimulation>().timedPositions[currentIndex].time
+                values[2] = sj.position.x;
+                values[3] = sj.position.y;
+                values[4] = sj.position.z;
+                coordinates.Add(values);
+                indexJoint++;
             }
+            index++;
         }
 
         void Update() {

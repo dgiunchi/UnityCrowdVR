@@ -89,7 +89,7 @@ public class SimulationManager : MonoBehaviour
             //}
         }
 
-        serializer.UpdateSkeletonsToRecord(skeletons);
+        serializer.UpdateSkeletons(skeletons);
     }
 
     public void OnStartPlay()
@@ -117,7 +117,7 @@ public class SimulationManager : MonoBehaviour
             }
         }
 
-        serializer.UpdateSkeletonsToRecord(skeletons);
+        serializer.UpdateSkeletons(skeletons);
     }
 
     void OnStartPlayCsv()

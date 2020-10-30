@@ -31,6 +31,13 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
     public float initialTime;
     public float endingTime;
 
+
+    float sign;
+    float angle;
+    float distance;
+    bool arrived = false;
+    int realClosestIndex;
+
     Vector2 currentDirection;
 
     void OnEnable()
@@ -76,9 +83,19 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     public bool isArrived()
     {
+        if (arrived) return true;
         //if(currentTime > endingTime)
-        if (currentIndex >= timedPositions.Count)
+        SIGGRAPH_2017.BioAnimation_Simulation component = GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
+        Vector2 realPosition = component.GetRealTimedPosition().position;
+        Vector2 endingPosition = timedPositions[timedPositions.Count - 1].position;
+        float threshold = 0.001f;
+        if ((endingPosition - realPosition).magnitude < threshold)
+        {
+            arrived = true;
+            component.FilterSerializedData();
             return true;
+        }
+            
         return false;
     }
 
@@ -89,22 +106,23 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     Vector3 GetDirection()
     {
-        
+        if (isArrived()) return transform.forward;
         SIGGRAPH_2017.BioAnimation_Simulation component = GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
-        float threshold = 0.5f;
+        float threshold = 0.5f; //need to be distant
         float distance = component.distanceToTarget(timedPositions[currentIndex].position);
         bool arrived = distance < threshold;
 
         currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
         float dotProduct = Vector2.Dot(timedPositions[currentIndex].direction.normalized, currentDirection.normalized);
+        
+        component.Serialize(); //@@todo what we serialize? the current index or a future index?
 
         if (arrived || dotProduct <=0.95)
     
         {
-            component.Serialize();
-            currentIndex++;        
+            currentIndex++;
+            if (isArrived() || currentIndex >= timedPositions.Count) return transform.forward;
             currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
-            
         }
 
         Vector3 newCurrentdirection = new Vector3(currentDirection.x,0f,currentDirection.y);
@@ -112,14 +130,11 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
         return newCurrentdirection; 
     }
 
-    float sign;
-    float angle;
-    float distance;
     void Update()
     {
         if (SimulationManager.status != SimulationManager.STATUS.RECORD) return;
-
-        if (isArrived()) return;
+        if (isArrived() || currentIndex >= timedPositions.Count) return;
+        
 
         while (Keys.Count >= Capacity)
         {
@@ -248,6 +263,9 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
                 Gizmos.DrawSphere( new Vector3(where.x, 0.1f, where.y),0.05f);
             }
             Gizmos.color = Color.green;
+
+            if (currentIndex >= timedPositions.Count) return;
+
             Vector2 where2 = timedPositions[currentIndex].position;
             Gizmos.DrawSphere(new Vector3(where2.x, 0.1f, where2.y), 0.1f);
             Gizmos.DrawLine(new Vector3(transform.position.x, 1.0f, transform.position.z), new Vector3(where2.x, 1.0f, where2.y));

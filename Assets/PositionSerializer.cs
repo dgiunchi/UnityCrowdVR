@@ -22,9 +22,9 @@ public class PositionSerializer : MonoBehaviour
     private int seconds = 60;
     private int framerate = 72;
     private int skeletonNumbers = 1; //change to the real number or move code to Start.
-    private int jointsNumbers = 32;
-    private int timeAndIndex = 2;
-    private int positionCoord = 3;
+    public static int jointsNumbers = 32;
+    public static int timeAndIndex = 2;
+    public static int positionCoord = 3;
     
     private float[] coordinates;
     private int timeTotal;
@@ -39,6 +39,7 @@ public class PositionSerializer : MonoBehaviour
 
     bool fileLoaded = false;
     bool end = false;
+    bool serializationDone = false;
     
     // Start is called before the first frame update
     void Start()
@@ -61,7 +62,7 @@ public class PositionSerializer : MonoBehaviour
         
     }
 
-    public void UpdateSkeletonsToRecord(List<GameObject> sks)
+    public void UpdateSkeletons(List<GameObject> sks)
     {
         skeletonsList = new List<GameObject>(sks);
 
@@ -82,13 +83,16 @@ public class PositionSerializer : MonoBehaviour
             skeletonJoints.Add(joints);
 
             // need for new serialization
-            skeleton.GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>().InitWithCSVData(index, timeStep);
-            index++;
+            SIGGRAPH_2017.BioAnimation_Simulation component = skeleton.GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
+            if (component != null)
+            {
+                component.InitWithCSVData(index, timeStep);
+            }
+            index++; 
         }
-
         
-
-        coordinates = new float[total];
+        //coordinates = new float[total];
+        coordinates = new float[0];
         Setup();
     }
 
@@ -157,14 +161,78 @@ public class PositionSerializer : MonoBehaviour
 #endif
     }
 
+   
     void SerializeAll()
     {
+        if (serializationDone) return;
         // merge all the coords
         //@@TODO
+        //timeStep
+        //initialTime
+        //endingTime
 
+        int[] framesPerSkeleton = new int[skeletonsList.Count];
+        int[] frameIndexPerSkeleton = new int[skeletonsList.Count];
+        //int totalNumberOfData = 0;
+        int maximum = 0;
+        for (int j=0; j <skeletonsList.Count; j++)
+        {
+            AnimationInputHandlerFromSimulation component = skeletonsList[j].GetComponent<AnimationInputHandlerFromSimulation>();
+            framesPerSkeleton[j] = component.timedPositions.Count;
+            if(maximum < framesPerSkeleton[j])
+            {
+                maximum = framesPerSkeleton[j];
+            }
+            //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
+        }
 
+        coordinates = new float[maximum * skeletonsList.Count * numberOfValuesPerFrame];
+
+        int count = 0;
+        for (float t = 0.0f; t<=endingTime; t+=timeStep) // weeird issue with initialTime @@TODO
+        {
+            for (int j = 0; j < skeletonsList.Count; j++)
+            {
+                AnimationInputHandlerFromSimulation component1 = skeletonsList[j].GetComponent<AnimationInputHandlerFromSimulation>();
+                SIGGRAPH_2017.BioAnimation_Simulation component2 = skeletonsList[j].GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
+                if(frameIndexPerSkeleton[j] < component1.timedPositions.Count && Math.Abs(component1.timedPositions[frameIndexPerSkeleton[j]].time - t) < 0.0001f ) 
+                {
+                    for (int k = 0; k < jointsNumbers; k++)
+                    {
+                        int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
+                        if (count >= coordinates.Length) break;
+
+                        coordinates[count] = component2.coordsToSerialize[baseIndex];
+                        coordinates[count + 1] = component2.coordsToSerialize[baseIndex+1];
+                        coordinates[count + 2] = component2.coordsToSerialize[baseIndex+2];
+                        coordinates[count + 3] = component2.coordsToSerialize[baseIndex+3];
+                        coordinates[count + 4] = component2.coordsToSerialize[baseIndex+4];
+                        count += 5;
+                    }
+                    frameIndexPerSkeleton[j] += 1;
+                } else
+                {
+                    for (int k = 0; k < jointsNumbers; k++)
+                    {
+                        //int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
+                        if (count >= coordinates.Length) break;
+                        coordinates[count] = t;
+                        coordinates[count + 1] = j;
+                        coordinates[count + 2] = float.NaN;
+                        coordinates[count + 3] = float.NaN;
+                        coordinates[count + 4] = float.NaN;
+                        count += 5;
+                    }
+                }
+                //component.coordsToSerialize
+            }
+        }
+
+        
+        
         //call Serialize
         Serialize();
+        serializationDone = true;
     }
 
     void Serialize() //used in UNITY_EDITOR, SO path should be UNITY_EDITOR
@@ -191,12 +259,12 @@ public class PositionSerializer : MonoBehaviour
 
         Debug.Log("End Of Serialisation");
 
-        /*int xprecision = 3;
+        int xprecision = 3;
         string formatString = "{0:G" + xprecision + "}\t{1:G" + xprecision + "}\t{2:G" + xprecision + "}\t{3:G" + xprecision + "}\t{4:G" + xprecision + "}";
 
         using (var outf = new StreamWriter(Path.Combine(path, "DataFile.txt")))
             for (int i = 0; i < coordinates.Length; i=i+5)
-                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4]);*/
+                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4]);
         
     }
 
@@ -496,7 +564,7 @@ public class PositionSerializer : MonoBehaviour
         //                                          --- 1 joint (32)
         //                                            - 1 coordinate (3)
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
-         
+
 
         for (int s = 0; s < skeletonNumbers; s++)
         {
@@ -512,19 +580,20 @@ public class PositionSerializer : MonoBehaviour
                 int indexY = baseIndex + 3;
                 int indexZ = baseIndex + 4;
 
-                if(float.IsNaN(coordinates[indexX]))
+                if (float.IsNaN(coordinates[indexX]))
                 {
                     skeletonJoints[s][j].gameObject.SetActive(false);
-                } else
+                }
+                else
                 {
                     skeletonJoints[s][j].gameObject.SetActive(true);
-                    skeletonJoints[s][j].localPosition = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
+                    skeletonJoints[s][j].position = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
                 }
-                
+
             }
         }
 
-        countPlay += 1 ;
+        countPlay += 1;
         /*coordinates[count] = sj.position.x;
         coordinates[count + 1] = sj.position.y;
         coordinates[count + 2] = sj.position.z;
