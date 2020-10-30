@@ -280,12 +280,12 @@ public class PositionSerializer : MonoBehaviour
 
         Debug.Log("End Of Serialisation");
 
-        int xprecision = 3;
+        /*int xprecision = 3;
         string formatString = "{0:G" + xprecision + "}\t{1:G" + xprecision + "}\t{2:G" + xprecision + "}\t{3:G" + xprecision + "}\t{4:G" + xprecision + "}";
 
         using (var outf = new StreamWriter(Path.Combine(path, "DataFile.txt")))
             for (int i = 0; i < coordinates.Length; i=i+5)
-                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4]);
+                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4]);*/
         
     }
 
@@ -600,16 +600,14 @@ public class PositionSerializer : MonoBehaviour
         //                                          --- 1 joint (32)
         //                                            - 1 coordinate (3)
         //int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
-
-
-        for (int s = 0; s < skeletonNumbers; s++)
-        {
-            
-            int frameStartIndex = timeFrameToIndex[s]
+        int frameStartIndex = timeFrameToIndex[0]
                .Select(n => new { n, distance = Math.Abs(n.Key - currenttime) })
                .OrderBy(p => p.distance)
                .First().n.Value;
+         
 
+        for (int s = 0; s < skeletonNumbers; s++)
+        {
             for (int j = 0; j < jointsNumbers; j++)
             {
                 int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons

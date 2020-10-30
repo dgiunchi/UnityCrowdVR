@@ -149,7 +149,12 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
 #if !UNITY_ANDROID || UNITY_EDITOR
 
-        if (float.IsNaN(angle)) return;
+        if (float.IsNaN(angle))
+        {
+            Vector3 perturbation = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.0f, 1.0f))/100.0f;
+            Vector3 perturbed = direction.normalized + perturbation;
+            angle = (float)Math.Abs((float)Math.Acos(Vector3.Dot(transform.forward, perturbed.normalized))) * 180f / (float)Math.PI;
+        }
 
         sign =  Vector3.Cross(transform.forward, direction.normalized).y >= 0.0f ? 1 : -1;
         if (sign > 0) //left
