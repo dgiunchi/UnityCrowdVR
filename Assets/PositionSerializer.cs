@@ -329,17 +329,17 @@ public class PositionSerializer : MonoBehaviour
             }
             //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
         }
-        int totalPerSkeleton = maximum * skeletonsList.Count * numberOfValuesPerFrame;
-        //coordinates
-        //timeFrameToIndex
-        
+        int totalPerSkeleton = maximum * numberOfValuesPerFrame;
+
+        timeFrameToIndex = new List<Dictionary<float, int>>();
+
         for (int i = 0; i < skeletonsList.Count; ++i)
         {
             float currentTime = 0;
             Dictionary<float, int> dict = new Dictionary<float, int>();
             for(int j=0; j< totalPerSkeleton; ++j )
             {
-                timeFrameToIndex[i][(float)Math.Round(currentTime, 2)] = j * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
+                dict[(float)Math.Round(currentTime, 2)] = j * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
                 currentTime += timeStep;
             }
             timeFrameToIndex.Add(dict);
@@ -604,11 +604,12 @@ public class PositionSerializer : MonoBehaviour
 
         for (int s = 0; s < skeletonNumbers; s++)
         {
+            
             int frameStartIndex = timeFrameToIndex[s]
                .Select(n => new { n, distance = Math.Abs(n.Key - currenttime) })
                .OrderBy(p => p.distance)
                .First().n.Value;
-           
+
             for (int j = 0; j < jointsNumbers; j++)
             {
                 int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
