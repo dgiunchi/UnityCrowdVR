@@ -215,6 +215,7 @@ namespace SIGGRAPH_2017 {
 				return;
 			}
 
+            GetComponent<AnimationInputHandlerFromSimulation>().SetStartOn();
             if (GetComponent<AnimationInputHandlerFromSimulation>().isArrived())
             {
                 this.gameObject.active = false;

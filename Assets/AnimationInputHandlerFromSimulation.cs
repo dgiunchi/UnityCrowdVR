@@ -15,6 +15,8 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     };
 
+    public bool drawVerboseGizmo = false;
+
     //private static List<HashSet<KeyCode>> Keys = new List<HashSet<KeyCode>>();
     private List<Dictionary<KeyCode, float>> Keys = new List<Dictionary<KeyCode, float>>();
     private int Capacity = 2;
@@ -35,6 +37,7 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
     float sign;
     float angle;
     float distance;
+    bool started = false;
     bool arrived = false;
     int realClosestIndex;
 
@@ -81,8 +84,14 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
         return timeStamp >= initialTime && timeStamp <= endingTime;
     }
 
+    public void SetStartOn()
+    {
+        started = true;
+    }
+
     public bool isArrived()
     {
+        if(started == false) return false;
         if (arrived) return true;
         //if(currentTime > endingTime)
         SIGGRAPH_2017.BioAnimation_Simulation component = GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
@@ -101,7 +110,8 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     public void SetActiveTime(float currentTime)
     {
-        gameObject.SetActive(isSimulating(currentTime));
+        bool isSim = isSimulating(currentTime);
+        gameObject.SetActive(isSim);    
     }
 
     Vector3 GetDirection()
@@ -110,14 +120,14 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
         SIGGRAPH_2017.BioAnimation_Simulation component = GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
         float threshold = 0.5f; //need to be distant
         float distance = component.distanceToTarget(timedPositions[currentIndex].position);
-        bool arrived = distance < threshold;
+        bool arrivedToTarget = distance < threshold;
 
         currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
         float dotProduct = Vector2.Dot(timedPositions[currentIndex].direction.normalized, currentDirection.normalized);
         
         component.Serialize(); //@@todo what we serialize? the current index or a future index?
 
-        if (arrived || dotProduct <=0.95)
+        if (arrivedToTarget || dotProduct <=0.95)
     
         {
             currentIndex++;
@@ -259,13 +269,14 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        if (gameObject.name == "Skeleton 0")
+        if(drawVerboseGizmo)
         {
-            for(int i=0; i <timedPositions.Count; ++i)
+            Gizmos.color = Color.red;
+
+            for (int i = 0; i < timedPositions.Count; ++i)
             {
                 Vector2 where = timedPositions[i].position;
-                Gizmos.DrawSphere( new Vector3(where.x, 0.1f, where.y),0.05f);
+                Gizmos.DrawSphere(new Vector3(where.x, 0.1f, where.y), 0.05f);
             }
             Gizmos.color = Color.green;
 
@@ -277,16 +288,21 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
             //foward skeleton
             Gizmos.color = Color.black;
-            Gizmos.DrawLine(new Vector3(transform.position.x, 1.0f, transform.position.z), new Vector3(transform.position.x, 1.0f, transform.position.z)+ transform.forward);
+            Gizmos.DrawLine(new Vector3(transform.position.x, 1.0f, transform.position.z), new Vector3(transform.position.x, 1.0f, transform.position.z) + transform.forward);
 
             // label
             GUI.color = Color.black;
             UnityEditor.Handles.color = Color.black;
-            string stringa = "rotate:" + (sign * angle).ToString() + "\n distance:" + distance.ToString() ;
-            UnityEditor.Handles.Label(new Vector3(transform.position.x, 1.0f, transform.position.z), stringa);
+            string value = "rotate:" + (sign * angle).ToString() + "\n distance:" + distance.ToString();
+            UnityEditor.Handles.Label(new Vector3(transform.position.x, 1.0f, transform.position.z), value);
 
-         
+        } else {
+            GUI.color = Color.blue;
+            UnityEditor.Handles.color = Color.black;
+            string skeletonName = gameObject.name;
+            UnityEditor.Handles.Label(new Vector3(transform.position.x, 1.0f, transform.position.z), skeletonName);
         }
+
 
         //Gizmos.DrawLine(transform.position, transform.position + transform.forward);
     }

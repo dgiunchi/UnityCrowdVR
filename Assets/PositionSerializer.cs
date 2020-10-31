@@ -210,18 +210,18 @@ public class PositionSerializer : MonoBehaviour
         coordinates = new float[maximum * skeletonsList.Count * numberOfValuesPerFrame];
 
         int count = 0;
-        for (float t = 0.0f; t<=endingTime; t+=timeStep) // weeird issue with initialTime @@TODO
+        for (float t =initialTime; t<=endingTime; t+=timeStep) // weeird issue with initialTime @@TODO
         {
             for (int j = 0; j < skeletonsList.Count; j++)
             {
                 AnimationInputHandlerFromSimulation component1 = skeletonsList[j].GetComponent<AnimationInputHandlerFromSimulation>();
                 SIGGRAPH_2017.BioAnimation_Simulation component2 = skeletonsList[j].GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
-                if(frameIndexPerSkeleton[j] < component1.timedPositions.Count && Math.Abs(component1.timedPositions[frameIndexPerSkeleton[j]].time - t) < 0.0001f ) 
+                if(frameIndexPerSkeleton[j] < component1.timedPositions.Count && Math.Abs(component1.timedPositions[frameIndexPerSkeleton[j]].time - t) < 0.01f ) 
                 {
                     for (int k = 0; k < jointsNumbers; k++)
                     {
                         int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
-                        if (count >= coordinates.Length) break;
+                        //if (count >= coordinates.Length) break;
 
                         coordinates[count] = component2.coordsToSerialize[baseIndex];
                         coordinates[count + 1] = component2.coordsToSerialize[baseIndex+1];
@@ -280,12 +280,12 @@ public class PositionSerializer : MonoBehaviour
 
         Debug.Log("End Of Serialisation");
 
-        /*int xprecision = 3;
+        int xprecision = 5;
         string formatString = "{0:G" + xprecision + "}\t{1:G" + xprecision + "}\t{2:G" + xprecision + "}\t{3:G" + xprecision + "}\t{4:G" + xprecision + "}";
 
         using (var outf = new StreamWriter(Path.Combine(path, "DataFile.txt")))
             for (int i = 0; i < coordinates.Length; i=i+5)
-                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4]);*/
+                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4]);
         
     }
 
