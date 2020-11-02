@@ -5042,8 +5042,6 @@ MonoBehaviour:
   csvFileName: crowds_zara01_corrected - Copy.csv
   scaleValue: 1
   timeStep: 0.04
-  initialTime: 0
-  endingTime: 360.564
 --- !u!4 &1087123738
 Transform:
   m_ObjectHideFlags: 0

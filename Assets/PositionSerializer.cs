@@ -20,7 +20,8 @@ public class PositionSerializer : MonoBehaviour
     public float scaleValue = 1f;
 
     private int seconds = 60;
-    private int framerate = 72;
+    [HideInInspector]
+    public static int framerate = 72;
     private int skeletonNumbers = 1; //change to the real number or move code to Start.
     public static int jointsNumbers = 32;
     public static int timeAndIndex = 2;
@@ -53,10 +54,9 @@ public class PositionSerializer : MonoBehaviour
     public List<Dictionary<float, Vector2>> persons = new List<Dictionary<float, Vector2>>();
     public List<List<AnimationInputHandlerFromSimulation.TimedPosition>> personsRecord = new List<List<AnimationInputHandlerFromSimulation.TimedPosition>>();
     public float timeStep;
-    [HideInInspector]
-    public float initialTime = float.MaxValue;
-    [HideInInspector]
-    public float endingTime = float.MinValue;
+
+    private float initialTime = float.MaxValue;
+    private float endingTime = float.MinValue;
 
     TextAsset csvAsset;
 
@@ -79,6 +79,11 @@ public class PositionSerializer : MonoBehaviour
             Debug.Log(allFiles[i].Name);
         }*/
         
+    }
+
+    public float GetInitialTime()
+    {
+        return initialTime;
     }
 
     public void UpdateSkeletons(List<GameObject> sks)
@@ -186,6 +191,7 @@ public class PositionSerializer : MonoBehaviour
     void SerializeAll()
     {
         if (serializationDone) return;
+        serializationDone = true;
         // merge all the coords
         //@@TODO
         //timeStep
@@ -195,25 +201,17 @@ public class PositionSerializer : MonoBehaviour
         int[] framesPerSkeleton = new int[skeletonsList.Count];
         int[] frameIndexPerSkeleton = new int[skeletonsList.Count];
         //int totalNumberOfData = 0;
-        int maximum = 0;
-        for (int j=0; j <skeletonsList.Count; j++)
-        {
-            AnimationInputHandlerFromSimulation component = skeletonsList[j].GetComponent<AnimationInputHandlerFromSimulation>();
-            framesPerSkeleton[j] = component.timedPositions.Count;
-            if(maximum < framesPerSkeleton[j])
-            {
-                maximum = framesPerSkeleton[j];
-            }
-            //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
-        }
+        int maximum = (int)((endingTime - initialTime) / timeStep);
+        int totalPerSkeleton = maximum * numberOfValuesPerFrame;
 
         coordinates = new float[maximum * skeletonsList.Count * numberOfValuesPerFrame];
-
-        int count = 0;
-        for (float t =initialTime; t<=endingTime; t+=timeStep) // weeird issue with initialTime @@TODO
+        
+        long count = 0;
+        for (float t =initialTime; t<endingTime; t+=timeStep) // weeird issue with initialTime @@TODO
         {
             for (int j = 0; j < skeletonsList.Count; j++)
             {
+                
                 AnimationInputHandlerFromSimulation component1 = skeletonsList[j].GetComponent<AnimationInputHandlerFromSimulation>();
                 SIGGRAPH_2017.BioAnimation_Simulation component2 = skeletonsList[j].GetComponent<SIGGRAPH_2017.BioAnimation_Simulation>();
                 if(frameIndexPerSkeleton[j] < component1.timedPositions.Count && Math.Abs(component1.timedPositions[frameIndexPerSkeleton[j]].time - t) < 0.01f ) 
@@ -221,8 +219,8 @@ public class PositionSerializer : MonoBehaviour
                     for (int k = 0; k < jointsNumbers; k++)
                     {
                         int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
-                        //if (count >= coordinates.Length) break;
-
+                        if (count >= coordinates.Length || baseIndex >= component2.coordsToSerialize.Length) break;
+                        Debug.Log("Time:" + t.ToString() + " Skeleton:" + j.ToString() + " count:" + count + " total:" + coordinates.Length);
                         coordinates[count] = component2.coordsToSerialize[baseIndex];
                         coordinates[count + 1] = component2.coordsToSerialize[baseIndex+1];
                         coordinates[count + 2] = component2.coordsToSerialize[baseIndex+2];
@@ -237,6 +235,7 @@ public class PositionSerializer : MonoBehaviour
                     {
                         //int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
                         if (count >= coordinates.Length) break;
+                        Debug.Log("Time:" + t.ToString() + " Skeleton:" + j.ToString() + " count:" + count + " total:" + coordinates.Length);
                         coordinates[count] = t;
                         coordinates[count + 1] = j;
                         coordinates[count + 2] = float.NaN;
@@ -253,7 +252,6 @@ public class PositionSerializer : MonoBehaviour
         
         //call Serialize
         Serialize();
-        serializationDone = true;
     }
 
     void Serialize() //used in UNITY_EDITOR, SO path should be UNITY_EDITOR
@@ -319,8 +317,8 @@ public class PositionSerializer : MonoBehaviour
     {
         int[] framesPerSkeleton = new int[skeletonsList.Count];
 
-        int maximum = 0;
-        for (int j = 0; j < skeletonsList.Count; j++)
+
+        /*for (int j = 0; j < skeletonsList.Count; j++)
         {
             framesPerSkeleton[j] = personsOriginal[j].Count;
             if (maximum < framesPerSkeleton[j])
@@ -328,7 +326,8 @@ public class PositionSerializer : MonoBehaviour
                 maximum = framesPerSkeleton[j];
             }
             //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
-        }
+        }*/
+        int maximum = (int)((endingTime - initialTime) / timeStep);
         int totalPerSkeleton = maximum * numberOfValuesPerFrame;
 
         timeFrameToIndex = new List<Dictionary<float, int>>();

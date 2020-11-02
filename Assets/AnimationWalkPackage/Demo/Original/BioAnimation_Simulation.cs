@@ -210,8 +210,9 @@ namespace SIGGRAPH_2017 {
 
         void Update() {
             if (SimulationManager.status != SimulationManager.STATUS.RECORD) return;
+            Time.captureDeltaTime = PositionSerializer.framerate;
 
-			if(NN.Parameters == null) {
+            if (NN.Parameters == null) {
 				return;
 			}
 

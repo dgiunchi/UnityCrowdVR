@@ -67,7 +67,7 @@ public class SimulationManager : MonoBehaviour
 
     void OnStartRecord()
     {
-        Time.captureDeltaTime = currentTimeStep;
+        Time.captureDeltaTime = PositionSerializer.framerate;
         group = GameObject.Find("SkeletonsAnimatedFromSimulation").transform;
 
         int numberOfPersons = serializer.persons.Count;
@@ -113,7 +113,7 @@ public class SimulationManager : MonoBehaviour
             obj.name = "Skeleton " + i.ToString();
             skeletons.Add(obj);
 
-            if (initTime != serializer.initialTime)
+            if (initTime != serializer.GetInitialTime())
             {
                 obj.SetActive(false);
             }
@@ -139,7 +139,7 @@ public class SimulationManager : MonoBehaviour
             obj.name = "RigidAvatar " + i.ToString();
             rigidAvatars.Add(obj);
 
-            if (initTime != serializer.initialTime)
+            if (initTime != serializer.GetInitialTime())
             {
                 obj.SetActive(false);
             }

@@ -143,6 +143,7 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
     void Update()
     {
         if (SimulationManager.status != SimulationManager.STATUS.RECORD) return;
+        Time.captureDeltaTime = PositionSerializer.framerate;
         if (isArrived() || currentIndex >= timedPositions.Count) return;
         
 
