@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.IO;
-using UnityEngine.Windows;
 using System;
 using System.Runtime.InteropServices;
 
@@ -61,8 +60,10 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+#if UNITY_EDITOR
         serializer.csvFileName = csvFile.name + ".csv";
         serializer.scaleValue = scaleCsv;
+#endif
     }
 
     void OnStartRecord()
@@ -97,9 +98,7 @@ public class SimulationManager : MonoBehaviour
     public void OnStartPlay()
     {
         group = GameObject.Find("ToPlay").transform;
-
         
-
         int numberOfPersons = serializer.persons.Count;
         for (int i = 0; i < numberOfPersons; ++i)
         {

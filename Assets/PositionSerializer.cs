@@ -220,7 +220,7 @@ public class PositionSerializer : MonoBehaviour
                     {
                         int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
                         if (count >= coordinates.Length || baseIndex >= component2.coordsToSerialize.Length) break;
-                        Debug.Log("Time:" + t.ToString() + " Skeleton:" + j.ToString() + " count:" + count + " total:" + coordinates.Length);
+                        //Debug.Log("Time:" + t.ToString() + " Skeleton:" + j.ToString() + " count:" + count + " total:" + coordinates.Length);
                         coordinates[count] = component2.coordsToSerialize[baseIndex];
                         coordinates[count + 1] = component2.coordsToSerialize[baseIndex+1];
                         coordinates[count + 2] = component2.coordsToSerialize[baseIndex+2];
@@ -235,7 +235,7 @@ public class PositionSerializer : MonoBehaviour
                     {
                         //int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
                         if (count >= coordinates.Length) break;
-                        Debug.Log("Time:" + t.ToString() + " Skeleton:" + j.ToString() + " count:" + count + " total:" + coordinates.Length);
+                        //Debug.Log("Time:" + t.ToString() + " Skeleton:" + j.ToString() + " count:" + count + " total:" + coordinates.Length);
                         coordinates[count] = t;
                         coordinates[count + 1] = j;
                         coordinates[count + 2] = float.NaN;
@@ -393,7 +393,6 @@ public class PositionSerializer : MonoBehaviour
                 peopleIndexes.Add(count);
                 persons.Add(new Dictionary<float, Vector2>());
                 personsOriginal.Add(new Dictionary<float, Vector2>());
-
                 personsRecord.Add(new List<AnimationInputHandlerFromSimulation.TimedPosition>());
 
                 if (count!=0)
@@ -438,17 +437,18 @@ public class PositionSerializer : MonoBehaviour
         int cumulativeFrames = 0;
         for (int i=0; i< numberOfPesonsFromCSVLoad; i++)
         {
+            //Debug.Log((new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber().ToString());
             int numberOfFramesFromCSVLoad = csvNumberOfFramesPerPerson[i];
             cumulativeFrames += i != 0 ? csvNumberOfFramesPerPerson[i-1] : 0;
             for (int j = 0; j < numberOfFramesFromCSVLoad; j++)
             {
+                //Debug.Log((new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber().ToString() + " frame:" + j.ToString() + " person:" + i.ToString() + " on total:" + numberOfPesonsFromCSVLoad.ToString());
                 int index = cumulativeFrames * dataPerPersonAndFrameFromCSVLoad + dataPerPersonAndFrameFromCSVLoad * j;
                 csvVariationsCoordinates[index] = csvCoordinates[index];
                 csvVariationsCoordinates[index+1] = csvCoordinates[index+1];
                 int xPosIndex = index + 2;
                 int yPosIndex = index + 3;
-
-                if(j != numberOfFramesFromCSVLoad-1)
+                if (j != numberOfFramesFromCSVLoad-1)
                 {
                     csvVariationsCoordinates[xPosIndex] = csvCoordinates[xPosIndex + dataPerPersonAndFrameFromCSVLoad] - csvCoordinates[xPosIndex];
                     csvVariationsCoordinates[yPosIndex] = csvCoordinates[yPosIndex + dataPerPersonAndFrameFromCSVLoad] - csvCoordinates[yPosIndex];
@@ -460,20 +460,18 @@ public class PositionSerializer : MonoBehaviour
                     // calculation of timestep
                     timeStep = (float) System.Math.Round(csvCoordinates[index + 7] - csvCoordinates[index + 7 - dataPerPersonAndFrameFromCSVLoad],2);
                 }
-                
                 csvVariationsCoordinates[index + 4] = csvCoordinates[index + 4];
                 csvVariationsCoordinates[index + 5] = csvCoordinates[index + 5];
                 csvVariationsCoordinates[index + 6] = csvCoordinates[index + 6];
                 csvVariationsCoordinates[index + 7] = csvCoordinates[index + 7];
-
                 persons[i][csvVariationsCoordinates[index + 7]] = new Vector2(csvVariationsCoordinates[xPosIndex], csvVariationsCoordinates[yPosIndex]);
                 AnimationInputHandlerFromSimulation.TimedPosition t = new AnimationInputHandlerFromSimulation.TimedPosition();
                 t.time = csvCoordinates[index + 7];
                 t.position = new Vector2(csvCoordinates[index + 2], csvCoordinates[index + 3]);
                 t.direction = new Vector2(csvVariationsCoordinates[xPosIndex], csvVariationsCoordinates[yPosIndex]);
+                //Debug.Log((new System.Diagnostics.StackFrame(0, true)).GetFileLineNumber().ToString() + " p:" + personsRecord.Count.ToString() + " i:" + i.ToString() );
                 personsRecord[i].Add(t);
-
-
+                
             }
 
         }
@@ -548,7 +546,7 @@ public class PositionSerializer : MonoBehaviour
                 peopleIndexes.Add(count);
                 persons.Add(new Dictionary<float, Vector2>());
                 personsOriginal.Add(new Dictionary<float, Vector2>());
-
+                personsRecord.Add(new List<AnimationInputHandlerFromSimulation.TimedPosition>());
                 if (count != 0)
                 {
                     csvNumberOfFramesPerPerson.Add(frameCount);
@@ -763,23 +761,16 @@ public class PositionSerializer : MonoBehaviour
         }
 
         countPlay += 1;
-        /*coordinates[count] = sj.position.x;
-        coordinates[count + 1] = sj.position.y;
-        coordinates[count + 2] = sj.position.z;
-        count += 3;*/
+        
 
     }
 
     void DelegatedCumulateData()
     {
-        //Debug.Log(skeletons.Count);
+        
         bool lastSerialization = true;
 
-        //if (initSimulationTime == -1.0f)
-        //{
-        //    initSimulationTime = Time.fixedTime;
-        //}
-
+        
         currentTime += Time.deltaTime;
 
         for (int i=0; i< skeletonsList.Count; i++)
@@ -800,7 +791,6 @@ public class PositionSerializer : MonoBehaviour
 
     void CumulateData() //maybe check if skeleton is active or enable with simulation data
     {
-        //Debug.Log(skeletons.Count);
         if (count == total)
         {
             if(end == false)

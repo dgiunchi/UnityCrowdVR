@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DebugByGizmo : MonoBehaviour
 {
+#if !UNITY_ANDROID || UNITY_EDITOR
     private void OnDrawGizmos()
     {
         GUI.color = Color.blue;
@@ -11,4 +12,5 @@ public class DebugByGizmo : MonoBehaviour
         string skeletonName = gameObject.name;
         UnityEditor.Handles.Label(new Vector3(transform.position.x, 1.0f, transform.position.z), gameObject.name);
     }
+#endif
 }

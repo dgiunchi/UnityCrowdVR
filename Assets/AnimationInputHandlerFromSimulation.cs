@@ -158,7 +158,7 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
         distance = direction.magnitude;
         angle = (float)Math.Abs((float)Math.Acos(Vector3.Dot(transform.forward, direction.normalized))) * 180f/(float)Math.PI;
 
-#if !UNITY_ANDROID || UNITY_EDITOR
+//#if !UNITY_ANDROID || UNITY_EDITOR
 
         if (float.IsNaN(angle))
         {
@@ -190,8 +190,8 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
         Keys.Add(state);
 
 
-#else
-        if (up >= 0.0f ) //left
+//#else
+        /*if (up >= 0.0f ) //left
         {
             state[KeyCode.Q] = up;
         }
@@ -210,7 +210,7 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
         {
             state[KeyCode.S] = -distance;
         }
-        Keys.Add(state);
+        Keys.Add(state);*/
         
 
         /*// @@TODO define KEY
@@ -246,7 +246,7 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
          //Debug.Log("From  Debug:" + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick).x.ToString());
 
         Keys.Add(state);*/
-#endif //!UNITY_ANDROID 
+//#endif //!UNITY_ANDROID 
     }
 
     public float GetKey(KeyCode k)
@@ -267,7 +267,7 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
             return 0.0f; ;
         }
     }
-
+#if !UNITY_ANDROID || UNITY_EDITOR
     void OnDrawGizmos()
     {
         if(drawVerboseGizmo)
@@ -307,5 +307,5 @@ public class AnimationInputHandlerFromSimulation : MonoBehaviour
 
         //Gizmos.DrawLine(transform.position, transform.position + transform.forward);
     }
-
+#endif
 }
