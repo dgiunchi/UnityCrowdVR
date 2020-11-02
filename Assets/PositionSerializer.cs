@@ -587,21 +587,28 @@ public class PositionSerializer : MonoBehaviour
             
         }
 
-        //float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
-        //countPlay = (int)System.Math.Round(timeTotal * currentRatio, System.MidpointRounding.AwayFromZero);
-        float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
-        //conversion
-        //  ------------------------------------------- 1 second (30)
-        //                                  ----------- 1 frame (72)
-        //                                        ----- 1 sekeleton (60)
-        //                                          --- 1 joint (32)
-        //                                            - 1 coordinate (3)
-        //int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
+        
+        //like CSV
+        /*float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
         int frameStartIndex = timeFrameToIndex[0]
                .Select(n => new { n, distance = Math.Abs(n.Key - currenttime) })
                .OrderBy(p => p.distance)
-               .First().n.Value;
-         
+               .First().n.Value;*/
+
+
+
+        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
+        countPlay = (int)System.Math.Round(timeTotal * currentRatio * 0.33f, System.MidpointRounding.AwayFromZero);
+
+
+        if (countPlay >= timeTotal)
+        {
+            return;
+        }
+
+        int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
+
+
 
         for (int s = 0; s < skeletonNumbers; s++)
         {
@@ -626,10 +633,7 @@ public class PositionSerializer : MonoBehaviour
         }
 
         countPlay += 1;
-        /*coordinates[count] = sj.position.x;
-        coordinates[count + 1] = sj.position.y;
-        coordinates[count + 2] = sj.position.z;
-        count += 3;*/
+
 
     }
 
