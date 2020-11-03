@@ -636,11 +636,11 @@ public class PositionSerializerAdam : MonoBehaviour
 
                 if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
                 {
-                    skeletonJoints[s][j].gameObject.SetActive(false);
+                    skeletonJoints[s][j].parent.gameObject.SetActive(false);
                 }
                 else
                 {
-                    skeletonJoints[s][j].gameObject.SetActive(true);
+                    skeletonJoints[s][j].parent.gameObject.SetActive(true);
                     skeletonJoints[s][j].position = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
                     skeletonJoints[s][j].rotation = new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]);
                 }
