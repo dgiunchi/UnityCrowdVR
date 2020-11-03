@@ -64,6 +64,9 @@ public class PositionSerializer : MonoBehaviour
     void Start()
     {
         //Init();
+        jointsNumbers = SimulationManager.Instance.skeletonRecordPrefab.transform.GetComponentsInChildren<Transform>().Length;
+        
+        
     }
 
     public void Init()

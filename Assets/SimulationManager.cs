@@ -82,10 +82,14 @@ public class SimulationManager : MonoBehaviour
             GameObject obj = Instantiate(skeletonRecordPrefab, new Vector3(initialPosition.x, skeletonRecordPrefab.transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection)); //@@TOODorientation??
             obj.transform.parent = group;
             obj.name = "Skeleton " + i.ToString();
-            AnimationInputHandlerFromSimulation aihfs = obj.GetComponent<AnimationInputHandlerFromSimulation>();
+
+            AnimationInputHandlerFromSimulation aihfs;
+            aihfs = obj.GetComponent<AnimationInputHandlerFromSimulation>();
             aihfs.timedPositions = new List<AnimationInputHandlerFromSimulation.TimedPosition>(serializer.personsRecord[i]);
             aihfs.SetInitalAndEningTimes();
             skeletons.Add(obj);
+            
+            
 
             //if (initTime != serializer.initialTime) {
             //    obj.SetActive(false);
@@ -110,8 +114,9 @@ public class SimulationManager : MonoBehaviour
             GameObject obj = Instantiate(skeletonPlayPrefab, new Vector3(initialPosition.x, skeletonPlayPrefab.transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));//@@TOODorientation??
             obj.transform.parent = group;
             obj.name = "Skeleton " + i.ToString();
-            skeletons.Add(obj);
 
+            skeletons.Add(obj);
+            
             if (initTime != serializer.GetInitialTime())
             {
                 obj.SetActive(false);
