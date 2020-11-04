@@ -55,6 +55,7 @@ sysinfo.txt
 *.apk
 *.unitypackage
 Parameters.asset
+Parameters_Adam.asset
 DataFile.dat
 DataFile.txt
 
