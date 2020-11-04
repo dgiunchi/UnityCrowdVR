@@ -19,7 +19,7 @@ public class PositionSerializerAdam : MonoBehaviour
     private int countPlay = 0;
     public float scaleValue = 1f;
 
-    private int seconds = 60;
+    private float seconds;
     [HideInInspector]
     public static int framerate = 72;
     private int skeletonNumbers = 1; //change to the real number or move code to Start.
@@ -28,9 +28,7 @@ public class PositionSerializerAdam : MonoBehaviour
     public static int positionCoord = 7;
     
     private float[] coordinates;
-    private int timeTotal;
-    private int total;
-    public static int totalPerSkeleton;
+    
     public static int numberOfValuesPerFrame;
 
     string path;
@@ -93,13 +91,10 @@ public class PositionSerializerAdam : MonoBehaviour
     public void UpdateSkeletons(List<GameObject> sks)
     {
         skeletonsList = new List<GameObject>(sks);
-
-        timeTotal = seconds * framerate;
+        seconds = endingTime - initialTime;
         skeletonNumbers = skeletonsList.Count;
 
         numberOfValuesPerFrame = jointsNumbers * (timeAndIndex + positionCoord);
-        totalPerSkeleton = seconds * framerate * numberOfValuesPerFrame;
-        total = totalPerSkeleton * skeletonNumbers;
 
         List<GameObject> skeletons = new List<GameObject>(sks);
         skeletonJoints = new List<List<Transform>>();
@@ -133,9 +128,7 @@ public class PositionSerializerAdam : MonoBehaviour
         {          
             rigidAvatars.Add(rigidAvatar.transform);
         }
-
-        timeTotal = seconds * framerate;
-
+        
         Setup();
     }
 
@@ -161,7 +154,6 @@ public class PositionSerializerAdam : MonoBehaviour
     {
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD)
         {
-            //CumulateData();
             DelegatedCumulateData();
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAYCSV)
@@ -710,54 +702,7 @@ public class PositionSerializerAdam : MonoBehaviour
 
 
     }
-
-    public void ReadDataPerFrame() // rewrite the function with a different cumulative data that take in account the timeframe
-    {
-
-        if(initSimulationTime == -1.0f)
-        {
-            initSimulationTime = Time.fixedUnscaledTime;
-        }
-
-        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
-        countPlay = (int)System.Math.Round(timeTotal * currentRatio, System.MidpointRounding.AwayFromZero);
-        
-
-        if (countPlay >= timeTotal)
-        {
-            return;
-        }
-
-        
-        //conversion
-        //  ------------------------------------------- 1 second (30)
-        //                                  ----------- 1 frame (72)
-        //                                        ----- 1 sekeleton (60)
-        //                                          --- 1 joint (32)
-        //                                            - 1 coordinate (3)
-        int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
-        //int frameEndIndex = (countPlay+1) * skeletonNumbers * jointsNumbers * positionCoord - 1;
-        //skeleton indexes
-        for (int s = 0; s < skeletonNumbers; s++)
-        {
-            for (int j = 0; j < jointsNumbers; j++)
-            {
-                int baseIndex = frameStartIndex + 0 * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
-                int indexX = baseIndex;
-                int indexY = baseIndex + 1;
-                int indexZ = baseIndex + 2;
-                skeletonJoints[s][j].localPosition = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
-            }
-        }
-
-        countPlay += 1;
-        /*coordinates[count] = sj.position.x;
-        coordinates[count + 1] = sj.position.y;
-        coordinates[count + 2] = sj.position.z;
-        count += 3;*/
-
-    }
-
+    
     public void ReadDataPerFrameCsv() // rewrite the function with a different cumulative data that take in account the timeframe
     {
 
@@ -797,61 +742,14 @@ public class PositionSerializerAdam : MonoBehaviour
         //
 
     }
-
-    public void ReadFirstPerFrameOnMultipleSkeletons()
-    {
-        if (initSimulationTime == -1.0f)
-        {
-            initSimulationTime = Time.fixedTime; //before was UnscaledTime
-        }
-
-        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
-        countPlay = (int)System.Math.Round(timeTotal * currentRatio, System.MidpointRounding.AwayFromZero);
-
-
-        if (countPlay >= timeTotal)
-        {
-            return;
-        }
-
-
-        //conversion
-        //  ------------------------------------------- 1 second (30)
-        //                                  ----------- 1 frame (72)
-        //                                        ----- 1 sekeleton (60)
-        //                                          --- 1 joint (32)
-        //                                            - 1 coordinate (3)
-        int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
-        //int frameEndIndex = (countPlay + 1) * skeletonNumbers * jointsNumbers * positionCoord - 1;
-        //skeleton indexes
-
-        int currentSkeletonNumber = GameObject.FindGameObjectsWithTag("skeleton").Length;
-        for (int s = 0; s < currentSkeletonNumber; s++)
-        {
-            for (int j = 0; j < jointsNumbers; j++)
-            {
-                int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);
-                int indexX = baseIndex;
-                int indexY = baseIndex + 1;
-                int indexZ = baseIndex + 2;
-                skeletonJoints[s][j].localPosition = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
-            }
-        }
-
-        countPlay += 1;
-        
-
-    }
-
+    
     void DelegatedCumulateData()
     {
         
         bool lastSerialization = true;
-
-        
         currentTime += Time.deltaTime;
 
-        for (int i=0; i< skeletonsList.Count; i++)
+        for (int i = 0; i < skeletonsList.Count; i++)
         {
             AnimationInputHandlerFromAdamSimulation component = skeletonsList[i].GetComponent<AnimationInputHandlerFromAdamSimulation>();
             //component.SetActiveTime(currentTime);
@@ -867,9 +765,9 @@ public class PositionSerializerAdam : MonoBehaviour
         }
     }
 
-    void CumulateData() //maybe check if skeleton is active or enable with simulation data
+    /*void CumulateData()  // @@TOREMOV
     {
-        if (count == total)
+        if (currentTime = total)
         {
             if(end == false)
             {
@@ -903,6 +801,6 @@ public class PositionSerializerAdam : MonoBehaviour
             }
             skeletonCount++;
         }
-    }
+    }*/
     
 }
