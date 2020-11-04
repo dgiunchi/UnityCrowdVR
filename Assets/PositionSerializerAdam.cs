@@ -170,7 +170,14 @@ public class PositionSerializerAdam : MonoBehaviour
         {
             if (fileLoaded)
             {
-                ReadDataFromSimulationPerFrame();
+                if(SimulationManagerAdam.Instance.singlePlay)
+                {
+                    ReadSingleDataFromSimulationPerFrame(SimulationManagerAdam.Instance.indexPlay);
+                } else
+                {
+                    ReadDataFromSimulationPerFrame();
+                }
+                
             }
             
             //ReadDataPerFrame(); //mapping N to N
@@ -589,16 +596,16 @@ public class PositionSerializerAdam : MonoBehaviour
         SimulationManagerAdam.Instance.currentTime = 0.0f;
         SimulationManagerAdam.Instance.OnStartPlay();
     }
-    
+
     public void ReadDataFromSimulationPerFrame() // rewrite the function with a different cumulative data that take in account the timeframe
     {
         if (initSimulationTime == -1.0f)
         {
             initSimulationTime = Time.fixedUnscaledTime;
-            
+
         }
 
-        
+
         //like CSV
         /*float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
         int frameStartIndex = timeFrameToIndex[0]
@@ -641,6 +648,77 @@ public class PositionSerializerAdam : MonoBehaviour
                 else
                 {
                     skeletonJoints[s][j].parent.gameObject.SetActive(true);
+                    skeletonJoints[s][j].position = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
+                    skeletonJoints[s][j].rotation = new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]);
+                }
+
+            }
+        }
+
+        countPlay += 1;
+
+
+    }
+
+    public void ReadSingleDataFromSimulationPerFrame(int index) // rewrite the function with a different cumulative data that take in account the timeframe
+    {
+        if (initSimulationTime == -1.0f)
+        {
+            initSimulationTime = Time.fixedUnscaledTime;
+            
+        }
+
+        
+        //like CSV
+        /*float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
+        int frameStartIndex = timeFrameToIndex[0]
+               .Select(n => new { n, distance = Math.Abs(n.Key - currenttime) })
+               .OrderBy(p => p.distance)
+               .First().n.Value;*/
+
+
+
+        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
+        countPlay = (int)System.Math.Round(timeTotal * currentRatio * 0.33f, System.MidpointRounding.AwayFromZero);
+
+
+        if (countPlay >= timeTotal)
+        {
+            return;
+        }
+
+        int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
+
+
+
+        for (int s = 0; s < skeletonNumbers; s++)
+        {
+            GameObject parent = skeletonJoints[s][0].parent.gameObject;
+            if (index != s)
+            {
+                parent.SetActive(false);
+                continue;
+            }
+
+            
+            for (int j = 0; j < jointsNumbers; j++)
+            {
+                int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
+                int indexX = baseIndex + 2;
+                int indexY = baseIndex + 3;
+                int indexZ = baseIndex + 4;
+                int indexXR = baseIndex + 5;
+                int indexYR = baseIndex + 6;
+                int indexZR = baseIndex + 7;
+                int indexWR = baseIndex + 8;
+
+                if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
+                {
+                    parent.SetActive(false);
+                }
+                else
+                {
+                    parent.SetActive(true);
                     skeletonJoints[s][j].position = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
                     skeletonJoints[s][j].rotation = new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]);
                 }

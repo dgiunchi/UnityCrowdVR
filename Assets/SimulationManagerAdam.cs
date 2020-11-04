@@ -42,6 +42,11 @@ public class SimulationManagerAdam : MonoBehaviour
     public GameObject skeletonPlayPrefab;
     public GameObject rigidAvatarPrefab;
     public GameObject scenePrefab;
+
+    public int indexPlay = 0;
+    [HideInInspector]
+    public bool singlePlay = false;
+
     [HideInInspector]
     private List<GameObject> skeletons = new List<GameObject>();
     [HideInInspector]
@@ -523,7 +528,7 @@ public class SimulationManagerAdam : MonoBehaviour
                 Target.scaleCsv = EditorGUILayout.FloatField("Scale CSV by:", Target.scaleCsv);
                 Target.sceneHeight = EditorGUILayout.FloatField("Scale CSV by:", Target.sceneHeight);
                 Target.scenePrefab = EditorGUILayout.ObjectField("Scene prefab:", Target.scenePrefab, typeof(GameObject), true) as GameObject;
-
+                Target.indexPlay = EditorGUILayout.IntField("Single Play Index:", Target.indexPlay);
                 if (Utility.GUIButton("Draw Trajectories", UltiDraw.DarkGrey, UltiDraw.White))
                 {
                     Target.Draw();
@@ -558,6 +563,12 @@ public class SimulationManagerAdam : MonoBehaviour
 
                 if (Utility.GUIButton("Play", UltiDraw.DarkGrey, UltiDraw.White))
                 {
+                    Target.singlePlay = false;
+                    Target.Play();
+                }
+                if (Utility.GUIButton("Play Single", UltiDraw.DarkGrey, UltiDraw.White))
+                {
+                    Target.singlePlay = true;
                     Target.Play();
                 }
                 if (Utility.GUIButton("PlayCSV", UltiDraw.DarkGrey, UltiDraw.White))

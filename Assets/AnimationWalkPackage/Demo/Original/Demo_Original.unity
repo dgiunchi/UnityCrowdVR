@@ -4041,6 +4041,8 @@ MonoBehaviour:
     type: 3}
   scenePrefab: {fileID: 8941831543445830422, guid: e61fb45da6f936946aea347f2efd6ac5,
     type: 3}
+  indexPlay: 0
+  singlePlay: 0
   rigidAvatars: []
   csvFile: {fileID: 102900000, guid: 2fe879830881af346b348dd10d594a99, type: 3}
   scaleCsv: 1
