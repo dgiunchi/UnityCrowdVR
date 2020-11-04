@@ -630,6 +630,7 @@ public class PositionSerializerAdam : MonoBehaviour
 
         for (int s = 0; s < skeletonNumbers; s++)
         {
+            GameObject parent = skeletonJoints[s][0].parent.gameObject;
             for (int j = 0; j < jointsNumbers; j++)
             {
                 int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
@@ -643,13 +644,13 @@ public class PositionSerializerAdam : MonoBehaviour
 
                 if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
                 {
-                    skeletonJoints[s][j].parent.gameObject.SetActive(false);
+                    parent.SetActive(false);
                 }
                 else
                 {
-                    skeletonJoints[s][j].parent.gameObject.SetActive(true);
-                    skeletonJoints[s][j].position = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
-                    skeletonJoints[s][j].rotation = new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]);
+                    parent.SetActive(true);
+                    skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime /timeStep);
+                    skeletonJoints[s][j].rotation = Quaternion.Lerp(skeletonJoints[s][j].rotation, new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]), Time.deltaTime / timeStep);
                 }
 
             }
