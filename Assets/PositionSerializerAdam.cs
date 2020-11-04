@@ -57,6 +57,7 @@ public class PositionSerializerAdam : MonoBehaviour
 
     private float initialTime = float.MaxValue;
     private float endingTime = float.MinValue;
+    private float simulationTimeLength;
 
     TextAsset csvAsset;
 
@@ -150,6 +151,7 @@ public class PositionSerializerAdam : MonoBehaviour
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
         {
+            
             LoadDatasetTest();
         }
 
@@ -175,6 +177,7 @@ public class PositionSerializerAdam : MonoBehaviour
                     ReadSingleDataFromSimulationPerFrame(SimulationManagerAdam.Instance.indexPlay);
                 } else
                 {
+                    
                     ReadDataFromSimulationPerFrame();
                 }
                 
@@ -511,8 +514,8 @@ public class PositionSerializerAdam : MonoBehaviour
             {
                 endingTime = localMax;
             }
-
         }
+        simulationTimeLength = (endingTime - initialTime);
     }
 
 
@@ -601,32 +604,21 @@ public class PositionSerializerAdam : MonoBehaviour
     {
         if (initSimulationTime == -1.0f)
         {
-            initSimulationTime = Time.fixedUnscaledTime;
-
+            initSimulationTime = Time.time;
         }
 
-
-        //like CSV
-        /*float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
-        int frameStartIndex = timeFrameToIndex[0]
-               .Select(n => new { n, distance = Math.Abs(n.Key - currenttime) })
-               .OrderBy(p => p.distance)
-               .First().n.Value;*/
-
-
-
-        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
-        countPlay = (int)System.Math.Round(timeTotal * currentRatio * 0.33f, System.MidpointRounding.AwayFromZero);
-
-
-        if (countPlay >= timeTotal)
+        float currentSimulationTime = (Time.time - initSimulationTime);
+        if (currentSimulationTime >= simulationTimeLength)
         {
+            initSimulationTime = -1.0f;
             return;
         }
 
+
+        countPlay = (int)System.Math.Round(currentSimulationTime / timeStep, System.MidpointRounding.AwayFromZero);
+        
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
-
-
+        
 
         for (int s = 0; s < skeletonNumbers; s++)
         {
@@ -665,33 +657,20 @@ public class PositionSerializerAdam : MonoBehaviour
     {
         if (initSimulationTime == -1.0f)
         {
-            initSimulationTime = Time.fixedUnscaledTime;
-            
+            initSimulationTime = Time.time;
         }
 
-        
-        //like CSV
-        /*float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
-        int frameStartIndex = timeFrameToIndex[0]
-               .Select(n => new { n, distance = Math.Abs(n.Key - currenttime) })
-               .OrderBy(p => p.distance)
-               .First().n.Value;*/
-
-
-
-        float currentRatio = (Time.fixedUnscaledTime - initSimulationTime) / seconds;
-        countPlay = (int)System.Math.Round(timeTotal * currentRatio * 0.33f, System.MidpointRounding.AwayFromZero);
-
-
-        if (countPlay >= timeTotal)
+        float currentSimulationTime = (Time.time - initSimulationTime);
+        if (currentSimulationTime >= simulationTimeLength)
         {
+            initSimulationTime = -1.0f;
             return;
         }
 
+        countPlay = (int)System.Math.Round(currentSimulationTime / timeStep, System.MidpointRounding.AwayFromZero);
+
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
-
-
-
+        
         for (int s = 0; s < skeletonNumbers; s++)
         {
             GameObject parent = skeletonJoints[s][0].parent.gameObject;
@@ -720,8 +699,8 @@ public class PositionSerializerAdam : MonoBehaviour
                 else
                 {
                     parent.SetActive(true);
-                    skeletonJoints[s][j].position = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
-                    skeletonJoints[s][j].rotation = new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]);
+                    skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime / timeStep);
+                    skeletonJoints[s][j].rotation = Quaternion.Lerp(skeletonJoints[s][j].rotation, new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]), Time.deltaTime / timeStep);
                 }
 
             }
