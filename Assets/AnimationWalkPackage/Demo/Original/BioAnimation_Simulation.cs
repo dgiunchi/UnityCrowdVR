@@ -181,6 +181,10 @@ namespace SIGGRAPH_2017 {
                     coordsToSerialize[coordinateToSerializeIndex + 2] = coordinates[j][2];
                     coordsToSerialize[coordinateToSerializeIndex + 3] = coordinates[j][3];
                     coordsToSerialize[coordinateToSerializeIndex + 4] = coordinates[j][4];
+                    coordsToSerialize[coordinateToSerializeIndex + 5] = coordinates[j][5];
+                    coordsToSerialize[coordinateToSerializeIndex + 6] = coordinates[j][6];
+                    coordsToSerialize[coordinateToSerializeIndex + 7] = coordinates[j][7];
+                    coordsToSerialize[coordinateToSerializeIndex + 8] = coordinates[j][8];
                     coordinateToSerializeIndex += (PositionSerializer.timeAndIndex + PositionSerializer.positionCoord);
                 }
                 initialIndexFromCoordinates = fromIndex; //conservative (toindex)
@@ -196,12 +200,16 @@ namespace SIGGRAPH_2017 {
             int indexJoint = 0;
             foreach (Transform sj in skeletonJoints)
             {
-                float[] values = new float[5];
+                float[] values = new float[9];
                 values[0] = index;
                 values[1] = indexJoint; //set the sequence index, GetComponent<AnimationInputHandlerFromSimulation>().timedPositions[currentIndex].time
                 values[2] = sj.position.x;
                 values[3] = sj.position.y;
                 values[4] = sj.position.z;
+                values[5] = sj.rotation.x;
+                values[6] = sj.rotation.y;
+                values[7] = sj.rotation.z;
+                values[8] = sj.rotation.w;
                 coordinates.Add(values);
                 indexJoint++;
             }
