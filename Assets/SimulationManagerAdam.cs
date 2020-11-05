@@ -465,7 +465,7 @@ public class SimulationManagerAdam : MonoBehaviour
                 initTime = Time.fixedTime;
             }
             currentTime = Time.fixedTime - initTime;
-            currentTime = (float)System.Math.Round(currentTime, 2);
+            currentTime = (float)System.Math.Round(currentTime, GameObject.Find("AnimationSerializerAdam").GetComponent<PositionSerializerAdam>().precisionFloatLoad);
 
             /*foreach (GameObject go in skeletons)
             {

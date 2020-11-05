@@ -57,6 +57,8 @@ public class PositionSerializerAdam : MonoBehaviour
     private float endingTime = float.MinValue;
     private float simulationTimeLength;
 
+    public int precisionFloatLoad = 3;
+
     TextAsset csvAsset;
 
     // Start is called before the first frame update
@@ -351,7 +353,7 @@ public class PositionSerializerAdam : MonoBehaviour
             Dictionary<float, int> dict = new Dictionary<float, int>();
             for(int j=0; j< totalPerSkeleton; ++j )
             {
-                dict[(float)Math.Round(currentTime, 2)] = j * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
+                dict[(float)Math.Round(currentTime, precisionFloatLoad)] = j * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
                 currentTime += timeStep;
             }
             timeFrameToIndex.Add(dict);
@@ -422,7 +424,7 @@ public class PositionSerializerAdam : MonoBehaviour
             csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) * scaleValue : float.MinValue;
             csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y)* scaleValue : float.MinValue ;
             csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius)* scaleValue : float.MinValue ;
-            csvCoordinates[count + 7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time),2) : float.MinValue;
+            csvCoordinates[count + 7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time), precisionFloatLoad) : float.MinValue;
 
             personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
 
@@ -471,7 +473,7 @@ public class PositionSerializerAdam : MonoBehaviour
                     csvVariationsCoordinates[yPosIndex] = 0.0f;
 
                     // calculation of timestep
-                    timeStep = (float) System.Math.Round(csvCoordinates[index + 7] - csvCoordinates[index + 7 - dataPerPersonAndFrameFromCSVLoad],2);
+                    timeStep = (float) System.Math.Round(csvCoordinates[index + 7] - csvCoordinates[index + 7 - dataPerPersonAndFrameFromCSVLoad], precisionFloatLoad);
                 }
                 csvVariationsCoordinates[index + 4] = csvCoordinates[index + 4];
                 csvVariationsCoordinates[index + 5] = csvCoordinates[index + 5];

@@ -40,6 +40,7 @@ public class AnimationInputHandlerFromAdamSimulation : MonoBehaviour
     bool started = false;
     bool arrived = false;
     int realClosestIndex;
+    private float threshold = 0.01f;
 
     Vector2 currentDirection;
 
@@ -97,7 +98,7 @@ public class AnimationInputHandlerFromAdamSimulation : MonoBehaviour
         SIGGRAPH_2017.BioAnimation_Adam_Simulation component = GetComponent<SIGGRAPH_2017.BioAnimation_Adam_Simulation>();
         Vector2 realPosition = component.GetRealTimedPosition().position;
         Vector2 endingPosition = timedPositions[timedPositions.Count - 1].position;
-        float threshold = 0.001f;
+        
         if ((endingPosition - realPosition).magnitude < threshold)
         {
             arrived = true;
