@@ -604,7 +604,6 @@ public class PositionSerializer : MonoBehaviour
         float currentSimulationTime = (Time.time - initSimulationTime);
         if (currentSimulationTime >= simulationTimeLength)
         {
-            initSimulationTime = -1.0f;
             return;
         }
 
@@ -658,7 +657,6 @@ public class PositionSerializer : MonoBehaviour
         float currentSimulationTime = (Time.time - initSimulationTime);
         if (currentSimulationTime >= simulationTimeLength)
         {
-            initSimulationTime = -1.0f;
             return;
         }
 
