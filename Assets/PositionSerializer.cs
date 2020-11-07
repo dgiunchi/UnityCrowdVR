@@ -58,6 +58,7 @@ public class PositionSerializer : MonoBehaviour
     private float simulationTimeLength;
 
     public int precisionFloatLoad = 3;
+    private int lastCountPlay = -1;
 
     TextAsset csvAsset;
 
@@ -324,24 +325,24 @@ public class PositionSerializer : MonoBehaviour
             fs.Close();
         }
         Debug.Log("End Of Deserialisation");
-        MapTimeFrameToIndex();
+        //MapTimeFrameToIndex();
         fileLoaded = true;
     }
 
-    void MapTimeFrameToIndex()
+    /*void MapTimeFrameToIndex()
     {
         int[] framesPerSkeleton = new int[skeletonsList.Count];
 
 
-        /*for (int j = 0; j < skeletonsList.Count; j++)
-        {
-            framesPerSkeleton[j] = personsOriginal[j].Count;
-            if (maximum < framesPerSkeleton[j])
-            {
-                maximum = framesPerSkeleton[j];
-            }
-            //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
-        }*/
+        //for (int j = 0; j < skeletonsList.Count; j++)
+        //{
+        //    framesPerSkeleton[j] = personsOriginal[j].Count;
+        //    if (maximum < framesPerSkeleton[j])
+        //    {
+        //        maximum = framesPerSkeleton[j];
+        //    }
+        //    //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
+        //}
         int maximum = (int)((endingTime - initialTime) / timeStep);
         int totalPerSkeleton = maximum * numberOfValuesPerFrame;
 
@@ -358,7 +359,7 @@ public class PositionSerializer : MonoBehaviour
             }
             timeFrameToIndex.Add(dict);
         }
-    }
+    }*/
 
 
 
@@ -520,15 +521,15 @@ public class PositionSerializer : MonoBehaviour
         yield return file;
         MemoryStream ms = new MemoryStream(file.bytes);
         BinaryFormatter formatter = new BinaryFormatter();
-        coordinates = (float[])formatter.Deserialize(ms);
+        coordinates = (float[])((float[])formatter.Deserialize(ms)).Clone();
         ms.Close();
-        MapTimeFrameToIndex();
+        //MapTimeFrameToIndex();
         fileLoaded = true;
     }
 
     IEnumerator DeserializeFromCSVOnAndroid()
     {
-        WWW file = new WWW(Path.Combine(path, "crowds_zara01_corrected.csv"));
+        WWW file = new WWW(Path.Combine(path, csvFileName));
         yield return file;
         csvAsset = new TextAsset(file.text);
         CrowdCSVReader reader = new CrowdCSVReader();
@@ -576,7 +577,7 @@ public class PositionSerializer : MonoBehaviour
             csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) : float.MinValue;
             csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y) : float.MinValue;
             csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius) : float.MinValue;
-            csvCoordinates[count + 7] = row.time != "" ? float.Parse(row.time) : float.MinValue;
+            csvCoordinates[count + 7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time), precisionFloatLoad) : float.MinValue;
 
             personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
 
@@ -610,6 +611,14 @@ public class PositionSerializer : MonoBehaviour
 
         countPlay = (int)System.Math.Round(currentSimulationTime / timeStep, System.MidpointRounding.AwayFromZero);
         
+        if(lastCountPlay == countPlay)
+        {
+            return;
+        } else
+        {
+            lastCountPlay = countPlay;
+        }
+
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
 
 
@@ -628,6 +637,7 @@ public class PositionSerializer : MonoBehaviour
                 int indexZR = baseIndex + 7;
                 int indexWR = baseIndex + 8;
 
+                
                 if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
                 {
                     parent.SetActive(false);
@@ -635,7 +645,7 @@ public class PositionSerializer : MonoBehaviour
                 else
                 {
                     parent.SetActive(true);
-                    skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime /timeStep);
+                    skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime / timeStep);
                     skeletonJoints[s][j].rotation = Quaternion.Lerp(skeletonJoints[s][j].rotation, new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]), Time.deltaTime / timeStep);
                 }
 
@@ -661,6 +671,15 @@ public class PositionSerializer : MonoBehaviour
         }
 
         countPlay = (int)System.Math.Round(currentSimulationTime / timeStep, System.MidpointRounding.AwayFromZero);
+
+        if (lastCountPlay == countPlay)
+        {
+            return;
+        }
+        else
+        {
+            lastCountPlay = countPlay;
+        }
 
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
         

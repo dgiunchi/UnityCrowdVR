@@ -58,6 +58,7 @@ public class PositionSerializerAdam : MonoBehaviour
     private float simulationTimeLength;
 
     public int precisionFloatLoad = 3;
+    private int lastCountPlay = -1;
 
     TextAsset csvAsset;
 
@@ -293,12 +294,12 @@ public class PositionSerializerAdam : MonoBehaviour
 
         Debug.Log("End Of Serialisation");
 
-        int xprecision = 5;
+        /*int xprecision = 5;
         string formatString = "{0:G" + xprecision + "}\t{1:G" + xprecision + "}\t{2:G" + xprecision + "}\t{3:G" + xprecision + "}\t{4:G" + xprecision + "}\t{5:G" + xprecision + "}\t{6:G" + xprecision + "}\t{7:G" + xprecision + "}\t{8:G" + xprecision + "}";
 
         using (var outf = new StreamWriter(Path.Combine(path, "DataFile.txt")))
             for (int i = 0; i < coordinates.Length; i=i+9)
-                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4], coordinates[i + 5], coordinates[i +6], coordinates[i + 7], coordinates[i + 8]);
+                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4], coordinates[i + 5], coordinates[i +6], coordinates[i + 7], coordinates[i + 8]);*/
         
     }
 
@@ -324,24 +325,24 @@ public class PositionSerializerAdam : MonoBehaviour
             fs.Close();
         }
         Debug.Log("End Of Deserialisation");
-        MapTimeFrameToIndex();
+        //MapTimeFrameToIndex();
         fileLoaded = true;
     }
 
-    void MapTimeFrameToIndex()
+    /*void MapTimeFrameToIndex()
     {
         int[] framesPerSkeleton = new int[skeletonsList.Count];
 
 
-        /*for (int j = 0; j < skeletonsList.Count; j++)
-        {
-            framesPerSkeleton[j] = personsOriginal[j].Count;
-            if (maximum < framesPerSkeleton[j])
-            {
-                maximum = framesPerSkeleton[j];
-            }
-            //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
-        }*/
+        //for (int j = 0; j < skeletonsList.Count; j++)
+        //{
+        //    framesPerSkeleton[j] = personsOriginal[j].Count;
+        //    if (maximum < framesPerSkeleton[j])
+        //    {
+        //        maximum = framesPerSkeleton[j];
+        //    }
+        //    //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
+        //}
         int maximum = (int)((endingTime - initialTime) / timeStep);
         int totalPerSkeleton = maximum * numberOfValuesPerFrame;
 
@@ -358,7 +359,7 @@ public class PositionSerializerAdam : MonoBehaviour
             }
             timeFrameToIndex.Add(dict);
         }
-    }
+    }*/
 
 
 
@@ -520,15 +521,15 @@ public class PositionSerializerAdam : MonoBehaviour
         yield return file;
         MemoryStream ms = new MemoryStream(file.bytes);
         BinaryFormatter formatter = new BinaryFormatter();
-        coordinates = (float[])formatter.Deserialize(ms);
+        coordinates = (float[])((float[])formatter.Deserialize(ms)).Clone();
         ms.Close();
-        MapTimeFrameToIndex();
+        //MapTimeFrameToIndex();
         fileLoaded = true;
     }
 
     IEnumerator DeserializeFromCSVOnAndroid()
     {
-        WWW file = new WWW(Path.Combine(path, "crowds_zara01_corrected.csv"));
+        WWW file = new WWW(Path.Combine(path, csvFileName));
         yield return file;
         csvAsset = new TextAsset(file.text);
         CrowdCSVReader reader = new CrowdCSVReader();
@@ -576,7 +577,7 @@ public class PositionSerializerAdam : MonoBehaviour
             csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) : float.MinValue;
             csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y) : float.MinValue;
             csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius) : float.MinValue;
-            csvCoordinates[count + 7] = row.time != "" ? float.Parse(row.time) : float.MinValue;
+            csvCoordinates[count + 7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time), precisionFloatLoad) : float.MinValue;
 
             personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
 
@@ -610,6 +611,14 @@ public class PositionSerializerAdam : MonoBehaviour
 
         countPlay = (int)System.Math.Round(currentSimulationTime / timeStep, System.MidpointRounding.AwayFromZero);
         
+        if(lastCountPlay == countPlay)
+        {
+            return;
+        } else
+        {
+            lastCountPlay = countPlay;
+        }
+
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
         
 
@@ -627,6 +636,7 @@ public class PositionSerializerAdam : MonoBehaviour
                 int indexZR = baseIndex + 7;
                 int indexWR = baseIndex + 8;
 
+                
                 if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
                 {
                     parent.SetActive(false);
@@ -634,7 +644,7 @@ public class PositionSerializerAdam : MonoBehaviour
                 else
                 {
                     parent.SetActive(true);
-                    skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime /timeStep);
+                    skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime / timeStep);
                     skeletonJoints[s][j].rotation = Quaternion.Lerp(skeletonJoints[s][j].rotation, new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]), Time.deltaTime / timeStep);
                 }
 
@@ -661,6 +671,15 @@ public class PositionSerializerAdam : MonoBehaviour
 
         countPlay = (int)System.Math.Round(currentSimulationTime / timeStep, System.MidpointRounding.AwayFromZero);
 
+        if (lastCountPlay == countPlay)
+        {
+            return;
+        }
+        else
+        {
+            lastCountPlay = countPlay;
+        }
+
         int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
         
         for (int s = 0; s < skeletonNumbers; s++)
@@ -671,8 +690,8 @@ public class PositionSerializerAdam : MonoBehaviour
                 parent.SetActive(false);
                 continue;
             }
-
             
+
             for (int j = 0; j < jointsNumbers; j++)
             {
                 int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
@@ -683,7 +702,7 @@ public class PositionSerializerAdam : MonoBehaviour
                 int indexYR = baseIndex + 6;
                 int indexZR = baseIndex + 7;
                 int indexWR = baseIndex + 8;
-
+                
                 if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
                 {
                     parent.SetActive(false);
