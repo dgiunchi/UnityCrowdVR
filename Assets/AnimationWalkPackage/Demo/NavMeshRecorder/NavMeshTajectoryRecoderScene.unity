@@ -382,7 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2999a666f5553a14183f3a2cd9c67b95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  csvFile: {fileID: 102900000, guid: 2340a0227bf8d574f8eefde587b87724, type: 3}
+  csvFile: {fileID: 102900000, guid: 99998a50879f3244f890ba1c93bdd26a, type: 3}
   scaleCsv: 0.02
   sceneHeight: 3
   precisionFloatLoad: 4
