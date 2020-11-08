@@ -3931,12 +3931,15 @@ MonoBehaviour:
   skeletonRecordPrefab: {fileID: 5141845633088029211, guid: ec980fac6573bc440916f58e5fe80292,
     type: 3}
   skeletonPlayPrefab:
-  - {fileID: 5874440863776104090, guid: b92a968bc9a43534e95427d0461be136, type: 3}
-  - {fileID: 5533580237832632628, guid: b7230f7172bacea4997ebc8485da52dd, type: 3}
-  - {fileID: 3976506837824380746, guid: cd47b9a5cfabea54a88c08f159f6ac22, type: 3}
-  - {fileID: 458500008653060963, guid: 821a1e45cba29a0419eb4d1cc8f462ce, type: 3}
-  - {fileID: 5558043439684916668, guid: cc3a18d87e4bc024ea2e6209e578f7f3, type: 3}
   - {fileID: 1313124626268136552, guid: 5d501f51b9d877741b46a3eaae7a886b, type: 3}
+  - {fileID: 5558043439684916668, guid: cc3a18d87e4bc024ea2e6209e578f7f3, type: 3}
+  - {fileID: 458500008653060963, guid: 821a1e45cba29a0419eb4d1cc8f462ce, type: 3}
+  - {fileID: 3976506837824380746, guid: cd47b9a5cfabea54a88c08f159f6ac22, type: 3}
+  - {fileID: 5533580237832632628, guid: b7230f7172bacea4997ebc8485da52dd, type: 3}
+  - {fileID: 5874440863776104090, guid: b92a968bc9a43534e95427d0461be136, type: 3}
+  - {fileID: 235014649313131380, guid: ca74f96a32d9f494684dc255b1afdaed, type: 3}
+  - {fileID: 1344664544535614892, guid: 87f89c5c810f87e4498a89f893075152, type: 3}
+  - {fileID: 884791123013638596, guid: 4def995924771c14ab03b3bde82d8aef, type: 3}
   rigidAvatarPrefab: {fileID: 8539989220931480691, guid: d4bdd7e1482dd4645aebb6ed657d33a0,
     type: 3}
   scenePrefab: {fileID: 8941831543445830422, guid: e61fb45da6f936946aea347f2efd6ac5,
@@ -5856,133 +5859,6 @@ Transform:
   - {fileID: 782505929}
   m_Father: {fileID: 1440564317}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1315061288
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1315061290}
-  - component: {fileID: 1315061289}
-  m_Layer: 0
-  m_Name: Vertex Mapper
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1315061289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1315061288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c41ea5c6ef877834a9979678d557fb2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  header: 
-  root: {fileID: 0}
-  sourceAsset:
-    root: {fileID: 8541021735506322201, guid: 427ac6f30ca468241a08dc5a9984e068, type: 3}
-    renderers:
-    - {fileID: 8541021736860127604, guid: 427ac6f30ca468241a08dc5a9984e068, type: 3}
-    selected: 0
-    meshInfo: 19227 verts, 69246 tris  uv,skin
-    instanceID: -1
-    assetID: 21098
-  targetAsset:
-    root: {fileID: 0}
-    renderers:
-    - {fileID: 0}
-    selected: 0
-    meshInfo: 5387 verts, 24828 tris , 3 submeshes  uv,colors
-    instanceID: -1
-    assetID: 65472
-  sourceBaking:
-    world: 1
-    vertex: 1
-    normal: 1
-    tangent: 1
-  targetBaking:
-    world: 1
-    vertex: 1
-    normal: 1
-    tangent: 1
-  search:
-    units: 5
-    maxDistance: 0
-    compareSubmesh: 0
-    compareUV: 0
-    compareNormals: 0
-    compareTangents: 0
-    compareWeights: 0
-  weightProjection:
-    enabled: 1
-    units: 5
-    skinQuality: 4
-    startingPose: 0
-    blendQuality: 8
-    radialCount: 1
-    adjacentCount: 0
-    surfaceWeight: 1
-    surfaceBlending:
-      start: 0
-      end: 1
-      tangents: {x: 0.25, y: 0.25, z: 0.75, w: 0.75}
-    deltaPasses: 0
-    deltaPose: -3
-    deltaBlending:
-      start: 0
-      end: 1
-      tangents: {x: 0.25, y: 0.25, z: 0.75, w: 0.75}
-  shapeProjection:
-    enabled: 1
-    units: 5
-    inflate: 0
-    radialCount: 16
-    vertex: 1
-    normal: 1
-    tangent: 1
-    lighting: 3
-  gizmos:
-    displayGizmos: 0
-    drawSource: 1
-    drawTarget: 1
-    drawMapping: 0
-    drawRange: 0
-    showMaterials: 0
-  boneFilter:
-    name: 
-    assetID: 
-    textFilter: {fileID: 0}
-    elements: []
-    enabledCount: 0
-  shapeFilter:
-    name: 
-    assetID: 
-    textFilter: {fileID: 0}
-    elements: []
-    enabledCount: 0
-  preveiwAsset: {fileID: 0}
---- !u!4 &1315061290
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1315061288}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1.245736, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1326114770
 GameObject:

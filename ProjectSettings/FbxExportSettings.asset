@@ -16,11 +16,11 @@
             "."
         ],
         "fbxSavePaths": [
+            "Avatars/Adults/Female_Adult_11/Export",
+            "Avatars/Adults/Female_Adult_10/Export",
+            "Avatars/Adults/Female_Adult_09/Export",
             "Avatars/Adults/Female_Adult_08/Export",
-            "Avatars/Adults/Female_Adult_07/Export",
-            "Avatars/Adults/Female_Adult_06/Export",
-            "Avatars/Adults/Female_Adult_06",
-            "Avatars/Adults/Female_Adult_05/Export"
+            "Avatars/Adults/Female_Adult_07/Export"
         ],
         "selectedFbxPath": 0,
         "selectedPrefabPath": 0,
