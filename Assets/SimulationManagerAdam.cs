@@ -10,6 +10,8 @@ using System.Runtime.InteropServices;
 using UnityEditor;
 #endif
 
+
+[System.Serializable]
 public class SimulationManagerAdam : MonoBehaviour
 {
     public bool Inspect = false;
@@ -39,7 +41,11 @@ public class SimulationManagerAdam : MonoBehaviour
     }
 
     public GameObject skeletonRecordPrefab;
-    public GameObject skeletonPlayPrefab;
+
+    [SerializeField]
+    public GameObject[] skeletonPlayPrefab;
+
+
     public GameObject rigidAvatarPrefab;
     public GameObject scenePrefab;
 
@@ -117,7 +123,8 @@ public class SimulationManagerAdam : MonoBehaviour
             Vector2 initialOrientation = serializer.persons[i][initTime];
             Vector3 newDirection = new Vector3(initialOrientation.x, 0.0f, initialOrientation.y);
             Vector2 initialPosition = serializer.personsOriginal[i][initTime];
-            GameObject obj = Instantiate(skeletonPlayPrefab, new Vector3(initialPosition.x, skeletonPlayPrefab.transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));//@@TOODorientation??
+            var avatarNumber = UnityEngine.Random.Range(0, skeletonPlayPrefab.Length) ;
+            GameObject obj = Instantiate(skeletonPlayPrefab[avatarNumber], new Vector3(initialPosition.x, skeletonPlayPrefab[avatarNumber].transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));//@@TOODorientation??
             obj.transform.parent = group;
             obj.name = "Skeleton " + i.ToString();
             skeletons.Add(obj);
@@ -498,6 +505,8 @@ public class SimulationManagerAdam : MonoBehaviour
 
         public SimulationManagerAdam Target;
 
+
+
         void Awake()
         {
             Target = (SimulationManagerAdam)target;
@@ -513,6 +522,8 @@ public class SimulationManagerAdam : MonoBehaviour
             {
                 EditorUtility.SetDirty(Target);
             }
+
+           
         }
 
         private void Inspector()
@@ -553,7 +564,14 @@ public class SimulationManagerAdam : MonoBehaviour
                 EditorGUILayout.LabelField("Simulation-Animation");
 
                 Target.skeletonRecordPrefab = EditorGUILayout.ObjectField("SkeletonRecord", Target.skeletonRecordPrefab, typeof(GameObject), true) as GameObject;
-                Target.skeletonPlayPrefab = EditorGUILayout.ObjectField("SkeletonPlay", Target.skeletonPlayPrefab, typeof(GameObject), true) as GameObject;
+                //EditorGUILayout.PropertyField(serializedObject.FindProperty("skeletonPlayPrefab"), true);
+
+                SerializedObject so = new SerializedObject(target);
+                SerializedProperty stringsProperty = so.FindProperty("skeletonPlayPrefab");
+                EditorGUILayout.PropertyField(stringsProperty, true);
+                so.ApplyModifiedProperties();
+
+
                 Target.rigidAvatarPrefab = EditorGUILayout.ObjectField("RigidAvatarPlayCsv", Target.rigidAvatarPrefab, typeof(GameObject), true) as GameObject;             
 
                 if (Utility.GUIButton("Record", UltiDraw.DarkGrey, UltiDraw.White))
