@@ -3930,8 +3930,13 @@ MonoBehaviour:
   serializer: {fileID: 68871218}
   skeletonRecordPrefab: {fileID: 5141845633088029211, guid: ec980fac6573bc440916f58e5fe80292,
     type: 3}
-  skeletonPlayPrefab: {fileID: 3976506837824380746, guid: cd47b9a5cfabea54a88c08f159f6ac22,
-    type: 3}
+  skeletonPlayPrefab:
+  - {fileID: 5874440863776104090, guid: b92a968bc9a43534e95427d0461be136, type: 3}
+  - {fileID: 5533580237832632628, guid: b7230f7172bacea4997ebc8485da52dd, type: 3}
+  - {fileID: 3976506837824380746, guid: cd47b9a5cfabea54a88c08f159f6ac22, type: 3}
+  - {fileID: 458500008653060963, guid: 821a1e45cba29a0419eb4d1cc8f462ce, type: 3}
+  - {fileID: 5558043439684916668, guid: cc3a18d87e4bc024ea2e6209e578f7f3, type: 3}
+  - {fileID: 1313124626268136552, guid: 5d501f51b9d877741b46a3eaae7a886b, type: 3}
   rigidAvatarPrefab: {fileID: 8539989220931480691, guid: d4bdd7e1482dd4645aebb6ed657d33a0,
     type: 3}
   scenePrefab: {fileID: 8941831543445830422, guid: e61fb45da6f936946aea347f2efd6ac5,
@@ -5896,9 +5901,9 @@ MonoBehaviour:
     renderers:
     - {fileID: 0}
     selected: 0
-    meshInfo: 4401 verts, 20976 tris , 3 submeshes  uv,colors
+    meshInfo: 5387 verts, 24828 tris , 3 submeshes  uv,colors
     instanceID: -1
-    assetID: 56302
+    assetID: 65472
   sourceBaking:
     world: 1
     vertex: 1
