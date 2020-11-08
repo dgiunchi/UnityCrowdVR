@@ -40,6 +40,14 @@ public class AnimationConverterFromNavmesh : MonoBehaviour
         Vector3 curMove = transform.position - previousPosition;
         curSpeed = curMove.magnitude / Time.deltaTime;
         previousPosition = transform.position;
+
+        Vector2 curr = new Vector2(transform.position.x, transform.position.z);
+        Vector2 tar = new Vector2(target.position.x, target.position.z);
+        if ((curr - tar).magnitude < 0.6f)
+        {
+            gameObject.SetActive(false);
+        }
+
     }
     
     void OnDrawGizmosSelected()
