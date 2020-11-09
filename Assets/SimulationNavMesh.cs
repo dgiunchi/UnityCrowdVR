@@ -202,9 +202,8 @@ public class SimulationNavMesh : MonoBehaviour
         if(serializedAll == false)
         {
             // merge all //@@todo
-           
-            int xprecision = 3;
-            string formatString = "{0:G" + xprecision + "},{1:G" + xprecision + "},{2:G" + xprecision + "},{3:G" + xprecision + "},{4:G" + xprecision + "},{5:G" + xprecision + "},{6:G" + xprecision + "},{7:G" + (xprecision +1) + "}";
+            int xprecision2 = 5;
+            string formatString = "{0:G" + xprecision2 + "},{1:G" + xprecision2 + "},{2:G" + xprecision2 + "},{3:G" + xprecision2 + "},{4:G" + xprecision2 + "},{5:G" + xprecision2 + "},{6:G" + xprecision2 + "},{7:0.0000}";
             using (var outf = new StreamWriter(Path.Combine(path, "navMesh.csv")))
             {
                 // serialize hader

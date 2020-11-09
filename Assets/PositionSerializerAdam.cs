@@ -464,17 +464,19 @@ public class PositionSerializerAdam : MonoBehaviour
                 csvVariationsCoordinates[index+1] = csvCoordinates[index+1];
                 int xPosIndex = index + 2;
                 int yPosIndex = index + 3;
-                if (j != numberOfFramesFromCSVLoad-1)
+                if (j == 1) {
+                    timeStep = (float)System.Math.Round(csvCoordinates[index + 7] - csvCoordinates[index + 7 - dataPerPersonAndFrameFromCSVLoad], precisionFloatLoad);
+                }
+                else if (j != numberOfFramesFromCSVLoad-1)
                 {
                     csvVariationsCoordinates[xPosIndex] = csvCoordinates[xPosIndex + dataPerPersonAndFrameFromCSVLoad] - csvCoordinates[xPosIndex];
                     csvVariationsCoordinates[yPosIndex] = csvCoordinates[yPosIndex + dataPerPersonAndFrameFromCSVLoad] - csvCoordinates[yPosIndex];
-                } else
+                }
+                else
                 {
                     csvVariationsCoordinates[xPosIndex] = 0.0f; //last , no variation
                     csvVariationsCoordinates[yPosIndex] = 0.0f;
-
-                    // calculation of timestep
-                    timeStep = (float) System.Math.Round(csvCoordinates[index + 7] - csvCoordinates[index + 7 - dataPerPersonAndFrameFromCSVLoad], precisionFloatLoad);
+                    
                 }
                 csvVariationsCoordinates[index + 4] = csvCoordinates[index + 4];
                 csvVariationsCoordinates[index + 5] = csvCoordinates[index + 5];
@@ -589,8 +591,7 @@ public class PositionSerializerAdam : MonoBehaviour
 
         ConversionFromPositionsToVariations();
         CalculateInitialAndEndingTime();
-
-        SimulationManagerAdam.Instance.currentTimeStep = timeStep;
+        
         SimulationManagerAdam.Instance.currentTime = 0.0f;
         SimulationManagerAdam.Instance.OnStartPlay();
     }
@@ -645,6 +646,7 @@ public class PositionSerializerAdam : MonoBehaviour
                 {
                     parent.SetActive(true);
                     skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime / timeStep);
+                    
                     skeletonJoints[s][j].rotation = Quaternion.Lerp(skeletonJoints[s][j].rotation, new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]), Time.deltaTime / timeStep);
                 }
 

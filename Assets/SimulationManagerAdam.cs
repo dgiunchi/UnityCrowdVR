@@ -62,7 +62,6 @@ public class SimulationManagerAdam : MonoBehaviour
     public float sceneHeight = 3f;
 
     public float currentTime;
-    public float currentTimeStep;
 
     public enum STATUS { RECORD, PLAY, PLAYCSV, PAUSE, STOP, NONE};
     public static STATUS status = STATUS.NONE;
@@ -85,10 +84,14 @@ public class SimulationManagerAdam : MonoBehaviour
         int numberOfPersons = serializer.persons.Count;
         for (int i = 0; i < numberOfPersons; ++ i)
         {
-            
             float initTime = serializer.personsOriginal[i].Keys.Min();
+            float endingTime = serializer.personsOriginal[i].Keys.Max();
             Vector2 initialPosition = serializer.personsOriginal[i][initTime];
             Vector2 initialOrientation = serializer.persons[i][initTime];
+            if (initialOrientation == Vector2.zero)
+            {
+                initialOrientation = serializer.personsOriginal[i][endingTime] - serializer.personsOriginal[i][initTime];
+            }
             Vector3 newDirection = new Vector3(initialOrientation.x, 0.0f, initialOrientation.y);
             GameObject obj = Instantiate(skeletonRecordPrefab, new Vector3(initialPosition.x, skeletonRecordPrefab.transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection)); //@@TOODorientation??
             obj.transform.parent = group;
@@ -118,11 +121,15 @@ public class SimulationManagerAdam : MonoBehaviour
         int numberOfPersons = serializer.persons.Count;
         for (int i = 0; i < numberOfPersons; ++i)
         {
-
             float initTime = serializer.personsOriginal[i].Keys.Min();
-            Vector2 initialOrientation = serializer.persons[i][initTime];
-            Vector3 newDirection = new Vector3(initialOrientation.x, 0.0f, initialOrientation.y);
+            float endingTime = serializer.personsOriginal[i].Keys.Max();
             Vector2 initialPosition = serializer.personsOriginal[i][initTime];
+            Vector2 initialOrientation = serializer.persons[i][initTime];
+            if(initialOrientation == Vector2.zero)
+            {
+                initialOrientation = serializer.personsOriginal[i][endingTime] - serializer.personsOriginal[i][initTime];
+            }
+            Vector3 newDirection = new Vector3(initialOrientation.x, 0.0f, initialOrientation.y);
             var avatarNumber = UnityEngine.Random.Range(0, skeletonPlayPrefab.Length) ;
             GameObject obj = Instantiate(skeletonPlayPrefab[avatarNumber], new Vector3(initialPosition.x, skeletonPlayPrefab[avatarNumber].transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));//@@TOODorientation??
             obj.transform.parent = group;
@@ -170,7 +177,6 @@ public class SimulationManagerAdam : MonoBehaviour
         serializer.Init();
         serializer.LoadFromCSV();
         
-        currentTimeStep = serializer.timeStep;
         currentTime = 0.0f;
         OnStartRecord();   
     }
@@ -184,7 +190,6 @@ public class SimulationManagerAdam : MonoBehaviour
 
 #if UNITY_EDITOR
         
-        currentTimeStep = serializer.timeStep;
         currentTime = 0.0f;
         OnStartPlay();
 #endif
@@ -198,8 +203,7 @@ public class SimulationManagerAdam : MonoBehaviour
         serializer.Init();
         serializer.LoadFromCSV();
         serializer.CalculateInitialAndEndingTime();
-
-        currentTimeStep = serializer.timeStep;
+        
         currentTime = 0.0f;
 
         OnStartPlayCsv();
