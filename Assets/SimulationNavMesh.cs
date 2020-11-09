@@ -29,8 +29,7 @@ public class SimulationNavMesh : MonoBehaviour
     public UnityEngine.Object csvFile;
     public float scaleCsv = 1f;
     public float sceneHeight = 3f;
-    private int count = 0;
-    private int countPlay = 0;
+
     public int precisionFloatLoad = 4;
     public GameObject navMeshPefab;
     public int framerate;
@@ -39,6 +38,7 @@ public class SimulationNavMesh : MonoBehaviour
     public string path;
     private static SimulationNavMesh instance = null;
     public GameObject scenePrefab;
+    private float initSimulationTime = -1.0f;
 
     private List<float[]> coordinates = new List<float[]>();
     bool isLoaded = false;
@@ -71,7 +71,21 @@ public class SimulationNavMesh : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (initSimulationTime == -1.0f)
+        {
+            initSimulationTime = Time.fixedUnscaledTime;
+        }
+
+        float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
+
+
+        for (int i = 0; i < infoAgents.Count; ++i)
+        {
+            bool started = currenttime > infoAgents[i].initialTime; //&& currenttime < infoAgents[i].endingTime // no sense the ending that comes from data
+            bool arrived = navMeshAgents[i].GetComponent<AnimationConverterFromNavmesh>().hasTerminated;
+            navMeshAgents[i].SetActive(started && !arrived);
+        }
+
     }
 
     public Bounds getCsvTrajectoriesBounds()
@@ -242,7 +256,7 @@ public class SimulationNavMesh : MonoBehaviour
             target.transform.position = new Vector3(infoAgents[i].endingPosition.x, navMeshPefab.transform.position.y, infoAgents[i].endingPosition.y);
             obj.GetComponent<AnimationConverterFromNavmesh>().target = target.transform;
             
-            //obj.SetActive(false);
+            obj.SetActive(false);
             navMeshAgents.Add(obj);
         }
     }

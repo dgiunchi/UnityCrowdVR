@@ -13,6 +13,9 @@ public class AnimationConverterFromNavmesh : MonoBehaviour
     private Vector3 previousPosition;
     public float curSpeed;
 
+    [HideInInspector]
+    public bool hasTerminated = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -46,6 +49,7 @@ public class AnimationConverterFromNavmesh : MonoBehaviour
         if ((curr - tar).magnitude < 0.6f)
         {
             gameObject.SetActive(false);
+            hasTerminated = true;
         }
 
     }
