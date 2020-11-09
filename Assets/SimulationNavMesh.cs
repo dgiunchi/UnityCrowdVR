@@ -38,10 +38,12 @@ public class SimulationNavMesh : MonoBehaviour
     public string path;
     private static SimulationNavMesh instance = null;
     public GameObject scenePrefab;
-    private float initSimulationTime = -1.0f;
+    private float initSimulationTime = -2.0f; //start at -1
+    private bool serializedAll = false;
 
     private List<float[]> coordinates = new List<float[]>();
     bool isLoaded = false;
+    bool allFinished = false;
     public static SimulationNavMesh Instance
     {
         get
@@ -73,19 +75,33 @@ public class SimulationNavMesh : MonoBehaviour
     {
         if (initSimulationTime == -1.0f)
         {
-            initSimulationTime = Time.fixedUnscaledTime;
+            initSimulationTime = Time.time;
         }
+        
+        float currenttime = (Time.time - initSimulationTime);
 
-        float currenttime = (Time.fixedUnscaledTime - initSimulationTime);
-
-
+        allFinished = infoAgents.Count == 0 ? false : true; // check to avoi serialization before instantiating
         for (int i = 0; i < infoAgents.Count; ++i)
         {
-            bool started = currenttime > infoAgents[i].initialTime; //&& currenttime < infoAgents[i].endingTime // no sense the ending that comes from data
-            bool arrived = navMeshAgents[i].GetComponent<AnimationConverterFromNavmesh>().hasTerminated;
+            bool started = currenttime >= infoAgents[i].initialTime; //&& currenttime < infoAgents[i].endingTime // no sense the ending that comes from data
+            bool arrived = navMeshAgents[i].GetComponent<AnimationConverterFromNavmesh>().HasTerminated();
+            if(started == false || arrived == false)
+            {
+                allFinished = false;
+            }
+            if(started && !arrived)
+            {
+                navMeshAgents[i].GetComponent<NavMeshRecorder>().Serialize(currenttime);
+            }
+            
             navMeshAgents[i].SetActive(started && !arrived);
         }
+        
 
+        if(allFinished)
+        {
+            SerializeCSVAll();
+        }
     }
 
     public Bounds getCsvTrajectoriesBounds()
@@ -171,7 +187,6 @@ public class SimulationNavMesh : MonoBehaviour
     }
 
 
-
     void Init()
     {
         if(isLoaded == false)
@@ -182,11 +197,32 @@ public class SimulationNavMesh : MonoBehaviour
         }
     }
 
-    void Record()
+    void SerializeCSVAll()
     {
-        // record position with the same deltatime of initial csv, produce a csv with artificial trajectories
-        // the file needs to be with this stucture:
-        // id,gid,x,y,dir_x,dir_y,radius,time ,navMeshAgents
+        if(serializedAll == false)
+        {
+            // merge all //@@todo
+           
+            int xprecision = 3;
+            string formatString = "{0:G" + xprecision + "},{1:G" + xprecision + "},{2:G" + xprecision + "},{3:G" + xprecision + "},{4:G" + xprecision + "},{5:G" + xprecision + "},{6:G" + xprecision + "},{7:G" + (xprecision +1) + "}";
+            using (var outf = new StreamWriter(Path.Combine(path, "navMesh.csv")))
+            {
+                // serialize hader
+                outf.WriteLine("id,gid,x,y,dir_x,dir_y,radius,time");
+                for (int i = 0; i < navMeshAgents.Count; ++i)
+                {
+                    NavMeshRecorder rec = navMeshAgents[i].GetComponent<NavMeshRecorder>();
+                    for(int j =0; j< rec.ToSerialize.Count; j++)
+                    {
+                        outf.WriteLine(formatString, rec.ToSerialize[j][0], rec.ToSerialize[j][1], rec.ToSerialize[j][2], rec.ToSerialize[j][3], rec.ToSerialize[j][4], rec.ToSerialize[j][5], rec.ToSerialize[j][6], rec.ToSerialize[j][7]);
+                    }
+                    
+                }
+            }
+                
+            serializedAll = true;
+            Debug.Log("Serialization Ended");
+        }
     }
 
     void DeserializeFromCSV()
@@ -234,12 +270,10 @@ public class SimulationNavMesh : MonoBehaviour
 
             infoAgents[infoAgents.Count - 1].endingTime = arr[7];
             infoAgents[infoAgents.Count - 1].endingPosition = new Vector2(arr[2], arr[3]);
-
-
+            
         }
     }
-
-
+    
     void InstantiateAllTheActors()
     {
         Transform group = GameObject.Find("NavmeshSimulationToRecord").transform;
@@ -255,15 +289,17 @@ public class SimulationNavMesh : MonoBehaviour
             target.transform.parent = group;
             target.transform.position = new Vector3(infoAgents[i].endingPosition.x, navMeshPefab.transform.position.y, infoAgents[i].endingPosition.y);
             obj.GetComponent<AnimationConverterFromNavmesh>().target = target.transform;
-            
+
+            obj.GetComponent<NavMeshRecorder>().id = i;
+            obj.GetComponent<NavMeshRecorder>().gid = i; // not important
+
             obj.SetActive(false);
             navMeshAgents.Add(obj);
         }
-    }
 
-    void SerializeNavMeshCSV()
-    {
-
+        allFinished = true; // start th check to see if it finished.
+        initSimulationTime = -1.0f;
+        Time.captureDeltaTime = 0.00139f;
     }
 
 #if UNITY_EDITOR

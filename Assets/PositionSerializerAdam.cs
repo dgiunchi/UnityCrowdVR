@@ -744,22 +744,13 @@ public class PositionSerializerAdam : MonoBehaviour
 
             if (Math.Abs(closest - currenttime) < 0.1)
             {
-
-
                 rigidAvatars[i].gameObject.SetActive(true);
-
                 rigidAvatars[i].transform.position = new Vector3(personsOriginal[i][closest][0], rigidAvatars[i].transform.position.y, personsOriginal[i][closest][1]);
             }
             else {
-
                 rigidAvatars[i].gameObject.SetActive(false);
             }
-
-
         }
-
-        //
-
     }
     
     void DelegatedCumulateData()
@@ -783,43 +774,4 @@ public class PositionSerializerAdam : MonoBehaviour
             SerializeAll(); // serialize when finished
         }
     }
-
-    /*void CumulateData()  // @@TOREMOV
-    {
-        if (currentTime = total)
-        {
-            if(end == false)
-            {
-                Serialize(); // serialize when finished
-                end = true;
-            }
-            return;
-        }
-
-        currentTime += Time.deltaTime;
-        int skeletonCount = 0;
-        foreach (List<Transform> sjl in skeletonJoints)
-        {
-            foreach (Transform sj in sjl)
-            {
-                coordinates[count] = currentTime;
-                coordinates[count + 1] = skeletonCount;
-                if (sj.gameObject.activeInHierarchy == true)
-                {
-                    coordinates[count + 2] = sj.localPosition.x;
-                    coordinates[count + +3] = sj.localPosition.y;
-                    coordinates[count + +4] = sj.localPosition.z;
-                } else
-                {
-                    coordinates[count + 2] = float.NaN;
-                    coordinates[count + +3] = float.NaN;
-                    coordinates[count + +4] = float.NaN;
-                }
-                
-                count += 5;
-            }
-            skeletonCount++;
-        }
-    }*/
-    
 }
