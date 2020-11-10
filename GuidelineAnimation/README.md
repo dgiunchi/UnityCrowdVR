@@ -9,7 +9,7 @@
     2.a) The first input field is for the CSV data from which initial position are taken. It is a normal trajectory data from crowd simulation, that can be showed  with DrawTrajectories or Played with PlayCSV.
     
     2.b) You can resize (button Below) the scene with the Scaling factor (for data_1 is 0.02), and to scale the Walls with height (used only for the Walls), Use resize into Editor Not in Play Mode. Scene Prefab is the provided environment. You can draw also the trajectories an the bouns of the area. o it not in Play Mode. 
-    ![Unity View] (https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineAnimation/figure03_Trajectories.png?raw=true)
+    ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineAnimation/figure03_Trajectories.png?raw=true)
     
     2.c) The Prefab is ScenePrefab that contains the structure for that specific scene (remember that the scene needs to be compatible with CSV)
     
