@@ -555,9 +555,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidAvatars: []
-  csvFileName: data_1.csv
-  scaleValue: 0.02
-  timeStep: 0.0139
+  csvFileName: navMesh.csv
+  scaleValue: 1
+  timeStep: 0
   precisionFloatLoad: 4
 --- !u!1 &70878228
 GameObject:
@@ -3931,6 +3931,7 @@ MonoBehaviour:
   skeletonRecordPrefab: {fileID: 5141845633088029211, guid: ec980fac6573bc440916f58e5fe80292,
     type: 3}
   skeletonPlayPrefab:
+  - {fileID: 1080472914831964490, guid: 4c3feba3c1ac7f64c85a044e59536bc1, type: 3}
   - {fileID: 1313124626268136552, guid: 5d501f51b9d877741b46a3eaae7a886b, type: 3}
   - {fileID: 5558043439684916668, guid: cc3a18d87e4bc024ea2e6209e578f7f3, type: 3}
   - {fileID: 458500008653060963, guid: 821a1e45cba29a0419eb4d1cc8f462ce, type: 3}
@@ -3940,6 +3941,9 @@ MonoBehaviour:
   - {fileID: 235014649313131380, guid: ca74f96a32d9f494684dc255b1afdaed, type: 3}
   - {fileID: 1344664544535614892, guid: 87f89c5c810f87e4498a89f893075152, type: 3}
   - {fileID: 884791123013638596, guid: 4def995924771c14ab03b3bde82d8aef, type: 3}
+  - {fileID: 2072698004262486331, guid: e2896dbfe72b07c40aa6e1d6ea3fb029, type: 3}
+  - {fileID: 8448984312540738330, guid: 6addbd0adef90cd49881a309ec6cc7f5, type: 3}
+  - {fileID: 3704285878588668238, guid: 4435bcdd4e713aa4283bd1c0313981e9, type: 3}
   rigidAvatarPrefab: {fileID: 8539989220931480691, guid: d4bdd7e1482dd4645aebb6ed657d33a0,
     type: 3}
   scenePrefab: {fileID: 8941831543445830422, guid: e61fb45da6f936946aea347f2efd6ac5,
@@ -3947,8 +3951,8 @@ MonoBehaviour:
   indexPlay: 0
   singlePlay: 0
   rigidAvatars: []
-  csvFile: {fileID: 102900000, guid: 99998a50879f3244f890ba1c93bdd26a, type: 3}
-  scaleCsv: 0.015
+  csvFile: {fileID: 102900000, guid: 10917b5fb5dd59645a1af585c104a459, type: 3}
+  scaleCsv: 1
   sceneHeight: 3
   currentTime: 0
   currentTimeStep: 0.0139
