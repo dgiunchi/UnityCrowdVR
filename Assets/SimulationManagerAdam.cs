@@ -540,8 +540,8 @@ public class SimulationManagerAdam : MonoBehaviour
                 EditorGUILayout.LabelField("Data import");
 
                 Target.csvFile = EditorGUILayout.ObjectField("Csv Data file to load:", Target.csvFile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
-                Target.scaleCsv = EditorGUILayout.FloatField("Scale CSV by:", Target.scaleCsv);
-                Target.sceneHeight = EditorGUILayout.FloatField("Scale CSV by:", Target.sceneHeight);
+                Target.scaleCsv = EditorGUILayout.FloatField("Scale CSV area by:", Target.scaleCsv);
+                Target.sceneHeight = EditorGUILayout.FloatField("Scale CSV Height by:", Target.sceneHeight);
                 Target.scenePrefab = EditorGUILayout.ObjectField("Scene prefab:", Target.scenePrefab, typeof(GameObject), true) as GameObject;
                 Target.indexPlay = EditorGUILayout.IntField("Single Play Index:", Target.indexPlay);
                 if (Utility.GUIButton("Draw Trajectories", UltiDraw.DarkGrey, UltiDraw.White))
@@ -597,7 +597,7 @@ public class SimulationManagerAdam : MonoBehaviour
                 {
                     Target.PlayCsv();
                 }
-                if (Utility.GUIButton("Pause", UltiDraw.DarkGrey, UltiDraw.White))
+                /*if (Utility.GUIButton("Pause", UltiDraw.DarkGrey, UltiDraw.White))
                 {
                     Target.Pause();
                 }
@@ -608,7 +608,7 @@ public class SimulationManagerAdam : MonoBehaviour
                 if (Utility.GUIButton("Show", UltiDraw.DarkGrey, UltiDraw.White))
                 {
                     Target.Show();
-                }
+                }*/
  
 
                 

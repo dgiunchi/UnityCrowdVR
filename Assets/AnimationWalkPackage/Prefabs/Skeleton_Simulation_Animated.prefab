@@ -300,6 +300,7 @@ MonoBehaviour:
       Negations: 0000000000000000
       Multipliers: []
       handler: {fileID: 0}
+  coordsToSerialize: []
 --- !u!114 &17314896527755266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -312,6 +313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2fad159fc889a24fb34c733d4273a07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  drawVerboseGizmo: 0
   currentIndex: 0
   initialTime: 0
   endingTime: 0
