@@ -1,6 +1,6 @@
 # GuideLine to produce a Navmesh CSV starting from Crowd Data (Unity 2019.4.0)
 
-1) open NavMeshTrajectoriesrecorder Scene 
+1) open NavMeshTrajectoriesrecorder_data1 Scene (created referencing data1.csv)
 ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineNavMesh/figure01_NavMeshScene.png?raw=true)
 
 
