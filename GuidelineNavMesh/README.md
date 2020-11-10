@@ -1,10 +1,10 @@
 # GuideLine to produce a Navmesh CSV starting from Crowd Data (Unity 2019.4.0)
 
 1) open NavMeshTrajectoriesrecorder Scene 
-![Unity View](https://github.com/dgiunchi/UnityCrowdVR/GuidelineNavMesh/blob/master/figure01_NavMeshScene.png?raw=true)
+![Unity View](https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineNavMesh/figure01_NavMeshScene.png?raw=true)
 
 
-2) the objct that control the simulation is activateForAdamNavMesh ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/GuidelineNavMesh/blob/master/figure02_Manager.png?raw=true) that contains a Component (in Inspector).
+2) the objct that control the simulation is activateForAdamNavMesh ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineNavMesh/figure02_Manager.png?raw=true) that contains a Component (in Inspector).
 
     2.a) The first input field is for the CSV data from which initial position are taken. It is a normal trajectory data from crowd simulation. 
     
@@ -13,7 +13,7 @@
     2.c) The NavMesh Prefab is NavMesh_Simulation
     
     
-    NavMesh_Simulation prefab ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/GuidelineNavMesh/blob/master/figure03_NavMeshPrefab.png?raw=true)
+    NavMesh_Simulation prefab ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineNavMesh/figure03_NavMeshPrefab.png?raw=true)
     
     is a classic capsule object with a NavMeshAgent (refer to Unity documentation)
 
