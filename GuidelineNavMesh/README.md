@@ -13,10 +13,9 @@
     2.c) The NavMesh Prefab is NavMesh_Simulation
     
     
-    NavMesh_Simulation prefab ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineNavMesh/figure03_NavMeshPrefab.png?raw=true)
+    NavMesh_Simulation prefab is a classic capsule object with a NavMeshAgent (refer to Unity documentation) ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineNavMesh/figure03_NavMeshPrefab.png?raw=true)
     
-    is a classic capsule object with a NavMeshAgent (refer to Unity documentation)
-
+    
     
 3) When a different environment is created, you need to select the plane (and eventual other structures) and create the Navmesh going to Window->AI->Navigation, change the parameters in Navigation panel and bake it.
 
