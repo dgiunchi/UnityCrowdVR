@@ -12,7 +12,7 @@
     
     2.c) The NavMesh Prefab is NavMesh_Simulation
     
-    2.d) Speed is the multiplication factor to the capturedeltatime. Increasing it, increase the speed of the simulation. If navmesh agent speed need to be modified, change it in prefab.
+    2.d) Capture Speed is the multiplication factor to the capturedeltatime. Increasing it, increase the time between different frames (base value is 0.0139... around 72fps). If navmesh agent speed need to be modified, change it in prefab.
     
     
     NavMesh_Simulation prefab is a classic capsule object with a NavMeshAgent (refer to Unity documentation) ![Unity View](https://github.com/dgiunchi/UnityCrowdVR/blob/master/GuidelineNavMesh/figure03_NavMeshPrefab.png?raw=true)
