@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/AnimationWalkPackage/Demo/Original/Demo_Original.unity
     guid: 2aa5911639f594eef9b8869d7d7d089f
   - enabled: 0
@@ -17,6 +17,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scene/sample_network_scene_end.unity
     guid: 48f0c920719f3734ab8cfe469ea208ff
+  - enabled: 0
+    path: Assets/Scene/data_1.unity
+    guid: bb39cdcb856df1740833c64681d88060
+  - enabled: 1
+    path: Assets/Scene/data_2.unity
+    guid: d032a429a10f01840a2a38cb09bcf778
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 10fd3cf6e90fb6541af008bf8baf3279,
       type: 2}

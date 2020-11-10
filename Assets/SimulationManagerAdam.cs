@@ -15,7 +15,7 @@ using UnityEditor;
 public class SimulationManagerAdam : MonoBehaviour
 {
     public bool Inspect = false;
-
+    public UnityEngine.Object datafile;
     public PositionSerializerAdam serializer;
     private static SimulationManagerAdam instance = null;
     private Transform group;
@@ -73,6 +73,7 @@ public class SimulationManagerAdam : MonoBehaviour
 #if UNITY_EDITOR
         serializer.csvFileName = csvFile.name + ".csv";
         serializer.scaleValue = scaleCsv;
+        serializer.datafile = datafile.name + ".dat";
 #endif
     }
 
@@ -86,8 +87,22 @@ public class SimulationManagerAdam : MonoBehaviour
         {
             float initTime = serializer.personsOriginal[i].Keys.Min();
             float endingTime = serializer.personsOriginal[i].Keys.Max();
+
+            float[]  keys = serializer.personsOriginal[i].Keys.ToArray();
+
+            Vector2 distance = Vector2.zero;
+            var j = 0;
+            while (distance.magnitude < 1f &&  j < keys.Length-1) {
+
+                j += 1;               
+                var key = keys[j];
+                distance = serializer.personsOriginal[i][key] - serializer.personsOriginal[i][initTime];
+                    
+            }
+
             Vector2 initialPosition = serializer.personsOriginal[i][initTime];
-            Vector2 initialOrientation = serializer.persons[i][initTime];
+            //Vector2 initialOrientation = serializer.persons[i][initTime];
+            Vector2 initialOrientation = distance;
             if (initialOrientation == Vector2.zero)
             {
                 initialOrientation = serializer.personsOriginal[i][endingTime] - serializer.personsOriginal[i][initTime];
@@ -187,9 +202,10 @@ public class SimulationManagerAdam : MonoBehaviour
         //this is a trick
         serializer.Init();
         serializer.LoadFromCSV();
+        serializer.datafile = datafile.name + ".dat";
 
 #if UNITY_EDITOR
-        
+
         currentTime = 0.0f;
         OnStartPlay();
 #endif
@@ -541,7 +557,7 @@ public class SimulationManagerAdam : MonoBehaviour
 
                 Target.csvFile = EditorGUILayout.ObjectField("Csv Data file to load:", Target.csvFile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
                 Target.scaleCsv = EditorGUILayout.FloatField("Scale CSV by:", Target.scaleCsv);
-                Target.sceneHeight = EditorGUILayout.FloatField("Scale CSV by:", Target.sceneHeight);
+                Target.sceneHeight = EditorGUILayout.FloatField("Scene Hight:", Target.sceneHeight);
                 Target.scenePrefab = EditorGUILayout.ObjectField("Scene prefab:", Target.scenePrefab, typeof(GameObject), true) as GameObject;
                 Target.indexPlay = EditorGUILayout.IntField("Single Play Index:", Target.indexPlay);
                 if (Utility.GUIButton("Draw Trajectories", UltiDraw.DarkGrey, UltiDraw.White))
@@ -582,6 +598,8 @@ public class SimulationManagerAdam : MonoBehaviour
                 {
                     Target.Record();
                 }
+
+                Target.datafile = EditorGUILayout.ObjectField("Csv Data file to load:", Target.datafile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
 
                 if (Utility.GUIButton("Play", UltiDraw.DarkGrey, UltiDraw.White))
                 {

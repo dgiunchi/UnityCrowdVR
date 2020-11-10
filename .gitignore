@@ -58,6 +58,8 @@ Parameters.asset
 Parameters_Adam.asset
 DataFile.dat
 DataFile.txt
+[Aa]ssets/[Ss]treamingAssets/**/*.dat
+[Aa]ssets/[Ss]treamingAssets/**/*.txt
 
 #git merge files
 *.orig

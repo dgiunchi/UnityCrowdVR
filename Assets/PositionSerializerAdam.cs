@@ -9,6 +9,9 @@ using System;
 
 public class PositionSerializerAdam : MonoBehaviour
 {
+
+    public string datafile;
+
     public List<List<Transform>> skeletonJoints;
 
     public List<Transform> rigidAvatars;
@@ -206,6 +209,7 @@ public class PositionSerializerAdam : MonoBehaviour
         //initialTime
         //endingTime
 
+
         int[] framesPerSkeleton = new int[skeletonsList.Count];
         int[] frameIndexPerSkeleton = new int[skeletonsList.Count];
         //int totalNumberOfData = 0;
@@ -273,7 +277,7 @@ public class PositionSerializerAdam : MonoBehaviour
     void Serialize() //used in UNITY_EDITOR, SO path should be UNITY_EDITOR
     {
         Debug.Log("Begin Of Serialisation");
-        
+
         FileStream fs = new FileStream(Path.Combine(path, "DataFile.dat"), FileMode.Create);
 
         // Construct a BinaryFormatter and use it to serialize the data to the stream.
@@ -306,7 +310,7 @@ public class PositionSerializerAdam : MonoBehaviour
     void Deserialize()
     {
         Debug.Log("Begin Of Deserialisation");
-        FileStream fs = new FileStream(Path.Combine(path, "DataFile.dat"), FileMode.Open);
+        FileStream fs = new FileStream(Path.Combine(path, datafile), FileMode.Open);
         try
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -519,7 +523,7 @@ public class PositionSerializerAdam : MonoBehaviour
 
     IEnumerator DeserializeOnAndroid()
     {
-        WWW file = new WWW(Path.Combine(path, "DataFile.dat"));
+        WWW file = new WWW(Path.Combine(path, datafile));
         yield return file;
         MemoryStream ms = new MemoryStream(file.bytes);
         BinaryFormatter formatter = new BinaryFormatter();
