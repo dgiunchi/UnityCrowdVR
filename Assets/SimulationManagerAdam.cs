@@ -244,11 +244,6 @@ public class SimulationManagerAdam : MonoBehaviour
         }
     }
 
-    public void ResetSimulation()
-    {
-        //@@todo implement
-    }
-
     public void Draw()
     {
         ///////////////////////////////////////////////////////
@@ -508,14 +503,14 @@ public class SimulationManagerAdam : MonoBehaviour
         {
             // in serializer
         }
-        else if (status == STATUS.PAUSE)
+        /*else if (status == STATUS.PAUSE)
         {
 
         }
         else if (status == STATUS.STOP)
         {
-            ResetSimulation();
-        }
+            
+        }*/
     }
 
 #if UNITY_EDITOR
@@ -615,7 +610,7 @@ public class SimulationManagerAdam : MonoBehaviour
                 {
                     Target.PlayCsv();
                 }
-                if (Utility.GUIButton("Pause", UltiDraw.DarkGrey, UltiDraw.White))
+                /*if (Utility.GUIButton("Pause", UltiDraw.DarkGrey, UltiDraw.White))
                 {
                     Target.Pause();
                 }
@@ -626,7 +621,7 @@ public class SimulationManagerAdam : MonoBehaviour
                 if (Utility.GUIButton("Show", UltiDraw.DarkGrey, UltiDraw.White))
                 {
                     Target.Show();
-                }
+                }*/
  
 
                 

@@ -825,7 +825,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Destination: Assets\AnimationWalkPackage\Demo\Adam
-  Parameters: {fileID: 11400000, guid: e264254ea95a9894ab8e17ecd5a3efd3, type: 2}
+  Parameters: {fileID: 11400000, guid: a49347052504d624dbcab11346d5ac9b, type: 2}
   XDim: 468
   HDim: 512
   YDim: 376
