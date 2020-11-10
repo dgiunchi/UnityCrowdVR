@@ -228,11 +228,6 @@ public class SimulationManagerAdam : MonoBehaviour
         }
     }
 
-    public void ResetSimulation()
-    {
-        //@@todo implement
-    }
-
     public void Draw()
     {
         ///////////////////////////////////////////////////////
@@ -492,14 +487,14 @@ public class SimulationManagerAdam : MonoBehaviour
         {
             // in serializer
         }
-        else if (status == STATUS.PAUSE)
+        /*else if (status == STATUS.PAUSE)
         {
 
         }
         else if (status == STATUS.STOP)
         {
-            ResetSimulation();
-        }
+            
+        }*/
     }
 
 #if UNITY_EDITOR

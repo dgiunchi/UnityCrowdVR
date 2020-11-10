@@ -29,6 +29,7 @@ public class SimulationNavMesh : MonoBehaviour
     public UnityEngine.Object csvFile;
     public float scaleCsv = 1f;
     public float sceneHeight = 3f;
+    public float scaleVelocity = 1f;
 
     public int precisionFloatLoad = 4;
     public GameObject navMeshPefab;
@@ -298,7 +299,7 @@ public class SimulationNavMesh : MonoBehaviour
 
         allFinished = true; // start th check to see if it finished.
         initSimulationTime = -1.0f;
-        Time.captureDeltaTime = 0.00139f;
+        Time.captureDeltaTime = 0.00139f * scaleVelocity;
     }
 
 #if UNITY_EDITOR
@@ -338,6 +339,7 @@ public class SimulationNavMesh : MonoBehaviour
                 Target.scaleCsv = EditorGUILayout.FloatField("Scale CSV by:", Target.scaleCsv);
                 Target.sceneHeight = EditorGUILayout.FloatField("Scale height:", Target.sceneHeight);
                 Target.scenePrefab = EditorGUILayout.ObjectField("Scene prefab:", Target.scenePrefab, typeof(GameObject), true) as GameObject;
+                Target.scaleVelocity = EditorGUILayout.FloatField("Capture Speed:", Target.scaleVelocity);
                 /*if (Utility.GUIButton("Resize/Create Scene", UltiDraw.DarkGrey, UltiDraw.White))
                 {
                     Target.ResizeScene();
