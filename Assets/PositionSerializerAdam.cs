@@ -78,6 +78,10 @@ public class PositionSerializerAdam : MonoBehaviour
     public int precisionFloatLoad = 3;
     private int lastCountPlay = -1;
 
+    private int n1, n2, n3;
+    int frameStartIndex;
+    int[] v = new int[9];
+
     TextAsset csvAsset;
 
     // Start is called before the first frame update
@@ -152,7 +156,10 @@ public class PositionSerializerAdam : MonoBehaviour
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
         {
-            
+            n1 = skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
+            n2 = jointsNumbers * (timeAndIndex + positionCoord);
+            n3 = (timeAndIndex + positionCoord);
+
             LoadDatasetTest();
         }
 
@@ -629,7 +636,7 @@ public class PositionSerializerAdam : MonoBehaviour
         }
 
 
-        countPlay = (int)System.Math.Round(currentSimulationTime / timeStep, System.MidpointRounding.AwayFromZero);
+        countPlay = (int)(currentSimulationTime / timeStep);
         
         if(lastCountPlay == countPlay)
         {
@@ -639,7 +646,8 @@ public class PositionSerializerAdam : MonoBehaviour
             lastCountPlay = countPlay;
         }
 
-        int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
+
+        frameStartIndex = countPlay * n1; //countplay maximum is seconds * framerate 
         
 
         for (int s = 0; s < skeletonNumbers; s++)
@@ -647,26 +655,25 @@ public class PositionSerializerAdam : MonoBehaviour
             GameObject parent = skeletonJoints[s][0].parent.gameObject;
             for (int j = 0; j < jointsNumbers; j++)
             {
-                int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
-                int indexX = baseIndex + 2;
-                int indexY = baseIndex + 3;
-                int indexZ = baseIndex + 4;
-                int indexXR = baseIndex + 5;
-                int indexYR = baseIndex + 6;
-                int indexZR = baseIndex + 7;
-                int indexWR = baseIndex + 8;
+                v[0] = frameStartIndex + s * n2 + j * n3;//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
+                v[1] = v[0] + 2;
+                v[2] = v[0] + 3;
+                v[3] = v[0] + 4;
+                v[4] = v[0] + 5;
+                v[5] = v[0] + 6;
+                v[6] = v[0] + 7;
+                v[7] = v[0] + 8;
 
                 
-                if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
+                if (v[1] >= coordinates.Length || float.IsNaN(coordinates[v[1]]))
                 {
                     parent.SetActive(false);
                 }
                 else
                 {
                     parent.SetActive(true);
-                    skeletonJoints[s][j].position = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
-                    
-                    skeletonJoints[s][j].rotation = new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]);
+                    skeletonJoints[s][j].position = new Vector3(coordinates[v[1]], coordinates[v[2]], coordinates[v[3]]);
+                    skeletonJoints[s][j].rotation = new Quaternion(coordinates[v[4]], coordinates[v[5]], coordinates[v[6]], coordinates[v[7]]);
                 }
 
             }
