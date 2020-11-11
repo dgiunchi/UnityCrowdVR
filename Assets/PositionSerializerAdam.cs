@@ -10,7 +10,7 @@ using System;
 public class PositionSerializerAdam : MonoBehaviour
 {
 
-    public string datafile;
+    //public string datafile;
 
     public List<List<Transform>> skeletonJoints;
 
@@ -193,8 +193,7 @@ public class PositionSerializerAdam : MonoBehaviour
 #if UNITY_EDITOR
         Deserialize(); // UNITY_EDITOR
 #elif UNITY_ANDROID
-       
-        StartCoroutine(DeserializeOnAndroid());
+       StartCoroutine(DeserializeOnAndroid());
 #endif
     }
 
@@ -278,7 +277,7 @@ public class PositionSerializerAdam : MonoBehaviour
     {
         Debug.Log("Begin Of Serialisation");
 
-        FileStream fs = new FileStream(Path.Combine(path, "DataFile.dat"), FileMode.Create);
+        FileStream fs = new FileStream(Path.Combine(path, csvFileName.Substring(0, csvFileName.Length-4) + ".dat"), FileMode.Create);
 
         // Construct a BinaryFormatter and use it to serialize the data to the stream.
         BinaryFormatter formatter = new BinaryFormatter();
@@ -303,14 +302,14 @@ public class PositionSerializerAdam : MonoBehaviour
 
         using (var outf = new StreamWriter(Path.Combine(path, "DataFile.txt")))
             for (int i = 0; i < coordinates.Length; i=i+9)
-                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4], coordinates[i + 5], coordinates[i +6], coordinates[i + 7], coordinates[i + 8]);*/
-        
+                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4], coordinates[i + 5], coordinates[i +6], coordinates[i + 7], coordinates[i + 8]);
+        */   
     }
 
     void Deserialize()
     {
         Debug.Log("Begin Of Deserialisation");
-        FileStream fs = new FileStream(Path.Combine(path, datafile), FileMode.Open);
+        FileStream fs = new FileStream(Path.Combine(path, csvFileName.Substring(0, csvFileName.Length - 4) + ".dat"), FileMode.Open);
         try
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -519,15 +518,28 @@ public class PositionSerializerAdam : MonoBehaviour
         simulationTimeLength = (endingTime - initialTime);
     }
 
-
+    public static float[] ConvertByteToFloat(byte[] array)
+    {
+        float[] floatArr = new float[array.Length / 4];
+        for (int i = 0; i < floatArr.Length; i++)
+        {
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(array, i * 4, 4);
+            }
+            floatArr[i] = BitConverter.ToSingle(array, i * 4);
+        }
+        return floatArr;
+    }
 
     IEnumerator DeserializeOnAndroid()
-    {
-        WWW file = new WWW(Path.Combine(path, datafile));
-        yield return file;
-        MemoryStream ms = new MemoryStream(file.bytes);
+    {        
+        WWW www = new WWW(Path.Combine(path, csvFileName.Substring(0, csvFileName.Length - 4) + ".dat"));
+        yield return www;
+        MemoryStream ms = new MemoryStream(www.bytes);
+        //Debug.Log("Data size: " + www.bytes.Length.ToString());
         BinaryFormatter formatter = new BinaryFormatter();
-        coordinates = (float[])((float[])formatter.Deserialize(ms)).Clone();
+        coordinates = (float[])formatter.Deserialize(ms);
         ms.Close();
         //MapTimeFrameToIndex();
         fileLoaded = true;
@@ -649,9 +661,9 @@ public class PositionSerializerAdam : MonoBehaviour
                 else
                 {
                     parent.SetActive(true);
-                    skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime / timeStep);
+                    skeletonJoints[s][j].position = new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]);
                     
-                    skeletonJoints[s][j].rotation = Quaternion.Lerp(skeletonJoints[s][j].rotation, new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]), Time.deltaTime / timeStep);
+                    skeletonJoints[s][j].rotation = new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]);
                 }
 
             }

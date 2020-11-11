@@ -70,11 +70,11 @@ public class SimulationManagerAdam : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
         serializer.csvFileName = csvFile.name + ".csv";
         serializer.scaleValue = scaleCsv;
-        serializer.datafile = datafile.name + ".dat";
-#endif
+        //serializer.datafile = datafile.name + ".dat";
+//#endif
     }
 
     void OnStartRecord()
@@ -202,7 +202,7 @@ public class SimulationManagerAdam : MonoBehaviour
         //this is a trick
         serializer.Init();
         serializer.LoadFromCSV();
-        serializer.datafile = datafile.name + ".dat";
+        //serializer.datafile = datafile.name + ".dat";
 
 #if UNITY_EDITOR
 
