@@ -445,9 +445,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6b2b512539e454448dfabbfedf839c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  datafile: 
   rigidAvatars: []
   csvFileName: data_2.csv
+  datafile: data_2.dat
   scaleValue: 0.04
   timeStep: 0.0139
   precisionFloatLoad: 4

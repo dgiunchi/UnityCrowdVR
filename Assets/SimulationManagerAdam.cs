@@ -15,7 +15,7 @@ using UnityEditor;
 public class SimulationManagerAdam : MonoBehaviour
 {
     public bool Inspect = false;
-    public UnityEngine.Object datafile;
+    public string dataname;
     public PositionSerializerAdam serializer;
     private static SimulationManagerAdam instance = null;
     private Transform group;
@@ -70,11 +70,8 @@ public class SimulationManagerAdam : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-//#if UNITY_EDITOR
-        serializer.csvFileName = csvFile.name + ".csv";
-        serializer.scaleValue = scaleCsv;
-        //serializer.datafile = datafile.name + ".dat";
-//#endif
+        serializer.Name = dataname;
+        serializer.scaleValue = scaleCsv;    
     }
 
     void OnStartRecord()
@@ -188,24 +185,25 @@ public class SimulationManagerAdam : MonoBehaviour
 
     public void Record()
     {
+
         status = STATUS.RECORD;
         serializer.Init();
         serializer.LoadFromCSV();
         
+
         currentTime = 0.0f;
         OnStartRecord();   
     }
 
     public void Play()
     {
+       
         status = STATUS.PLAY;
-        //this is a trick
         serializer.Init();
         serializer.LoadFromCSV();
-        //serializer.datafile = datafile.name + ".dat";
+
 
 #if UNITY_EDITOR
-
         currentTime = 0.0f;
         OnStartPlay();
 #endif
@@ -258,7 +256,7 @@ public class SimulationManagerAdam : MonoBehaviour
         ///////////////////////////////////////////////////
 
 
-        serializer.csvFileName = csvFile.name + ".csv";
+        serializer.Name = dataname;
         serializer.scaleValue = scaleCsv;
         serializer.Init();
         serializer.LoadFromCSV();
@@ -422,7 +420,7 @@ public class SimulationManagerAdam : MonoBehaviour
 
     public Bounds getCsvTrajectoriesBounds() {
 
-        serializer.csvFileName = csvFile.name + ".csv";
+        serializer.Name = dataname;
         serializer.scaleValue = scaleCsv;
         serializer.Init();
         serializer.LoadFromCSV();
@@ -473,6 +471,7 @@ public class SimulationManagerAdam : MonoBehaviour
 #if UNITY_ANDROID
         if (OVRInput.Get(OVRInput.Button.Three) && triggerPlay==false)
         {
+            Debug.Log("pressed");
             triggerPlay = true;
             Play();
         }
@@ -550,7 +549,7 @@ public class SimulationManagerAdam : MonoBehaviour
 
                 EditorGUILayout.LabelField("Data import");
 
-                Target.csvFile = EditorGUILayout.ObjectField("Csv Data file to load:", Target.csvFile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
+                Target.dataname = EditorGUILayout.TextField("data name to load:", Target.dataname);
                 Target.scaleCsv = EditorGUILayout.FloatField("Scale CSV by:", Target.scaleCsv);
                 Target.sceneHeight = EditorGUILayout.FloatField("Scene Hight:", Target.sceneHeight);
                 Target.scenePrefab = EditorGUILayout.ObjectField("Scene prefab:", Target.scenePrefab, typeof(GameObject), true) as GameObject;
@@ -579,7 +578,7 @@ public class SimulationManagerAdam : MonoBehaviour
                 EditorGUILayout.LabelField("Simulation-Animation");
 
                 Target.skeletonRecordPrefab = EditorGUILayout.ObjectField("SkeletonRecord", Target.skeletonRecordPrefab, typeof(GameObject), true) as GameObject;
-                //EditorGUILayout.PropertyField(serializedObject.FindProperty("skeletonPlayPrefab"), true);
+               
 
                 SerializedObject so = new SerializedObject(target);
                 SerializedProperty stringsProperty = so.FindProperty("skeletonPlayPrefab");
@@ -594,7 +593,7 @@ public class SimulationManagerAdam : MonoBehaviour
                     Target.Record();
                 }
 
-                Target.datafile = EditorGUILayout.ObjectField("Csv Data file to load:", Target.datafile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
+                //Target.datafile = EditorGUILayout.ObjectField(" Data file to load:", Target.datafile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
 
                 if (Utility.GUIButton("Play", UltiDraw.DarkGrey, UltiDraw.White))
                 {

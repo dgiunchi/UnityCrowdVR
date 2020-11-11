@@ -7,6 +7,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System;
 
+
+
+
 public class PositionSerializerAdam : MonoBehaviour
 {
 
@@ -17,7 +20,19 @@ public class PositionSerializerAdam : MonoBehaviour
     public List<Transform> rigidAvatars;
     List<GameObject> skeletonsList;
 
-    public string csvFileName;
+
+    private string csvFileName;
+    private string datafile;
+    public string Name {
+        set {
+            csvFileName = value + ".csv";
+            datafile = value + ".dat";
+        } 
+    }
+
+ 
+
+
     private int count = 0;
     private int countPlay = 0;
     public float scaleValue = 1f;
@@ -68,25 +83,12 @@ public class PositionSerializerAdam : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Init();
         jointsNumbers = SimulationManagerAdam.Instance.skeletonRecordPrefab.transform.GetComponentsInChildren<Transform>().Length - 2; //no root object and no mesh.
-         
-        
     }
 
     public void Init()
     {
-        //path = Application.persistentDataPath;
-        path = Application.streamingAssetsPath; // valid for UNITY_EDITOR and UNITY_ANDROID
-
-        /*DirectoryInfo directoryInfo = new DirectoryInfo(Application.streamingAssetsPath);
-        Debug.Log("--------------Streaming Assets Path: " + Application.streamingAssetsPath);
-        FileInfo[] allFiles = directoryInfo.GetFiles("*.*");
-        for(int i=0; i<allFiles.Length; i++)
-        {
-            Debug.Log(allFiles[i].Name);
-        }*/
-        
+        path = Application.streamingAssetsPath;       
     }
 
     public float GetInitialTime()
@@ -187,7 +189,6 @@ public class PositionSerializerAdam : MonoBehaviour
 
     }
 
-
     void LoadDatasetTest()
     {
 #if UNITY_EDITOR
@@ -197,7 +198,6 @@ public class PositionSerializerAdam : MonoBehaviour
 #endif
     }
 
-   
     void SerializeAll()
     {
         if (serializationDone) return;
@@ -277,7 +277,7 @@ public class PositionSerializerAdam : MonoBehaviour
     {
         Debug.Log("Begin Of Serialisation");
 
-        FileStream fs = new FileStream(Path.Combine(path, csvFileName.Substring(0, csvFileName.Length-4) + ".dat"), FileMode.Create);
+        FileStream fs = new FileStream(Path.Combine(path, datafile), FileMode.Create);
 
         // Construct a BinaryFormatter and use it to serialize the data to the stream.
         BinaryFormatter formatter = new BinaryFormatter();
@@ -309,7 +309,8 @@ public class PositionSerializerAdam : MonoBehaviour
     void Deserialize()
     {
         Debug.Log("Begin Of Deserialisation");
-        FileStream fs = new FileStream(Path.Combine(path, csvFileName.Substring(0, csvFileName.Length - 4) + ".dat"), FileMode.Open);
+
+        FileStream fs = new FileStream(Path.Combine(path, datafile), FileMode.Open);
         try
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -365,15 +366,15 @@ public class PositionSerializerAdam : MonoBehaviour
     }*/
 
 
-
     public void LoadFromCSV()
     {
 #if UNITY_EDITOR
         DeserializeFromCSV();
         ConversionFromPositionsToVariations();
         CalculateInitialAndEndingTime();
-              
+
 #elif UNITY_ANDROID
+       
         StartCoroutine(DeserializeFromCSVOnAndroid());
 #endif
     }
@@ -533,8 +534,9 @@ public class PositionSerializerAdam : MonoBehaviour
     }
 
     IEnumerator DeserializeOnAndroid()
-    {        
-        WWW www = new WWW(Path.Combine(path, csvFileName.Substring(0, csvFileName.Length - 4) + ".dat"));
+    {
+        Debug.Log("Loading data file --> " +datafile );
+        WWW www = new WWW(Path.Combine(path, datafile));
         yield return www;
         MemoryStream ms = new MemoryStream(www.bytes);
         //Debug.Log("Data size: " + www.bytes.Length.ToString());
@@ -547,6 +549,7 @@ public class PositionSerializerAdam : MonoBehaviour
 
     IEnumerator DeserializeFromCSVOnAndroid()
     {
+
         WWW file = new WWW(Path.Combine(path, csvFileName));
         yield return file;
         csvAsset = new TextAsset(file.text);
