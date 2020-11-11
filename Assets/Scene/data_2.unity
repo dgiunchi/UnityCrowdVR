@@ -446,8 +446,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rigidAvatars: []
-  csvFileName: data_2.csv
-  datafile: data_2.dat
   scaleValue: 0.04
   timeStep: 0.0139
   precisionFloatLoad: 4
@@ -3971,7 +3969,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Inspect: 1
-  datafile: {fileID: 102900000, guid: 5ad52222eefe4ab489a76a46314efe07, type: 3}
+  dataname: data_2
   serializer: {fileID: 68871218}
   skeletonRecordPrefab: {fileID: 5141845633088029211, guid: ec980fac6573bc440916f58e5fe80292,
     type: 3}
