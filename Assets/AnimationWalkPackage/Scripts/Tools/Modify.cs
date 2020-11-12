@@ -16,11 +16,13 @@ public class Modify : MonoBehaviour {
 	}
 
 	void LateUpdate() {
-		if(LastPosition != transform.localPosition || LastRotation != transform.localRotation) {
-			transform.localPosition += Position;
-			transform.localRotation *= Quaternion.Euler(Rotation);
-		}
-		LastPosition = transform.localPosition;
+        //if (LastPosition != transform.localPosition || LastRotation != transform.localRotation)
+        //{
+        //    transform.localPosition += Position;
+        //    transform.localRotation *= Quaternion.Euler(Rotation);
+        //}
+
+        LastPosition = transform.localPosition;
 		LastRotation = transform.localRotation;
 	}
 }

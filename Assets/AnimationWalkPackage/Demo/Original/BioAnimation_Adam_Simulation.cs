@@ -13,6 +13,8 @@ namespace SIGGRAPH_2017 {
 
 		public bool Inspect = false;
 
+		public pose_copier pc; 
+
 		public bool ShowTrajectory = true;
 		public bool ShowVelocities = true;
 
@@ -104,6 +106,8 @@ namespace SIGGRAPH_2017 {
 
 		void Start() {
 			Utility.SetFPS(60);
+			pc = GameObject.Find("Pose_copier").GetComponent<pose_copier>();
+			if (!pc.init) pc.initialize();		
 		}
 
         public void InitWithCSVData(int ID, float timestep)
@@ -155,16 +159,6 @@ namespace SIGGRAPH_2017 {
                 int fromIndex = -1;
                 float distance = float.MaxValue;
 
-                //
-
-                /*if (coordinateToSerializeIndex != coordsToSerialize.Length)
-                {
-                    if(initialIndexFromCoordinates >= coordinates.Count)
-                    {
-                        initialIndexFromCoordinates = coordinates.Count - PositionSerializer.jointsNumbers;
-                    }
-                }*/
-
                 for (int index= initialIndexFromCoordinates; index < coordinates.Count; index+= PositionSerializerAdam.jointsNumbers) //the first is the hip (skeleton)
                 {
                     Vector2 hipPos = new Vector2(coordinates[index][2], coordinates[index][4]);
@@ -179,9 +173,7 @@ namespace SIGGRAPH_2017 {
                     
                 for (int j = fromIndex; j < toIndex && j >= 0; j++)
                 {
-                    //coordinates[j][1] = time;
-                    
-                    //Debug.Log(j.ToString());
+
                     coordsToSerialize[coordinateToSerializeIndex] = time;
                     coordsToSerialize[coordinateToSerializeIndex + 1] = id;
                     coordsToSerialize[coordinateToSerializeIndex + 2] = coordinates[j][2];
@@ -206,19 +198,45 @@ namespace SIGGRAPH_2017 {
             int indexJoint = 0;
             foreach (Transform sj in skeletonJoints)
             {
-                float[] values = new float[9];
-                values[0] = index;
-                values[1] = indexJoint; //set the sequence index, GetComponent<AnimationInputHandlerFromSimulation>().timedPositions[currentIndex].time
-                values[2] = sj.position.x;
-                values[3] = sj.position.y;
-                values[4] = sj.position.z;
-                values[5] = sj.rotation.x;
-                values[6] = sj.rotation.y;
-                values[7] = sj.rotation.z;
-                values[8] = sj.rotation.w;
-                coordinates.Add(values);
+				float[] values = new float[9];
+
+				if (sj.name.Contains("Skeleton"))
+				{
+					
+					values[0] = index;
+					values[1] = indexJoint; //set the sequence index, GetComponent<AnimationInputHandlerFromSimulation>().timedPositions[currentIndex].time
+					values[2] = sj.position.x;
+					values[3] = sj.position.y;
+					values[4] = sj.position.z;
+					values[5] = sj.rotation.x;
+					values[6] = sj.rotation.y;
+					values[7] = sj.rotation.z;
+					values[8] = sj.rotation.w;
+					Quaternion Q = pc.ApplicaDuringSerialization(sj);
+
+				}
+				else
+				{
+
+					values[0] = index;
+					values[1] = indexJoint; //set the sequence index, GetComponent<AnimationInputHandlerFromSimulation>().timedPositions[currentIndex].time
+					values[2] = sj.localPosition.x;
+					values[3] = sj.localPosition.y;
+					values[4] = sj.localPosition.z;
+
+					Quaternion Q = pc.ApplicaDuringSerialization(sj);  
+					values[5] = Q.x;
+					values[6] = Q.y;
+					values[7] = Q.z;
+					values[8] = Q.w;
+
+					
+                }
+				coordinates.Add(values);
                 indexJoint++;
-            }
+
+
+			}
             index++;
         }
 		void Update() {
