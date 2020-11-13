@@ -30,8 +30,8 @@ public class PositionSerializerAdam : MonoBehaviour
         } 
     }
 
- 
 
+    static public Dictionary<string, string> d = new Dictionary<string, string>();
 
     private int count = 0;
     private int countPlay = 0;
@@ -84,51 +84,155 @@ public class PositionSerializerAdam : MonoBehaviour
 
     TextAsset csvAsset;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+        d["Skeleton"] = "Bip01";
+
+        d["Hips"] = "Bip01_Pelvis";
+        d["Chest"] = "Bip01_Spine";
+        d["Chest2"] = "Bip01_Spine1";
+        d["Chest3"] = "Bip01_Spine2";
+        d["Chest4"] = "";
+
+        d["Neck"] = "Bip01_Neck";
+        d["Head"] = "Bip01_Head";
+        d["HeadSite"] = "Bip01_HeadNub";
+
+        d["RightCollar"] = "";
+        d["RightShoulder"] = "Bip01_L_UpperArm";
+        d["RightElbow"] = "Bip01_L_Forearm";
+        d["RightWrist"] = "Bip01_L_Hand";
+        d["RightWristSite"] = "Bip01_L_Finger0";
+
+        d["LeftCollar"] = "";
+        d["LeftShoulder"] = "Bip01_R_UpperArm";
+        d["LeftElbow"] = "Bip01_R_Forearm";
+        d["LeftWrist"] = "Bip01_R_Hand";
+        d["LeftWristSite"] = "Bip01_R_Finger0";
+
+        d["RightHip"] = "Bip01_L_Thigh";
+        d["RightKnee"] = "Bip01_L_Calf";
+        d["RightAnkle"] = "Bip01_L_Foot";
+        d["RightToe"] = "Bip01_L_Toe0";
+        d["RightToeSite"] = "Bip01_L_Toe0Nub";
+
+        d["LeftHip"] = "Bip01_R_Thigh";
+        d["LeftKnee"] = "Bip01_R_Calf";
+        d["LeftAnkle"] = "Bip01_R_Foot";
+        d["LeftToe"] = "Bip01_R_Toe0";
+        d["LeftToeSite"] = "Bip01_R_Toe0Nub";
+    }
     void Start()
     {
-        jointsNumbers = SimulationManagerAdam.Instance.skeletonRecordPrefab.transform.GetComponentsInChildren<Transform>().Length - 2; //no root object and no mesh.
+        jointsNumbers = getJointsNumber(SimulationManagerAdam.Instance.skeletonRecordPrefab);
     }
-
     public void Init()
     {
         path = Application.streamingAssetsPath;       
     }
+    static public List<Transform> getJoints(GameObject skeleton) {
 
+        List<Transform> joints = new List<Transform>();
+
+        if (skeleton.transform.Find("Skeleton") != null)
+        {
+            //find joints by name 
+            joints.Add(skeleton.transform.FindDeepChild("Skeleton"));
+
+            joints.Add(skeleton.transform.FindDeepChild("Hips"));
+            joints.Add(skeleton.transform.FindDeepChild("Chest"));
+            joints.Add(skeleton.transform.FindDeepChild("Chest2"));
+            joints.Add(skeleton.transform.FindDeepChild("Chest3"));
+            joints.Add(skeleton.transform.FindDeepChild("Chest4"));
+
+            joints.Add(skeleton.transform.FindDeepChild("Neck"));
+            joints.Add(skeleton.transform.FindDeepChild("Head"));
+            joints.Add(skeleton.transform.FindDeepChild("HeadSite"));
+
+            joints.Add(skeleton.transform.FindDeepChild("RightCollar"));
+            joints.Add(skeleton.transform.FindDeepChild("RightShoulder"));
+            joints.Add(skeleton.transform.FindDeepChild("RightElbow"));
+            joints.Add(skeleton.transform.FindDeepChild("RightWrist"));
+            joints.Add(skeleton.transform.FindDeepChild("RightWristSite"));
+
+            joints.Add(skeleton.transform.FindDeepChild("LeftCollar"));
+            joints.Add(skeleton.transform.FindDeepChild("LeftShoulder"));
+            joints.Add(skeleton.transform.FindDeepChild("LeftElbow"));
+            joints.Add(skeleton.transform.FindDeepChild("LeftWrist"));
+            joints.Add(skeleton.transform.FindDeepChild("LeftWristSite"));
+
+            joints.Add(skeleton.transform.FindDeepChild("RightHip"));
+            joints.Add(skeleton.transform.FindDeepChild("RightKnee"));
+            joints.Add(skeleton.transform.FindDeepChild("RightAnkle"));
+            joints.Add(skeleton.transform.FindDeepChild("RightToe"));
+            joints.Add(skeleton.transform.FindDeepChild("RightToeSite"));
+
+            joints.Add(skeleton.transform.FindDeepChild("LeftHip"));
+            joints.Add(skeleton.transform.FindDeepChild("LeftKnee"));
+            joints.Add(skeleton.transform.FindDeepChild("LeftAnkle"));
+            joints.Add(skeleton.transform.FindDeepChild("LeftToe"));
+            joints.Add(skeleton.transform.FindDeepChild("LeftToeSite"));
+
+        }
+        else if (skeleton.transform.Find("Bip01") != null)
+        {
+
+            //find joints by name 
+            joints.Add(skeleton.transform.FindDeepChild("Bip01"));
+
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_Pelvis"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_Spine"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_Spine1"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_Spine2"));
+            joints.Add(skeleton.transform.FindDeepChild("")); //null
+
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_Neck"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_Head"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_HeadNub"));
+
+            joints.Add(skeleton.transform.FindDeepChild("")); //null
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_UpperArm"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Forearm"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Hand"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Finger0"));
+
+            joints.Add(skeleton.transform.FindDeepChild("")); //null
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_UpperArm"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Forearm"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Hand"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Finger0"));
+
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Thigh"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Calf"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Foot"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Toe0"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Toe0Nub"));
+
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Thigh"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Calf"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Foot"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Toe0"));
+            joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Toe0Nub"));
+
+        }
+        else
+        {
+
+            Debug.Log("Bone structure unkwnown -- no joints added");
+        }
+
+        return joints;
+    }
+    public int getJointsNumber(GameObject Skeleton) {
+
+        int number = getJoints(Skeleton).Count;
+
+        return number;
+
+    }
     public float GetInitialTime()
     {
         return initialTime;
-    }
-
-    public void UpdateSkeletonsold(List<GameObject> sks)
-    {
-        skeletonsList = new List<GameObject>(sks);
-        seconds = endingTime - initialTime;
-        skeletonNumbers = skeletonsList.Count;
-
-        numberOfValuesPerFrame = jointsNumbers * (timeAndIndex + positionCoord);
-
-        List<GameObject> skeletons = new List<GameObject>(sks);
-        skeletonJoints = new List<List<Transform>>();
-        int index = 0;
-        foreach (GameObject skeleton in skeletons)
-        {
-            Transform[] children = skeleton.transform.GetComponentsInChildren<Transform>().Skip(2).ToArray(); // root and mesh to be skipped
-            List<Transform> joints = new List<Transform>(children);
-            skeletonJoints.Add(joints);
-
-            // need for new serialization
-            SIGGRAPH_2017.BioAnimation_Adam_Simulation component = skeleton.GetComponent<SIGGRAPH_2017.BioAnimation_Adam_Simulation>();
-            if (component != null)
-            {
-                component.InitWithCSVData(index, timeStep);
-            }
-            index++; 
-        }
-        
-        //coordinates = new float[total];
-        coordinates = new float[0];
-        Setup();
     }
     public void UpdateSkeletons(List<GameObject> sks)
     {
@@ -143,94 +247,8 @@ public class PositionSerializerAdam : MonoBehaviour
         int index = 0;
         foreach (GameObject skeleton in skeletons)
         {
-            Transform[] children = skeleton.transform.GetComponentsInChildren<Transform>().Skip(2).ToArray(); // root and mesh to be skipped
-            List<Transform> joints = new List<Transform>();
-
-            if (skeleton.transform.Find("Skeleton") != null)
-            {
-                //find joints by name 
-                joints.Add(skeleton.transform.FindDeepChild("Skeleton"));
-
-                joints.Add(skeleton.transform.FindDeepChild("Hips"));
-                joints.Add(skeleton.transform.FindDeepChild("Chest"));
-                joints.Add(skeleton.transform.FindDeepChild("Chest2"));
-                joints.Add(skeleton.transform.FindDeepChild("Chest3"));
-                joints.Add(skeleton.transform.FindDeepChild("Chest4"));
-
-                joints.Add(skeleton.transform.FindDeepChild("Neck"));
-                joints.Add(skeleton.transform.FindDeepChild("Head"));
-                joints.Add(skeleton.transform.FindDeepChild("HeadSite"));
-
-                joints.Add(skeleton.transform.FindDeepChild("RightCollar"));
-                joints.Add(skeleton.transform.FindDeepChild("RightShoulder"));
-                joints.Add(skeleton.transform.FindDeepChild("RightElbow"));
-                joints.Add(skeleton.transform.FindDeepChild("RightWrist"));
-                joints.Add(skeleton.transform.FindDeepChild("RightWristSite"));
-
-                joints.Add(skeleton.transform.FindDeepChild("LeftCollar"));
-                joints.Add(skeleton.transform.FindDeepChild("LeftShoulder"));
-                joints.Add(skeleton.transform.FindDeepChild("LeftElbow"));
-                joints.Add(skeleton.transform.FindDeepChild("LeftWrist"));
-                joints.Add(skeleton.transform.FindDeepChild("LeftWristSite"));
-
-                joints.Add(skeleton.transform.FindDeepChild("RightHip"));
-                joints.Add(skeleton.transform.FindDeepChild("RightKnee"));
-                joints.Add(skeleton.transform.FindDeepChild("RightAnkle"));
-                joints.Add(skeleton.transform.FindDeepChild("RightToe"));
-                joints.Add(skeleton.transform.FindDeepChild("RightToeSite"));
-
-                joints.Add(skeleton.transform.FindDeepChild("LeftHip"));
-                joints.Add(skeleton.transform.FindDeepChild("LeftKnee"));
-                joints.Add(skeleton.transform.FindDeepChild("LeftAnkle"));
-                joints.Add(skeleton.transform.FindDeepChild("LeftToe"));
-                joints.Add(skeleton.transform.FindDeepChild("LeftToeSite"));
-
-            }
-            else if (skeleton.transform.Find("Bip01") != null)
-            {
-
-                //find joints by name 
-                joints.Add(skeleton.transform.FindDeepChild("Bip01"));
-
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_Pelvis"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_Spine"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_Spine1"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_Spine2"));
-                joints.Add(skeleton.transform.FindDeepChild("")); //null
-
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_Neck"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_Head"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_HeadNub"));
-
-                joints.Add(skeleton.transform.FindDeepChild("")); //null
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_UpperArm"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Forearm"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Hand"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Finger0"));
-
-                joints.Add(skeleton.transform.FindDeepChild("")); //null
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_UpperArm"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Forearm"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Hand"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Finger0"));
-
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Thigh"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Calf"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Foot"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Toe0"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_L_Toe0Nub"));
-
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Thigh"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Calf"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Foot"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Toe0"));
-                joints.Add(skeleton.transform.FindDeepChild("Bip01_R_Toe0Nub"));
-
-            }
-            else {
-
-                Debug.Log("Bone structure unkwnown -- no joints added");
-            }
+            
+            List<Transform> joints = getJoints(skeleton);
 
             skeletonJoints.Add(joints);
 
@@ -280,7 +298,6 @@ public class PositionSerializerAdam : MonoBehaviour
         }
 
     }
-
     void Update()
     {
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD)
@@ -311,7 +328,6 @@ public class PositionSerializerAdam : MonoBehaviour
         }
 
     }
-
     void LoadDatasetTest()
     {
 #if UNITY_EDITOR
@@ -320,7 +336,6 @@ public class PositionSerializerAdam : MonoBehaviour
        StartCoroutine(DeserializeOnAndroid());
 #endif
     }
-
     void SerializeAll()
     {
         if (serializationDone) return;
@@ -395,7 +410,6 @@ public class PositionSerializerAdam : MonoBehaviour
         //call Serialize
         Serialize();
     }
-
     void Serialize() //used in UNITY_EDITOR, SO path should be UNITY_EDITOR
     {
         Debug.Log("Begin Of Serialisation");
@@ -428,7 +442,6 @@ public class PositionSerializerAdam : MonoBehaviour
                 outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4], coordinates[i + 5], coordinates[i +6], coordinates[i + 7], coordinates[i + 8]);
          
     }
-
     void Deserialize()
     {
         Debug.Log("Begin Of Deserialisation");

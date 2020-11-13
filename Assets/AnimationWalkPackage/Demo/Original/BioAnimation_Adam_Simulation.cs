@@ -106,17 +106,17 @@ namespace SIGGRAPH_2017 {
 
 		void Start() {
 			Utility.SetFPS(60);
-			pc = GameObject.Find("Pose_copier").GetComponent<pose_copier>();
+			pc = GetComponent<pose_copier>();
 			if (!pc.init) pc.initialize();		
 		}
 
         public void InitWithCSVData(int ID, float timestep)
         {
             id = ID;
-            Transform[] children = transform.GetComponentsInChildren<Transform>().Skip(2).ToArray(); // root and mesh to be skipped
-            skeletonJoints = new List<Transform>(children);
-            
-            coordinates = new List<float[]>();
+
+			skeletonJoints = PositionSerializerAdam.getJoints(gameObject);
+
+			coordinates = new List<float[]>();
             coordsToSerialize = new float[GetComponent<AnimationInputHandlerFromAdamSimulation>().timedPositions.Count * PositionSerializerAdam.numberOfValuesPerFrame];
 
             currentTimeStep = timestep;
@@ -235,7 +235,6 @@ namespace SIGGRAPH_2017 {
 				coordinates.Add(values);
                 indexJoint++;
 
-
 			}
             index++;
         }
@@ -263,7 +262,6 @@ namespace SIGGRAPH_2017 {
 
 			transform.position = Trajectory.Points[RootPointIndex].GetPosition();
 		}
-
 		private void PredictTrajectory() {
 			//Calculate Bias
 			float bias = PoolBias();
@@ -320,7 +318,6 @@ namespace SIGGRAPH_2017 {
 				Trajectory.Points[i].SetSpeed(Utility.Interpolate(Trajectory.Points[i].GetSpeed(), TargetVelocity.magnitude, control ? TargetGain : TargetDecay));
 			}
 		}
-
 		private void Animate() {
 			//Calculate Root
 			Matrix4x4 currentRoot = Trajectory.Points[RootPointIndex].GetTransformation();
@@ -499,7 +496,6 @@ namespace SIGGRAPH_2017 {
 				Actor.Bones[i].Transform.rotation = Quaternion.LookRotation(Forwards[i], Ups[i]);
 			}
 		}
-
 		private float PoolBias() {
 			float[] styles = Trajectory.Points[RootPointIndex].Styles;
 			float bias = 0f;
@@ -520,15 +516,12 @@ namespace SIGGRAPH_2017 {
 			}
 			return bias;
 		}
-
 		private Trajectory.Point GetSample(int index) {
 			return Trajectory.Points[Mathf.Clamp(index*10, 0, Trajectory.Points.Length-1)];
 		}
-
 		private Trajectory.Point GetPreviousSample(int index) {
 			return GetSample(index / 10);
 		}
-
 		private Trajectory.Point GetNextSample(int index) {
 			if(index % 10 == 0) {
 				return GetSample(index / 10);
