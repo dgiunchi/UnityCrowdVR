@@ -23,10 +23,12 @@ public class PositionSerializerAdam : MonoBehaviour
 
     private string csvFileName;
     private string datafile;
+    private string txtFileName;
     public string Name {
         set {
             csvFileName = value + ".csv";
             datafile = value + ".dat";
+            txtFileName = value + ".txt";
         } 
     }
 
@@ -41,9 +43,9 @@ public class PositionSerializerAdam : MonoBehaviour
     [HideInInspector]
     public static int framerate = 72;
     private int skeletonNumbers = 1; //change to the real number or move code to Start.
-    public static int jointsNumbers = 32;
-    public static int timeAndIndex = 2;
-    public static int positionCoord = 7;
+    public static int jointsNumbers;
+    public static int timeAndIndex = 0;
+    public static int positionCoord = 4;
     
     private float[] coordinates;
     
@@ -240,7 +242,7 @@ public class PositionSerializerAdam : MonoBehaviour
         seconds = endingTime - initialTime;
         skeletonNumbers = skeletonsList.Count;
 
-        numberOfValuesPerFrame = jointsNumbers * (timeAndIndex + positionCoord);
+        numberOfValuesPerFrame = (jointsNumbers+1) * (timeAndIndex + positionCoord); // the + one on the joints number is related to position 
 
         List<GameObject> skeletons = new List<GameObject>(sks);
         skeletonJoints = new List<List<Transform>>();
@@ -290,8 +292,8 @@ public class PositionSerializerAdam : MonoBehaviour
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
         {
-            n1 = skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
-            n2 = jointsNumbers * (timeAndIndex + positionCoord);
+            n1 = skeletonNumbers * (jointsNumbers + 1) * (timeAndIndex + positionCoord);
+            n2 = (jointsNumbers + 1) * (timeAndIndex + positionCoord);
             n3 = (timeAndIndex + positionCoord);
 
             LoadDatasetTest();
@@ -312,19 +314,10 @@ public class PositionSerializerAdam : MonoBehaviour
         {
             if (fileLoaded)
             {
-                if(SimulationManagerAdam.Instance.singlePlay)
-                {
-                    ReadSingleDataFromSimulationPerFrame(SimulationManagerAdam.Instance.indexPlay);
-                } else
-                {
-                    
                     ReadDataFromSimulationPerFrame();
-                }
-                
             }
             
-            //ReadDataPerFrame(); //mapping N to N
-            //ReadFirstPerFrameOnMultipleSkeletons();
+         
         }
 
     }
@@ -340,23 +333,16 @@ public class PositionSerializerAdam : MonoBehaviour
     {
         if (serializationDone) return;
         serializationDone = true;
-        // merge all the coords
-        //@@TODO
-        //timeStep
-        //initialTime
-        //endingTime
-
 
         int[] framesPerSkeleton = new int[skeletonsList.Count];
         int[] frameIndexPerSkeleton = new int[skeletonsList.Count];
-        //int totalNumberOfData = 0;
         int maximum = (int)((endingTime - initialTime) / timeStep);
         int totalPerSkeleton = maximum * numberOfValuesPerFrame;
 
         coordinates = new float[maximum * skeletonsList.Count * numberOfValuesPerFrame];
         
         long count = 0;
-        for (float t =initialTime; t<endingTime; t+=timeStep) // weeird issue with initialTime @@TODO
+        for (float t =initialTime; t<endingTime; t+=timeStep) 
         {
             for (int j = 0; j < skeletonsList.Count; j++)
             {
@@ -365,49 +351,76 @@ public class PositionSerializerAdam : MonoBehaviour
                 SIGGRAPH_2017.BioAnimation_Adam_Simulation component2 = skeletonsList[j].GetComponent<SIGGRAPH_2017.BioAnimation_Adam_Simulation>();
                 if(frameIndexPerSkeleton[j] < component1.timedPositions.Count && Math.Abs(component1.timedPositions[frameIndexPerSkeleton[j]].time - t) < 0.01f ) 
                 {
-                    for (int k = 0; k < jointsNumbers; k++)
+                    for (int k = 0; k < (jointsNumbers + 1) ; k++) //plus one is for position and rotation twice 
                     {
-                        int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
+                        int baseIndex = frameIndexPerSkeleton[j] * (jointsNumbers+1) * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
                         if (count >= coordinates.Length || baseIndex >= component2.coordsToSerialize.Length) break;
-                        //Debug.Log("Time:" + t.ToString() + " Skeleton:" + j.ToString() + " count:" + count + " total:" + coordinates.Length);
-                        coordinates[count] = component2.coordsToSerialize[baseIndex];
-                        coordinates[count + 1] = component2.coordsToSerialize[baseIndex+1];
-                        coordinates[count + 2] = component2.coordsToSerialize[baseIndex+2];
-                        coordinates[count + 3] = component2.coordsToSerialize[baseIndex+3];
-                        coordinates[count + 4] = component2.coordsToSerialize[baseIndex+4];
-                        coordinates[count + 5] = component2.coordsToSerialize[baseIndex + 5];
-                        coordinates[count + 6] = component2.coordsToSerialize[baseIndex + 6];
-                        coordinates[count + 7] = component2.coordsToSerialize[baseIndex + 7];
-                        coordinates[count + 8] = component2.coordsToSerialize[baseIndex + 8];
+
+                        if (k == 0) //plus one is for position and rotation twice 
+                        {
+                            coordinates[count] = component2.coordsToSerialize[baseIndex];
+                            coordinates[count + 1] = component2.coordsToSerialize[baseIndex + 1];
+                            coordinates[count + 2] = component2.coordsToSerialize[baseIndex + 2];
+                            coordinates[count + 3] = component2.coordsToSerialize[baseIndex + 3];
+
+                            k++;
+                            baseIndex = frameIndexPerSkeleton[j] * (jointsNumbers+1) * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
+                            count += (PositionSerializerAdam.timeAndIndex + PositionSerializerAdam.positionCoord);
+
+                            coordinates[count] = component2.coordsToSerialize[baseIndex];
+                            coordinates[count + 1] = component2.coordsToSerialize[baseIndex + 1];
+                            coordinates[count + 2] = component2.coordsToSerialize[baseIndex + 2];
+                            coordinates[count + 3] = component2.coordsToSerialize[baseIndex + 3];                        
+
+                        }
+                        else
+                        {
+                            coordinates[count] = component2.coordsToSerialize[baseIndex];
+                            coordinates[count + 1] = component2.coordsToSerialize[baseIndex + 1];
+                            coordinates[count + 2] = component2.coordsToSerialize[baseIndex + 2];
+                            coordinates[count + 3] = component2.coordsToSerialize[baseIndex + 3];
+                        }
+
                         count += (PositionSerializerAdam.timeAndIndex + PositionSerializerAdam.positionCoord);
                     }
                     frameIndexPerSkeleton[j] += 1;
                 } else
                 {
-                    for (int k = 0; k < jointsNumbers; k++)
+                    for (int k = 0; k < (jointsNumbers +1); k++)
                     {
                         //int baseIndex = frameIndexPerSkeleton[j] * jointsNumbers * (timeAndIndex + positionCoord) + k * (timeAndIndex + positionCoord);
                         if (count >= coordinates.Length) break;
                         //Debug.Log("Time:" + t.ToString() + " Skeleton:" + j.ToString() + " count:" + count + " total:" + coordinates.Length);
-                        coordinates[count] = t;
-                        coordinates[count + 1] = j;
-                        coordinates[count + 2] = float.NaN;
-                        coordinates[count + 3] = float.NaN;
-                        coordinates[count + 4] = float.NaN;
-                        coordinates[count + 5] = float.NaN;
-                        coordinates[count + 6] = float.NaN;
-                        coordinates[count + 7] = float.NaN;
-                        coordinates[count + 8] = float.NaN;
+                        
+                        if (k == 0) //plus one is for position and rotation twice 
+                        {
+                            coordinates[count] = t;
+                            coordinates[count + 1] = float.NaN;
+                            coordinates[count + 2] = float.NaN;
+                            coordinates[count + 3] = float.NaN;
+
+                            k++;                           
+                            count += (PositionSerializerAdam.timeAndIndex + PositionSerializerAdam.positionCoord);
+
+                            coordinates[count] = float.NaN;
+                            coordinates[count + 1] = float.NaN;
+                            coordinates[count + 2] = float.NaN;
+                            coordinates[count + 3] = float.NaN;
+                        }
+                        else
+                        {
+                            coordinates[count] = float.NaN;
+                            coordinates[count + 1] = float.NaN;
+                            coordinates[count + 2] = float.NaN;
+                            coordinates[count + 3] = float.NaN;
+                        }
+
                         count += (PositionSerializerAdam.timeAndIndex + PositionSerializerAdam.positionCoord);
                     }
                 }
-                //component.coordsToSerialize
             }
         }
 
-        
-        
-        //call Serialize
         Serialize();
     }
     void Serialize() //used in UNITY_EDITOR, SO path should be UNITY_EDITOR
@@ -435,11 +448,11 @@ public class PositionSerializerAdam : MonoBehaviour
         Debug.Log("End Of Serialisation");
 
         int xprecision = 5;
-        string formatString = "{0:G" + xprecision + "}\t{1:G" + xprecision + "}\t{2:G" + xprecision + "}\t{3:G" + xprecision + "}\t{4:G" + xprecision + "}\t{5:G" + xprecision + "}\t{6:G" + xprecision + "}\t{7:G" + xprecision + "}\t{8:G" + xprecision + "}";
+        string formatString = "{0:G" + xprecision + "}\t{1:G" + xprecision + "}\t{2:G" + xprecision + "}\t{3:G" + xprecision + "}";
 
-        using (var outf = new StreamWriter(Path.Combine(path, "DataFile.txt")))
-            for (int i = 0; i < coordinates.Length; i=i+9)
-                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3], coordinates[i+4], coordinates[i + 5], coordinates[i +6], coordinates[i + 7], coordinates[i + 8]);
+        using (var outf = new StreamWriter(Path.Combine(path, txtFileName)))
+            for (int i = 0; i < coordinates.Length; i=i+4)
+                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3]);
          
     }
     void Deserialize()
@@ -451,8 +464,6 @@ public class PositionSerializerAdam : MonoBehaviour
         {
             BinaryFormatter formatter = new BinaryFormatter();
 
-            // Deserialize the hashtable from the file and
-            // assign the reference to the local variable.
             coordinates = (float[]) ((float [])formatter.Deserialize(fs)).Clone();
         }
         catch (SerializationException e)
@@ -468,39 +479,6 @@ public class PositionSerializerAdam : MonoBehaviour
         //MapTimeFrameToIndex();
         fileLoaded = true;
     }
-
-    /*void MapTimeFrameToIndex()
-    {
-        int[] framesPerSkeleton = new int[skeletonsList.Count];
-
-
-        //for (int j = 0; j < skeletonsList.Count; j++)
-        //{
-        //    framesPerSkeleton[j] = personsOriginal[j].Count;
-        //    if (maximum < framesPerSkeleton[j])
-        //    {
-        //        maximum = framesPerSkeleton[j];
-        //    }
-        //    //totalNumberOfData += framesPerSkeleton[j] * numberOfValuesPerFrame;
-        //}
-        int maximum = (int)((endingTime - initialTime) / timeStep);
-        int totalPerSkeleton = maximum * numberOfValuesPerFrame;
-
-        timeFrameToIndex = new List<Dictionary<float, int>>();
-
-        for (int i = 0; i < skeletonsList.Count; ++i)
-        {
-            float currentTime = 0;
-            Dictionary<float, int> dict = new Dictionary<float, int>();
-            for(int j=0; j< totalPerSkeleton; ++j )
-            {
-                dict[(float)Math.Round(currentTime, precisionFloatLoad)] = j * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord);
-                currentTime += timeStep;
-            }
-            timeFrameToIndex.Add(dict);
-        }
-    }*/
-
 
     public void LoadFromCSV()
     {
@@ -782,115 +760,64 @@ public class PositionSerializerAdam : MonoBehaviour
         for (int s = 0; s < skeletonNumbers; s++)
         {
             GameObject parent = skeletonJoints[s][0].parent.gameObject;
+
             for (int j = 0; j < jointsNumbers; j++)
             {
-                v[0] = frameStartIndex + s * n2 + j * n3;//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
-                v[1] = v[0] + 2;
-                v[2] = v[0] + 3;
-                v[3] = v[0] + 4;
-                v[4] = v[0] + 5;
-                v[5] = v[0] + 6;
-                v[6] = v[0] + 7;
-                v[7] = v[0] + 8;
 
-                
-                if (v[1] >= coordinates.Length || float.IsNaN(coordinates[v[1]]))
+                if (skeletonJoints[s][j] == null)
                 {
-                    parent.SetActive(false);
+                    if (j == 0) j++;
+                    continue;
+                }
+
+                if (j == 0)
+                {
+
+                    v[0] = frameStartIndex + s * n2 + j * n3;
+                    v[1] = v[0] + 1;
+                    v[2] = v[0] + 2;
+                    v[3] = v[0] + 3;
+
+                    v[4] = frameStartIndex + s * n2 + (j + 1) * n3;
+                    v[5] = v[4] + 1;
+                    v[6] = v[4] + 2;
+                    v[7] = v[4] + 3;
+
+                    bool visible = v[1] >= coordinates.Length || float.IsNaN(coordinates[v[1]]) ? false : true;
+
+                    parent.SetActive(visible);
+
+                    if (!visible) break;
+
+                    skeletonJoints[s][j].parent.transform.position = new Vector3(coordinates[v[1]], coordinates[v[2]], coordinates[v[3]]);
+                    skeletonJoints[s][j].parent.transform.rotation = new Quaternion(coordinates[v[4]], coordinates[v[5]], coordinates[v[6]], coordinates[v[7]]);
+
                 }
                 else
                 {
-                    parent.SetActive(true);
-                    
-                    if (skeletonJoints[s][j] == null) continue;
 
-                    if (skeletonJoints[s][j].name == "Skeleton" || skeletonJoints[s][j].name == "Bip01")
-                    {                       
-                        skeletonJoints[s][j].parent.transform.position = new Vector3(coordinates[v[1]], coordinates[v[2]], coordinates[v[3]]);
-                        skeletonJoints[s][j].parent.transform.rotation = new Quaternion(coordinates[v[4]], coordinates[v[5]], coordinates[v[6]], coordinates[v[7]]);
-     
-                    }
-                    else 
-                    {
-                      
-                        skeletonJoints[s][j].localRotation = new Quaternion(coordinates[v[4]], coordinates[v[5]], coordinates[v[6]], coordinates[v[7]]);
-                    }
+                    v[0] = frameStartIndex + s * n2 + (j + 1) * n3;
+                    v[1] = v[0] + 1;
+                    v[2] = v[0] + 2;
+                    v[3] = v[0] + 3;
+
+                    bool visible = v[1] >= coordinates.Length || float.IsNaN(coordinates[v[1]]) ? false : true;
+
+                    parent.SetActive(visible);
+
+                    if (!visible) break;
+
+                    skeletonJoints[s][j].localRotation = new Quaternion(coordinates[v[0]], coordinates[v[1]], coordinates[v[2]], coordinates[v[3]]);
                 }
 
-            }
-        }
-
-        countPlay += 1;
-
-
-    }
-
-    public void ReadSingleDataFromSimulationPerFrame(int index) // rewrite the function with a different cumulative data that take in account the timeframe
-    {
-        if (initSimulationTime == -1.0f)
-        {
-            initSimulationTime = Time.time;
-        }
-
-        float currentSimulationTime = (Time.time - initSimulationTime);
-        if (currentSimulationTime >= simulationTimeLength)
-        {
-            return;
-        }
-
-        countPlay = (int)System.Math.Round(currentSimulationTime / timeStep, System.MidpointRounding.AwayFromZero);
-
-        if (lastCountPlay == countPlay)
-        {
-            return;
-        }
-        else
-        {
-            lastCountPlay = countPlay;
-        }
-
-        int frameStartIndex = countPlay * skeletonNumbers * jointsNumbers * (timeAndIndex + positionCoord); //countplay maximum is seconds * framerate 
-        
-        for (int s = 0; s < skeletonNumbers; s++)
-        {
-            GameObject parent = skeletonJoints[s][0].parent.gameObject;
-            if (index != s)
-            {
-                parent.SetActive(false);
-                continue;
             }
             
-
-            for (int j = 0; j < jointsNumbers; j++)
-            {
-                int baseIndex = frameStartIndex + s * jointsNumbers * (timeAndIndex + positionCoord) + j * (timeAndIndex + positionCoord);//the first skeleton s = 0 // if you want andom put s = and the number of recorded skeletons
-                int indexX = baseIndex + 2;
-                int indexY = baseIndex + 3;
-                int indexZ = baseIndex + 4;
-                int indexXR = baseIndex + 5;
-                int indexYR = baseIndex + 6;
-                int indexZR = baseIndex + 7;
-                int indexWR = baseIndex + 8;
-                
-                if (indexX >= coordinates.Length || float.IsNaN(coordinates[indexX]))
-                {
-                    parent.SetActive(false);
-                }
-                else
-                {
-                    parent.SetActive(true);
-                    skeletonJoints[s][j].position = Vector3.Lerp(skeletonJoints[s][j].position, new Vector3(coordinates[indexX], coordinates[indexY], coordinates[indexZ]), Time.deltaTime / timeStep);
-                    skeletonJoints[s][j].rotation = Quaternion.Lerp(skeletonJoints[s][j].rotation, new Quaternion(coordinates[indexXR], coordinates[indexYR], coordinates[indexZR], coordinates[indexWR]), Time.deltaTime / timeStep);
-                }
-
-            }
         }
 
         countPlay += 1;
 
-
     }
-    
+
     public void ReadDataPerFrameCsv() // rewrite the function with a different cumulative data that take in account the timeframe
     {
 

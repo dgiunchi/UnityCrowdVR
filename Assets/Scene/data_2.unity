@@ -3969,7 +3969,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Inspect: 1
-  dataname: data_2_reduced
+  dataname: data_2_reduced_3
   serializer: {fileID: 68871218}
   skeletonRecordPrefab: {fileID: 5141845633088029211, guid: ec980fac6573bc440916f58e5fe80292,
     type: 3}

@@ -159,30 +159,49 @@ namespace SIGGRAPH_2017 {
                 int fromIndex = -1;
                 float distance = float.MaxValue;
 
-                for (int index= initialIndexFromCoordinates; index < coordinates.Count; index+= PositionSerializerAdam.jointsNumbers) //the first is the hip (skeleton)
+                for (int index= initialIndexFromCoordinates; index < coordinates.Count; index+= PositionSerializerAdam.jointsNumbers+1) //the first is the hip (skeleton)
                 {
-                    Vector2 hipPos = new Vector2(coordinates[index][2], coordinates[index][4]);
-                    if((pos-hipPos).sqrMagnitude < distance)
+                    Vector2 hipPos = new Vector2(coordinates[index][0], coordinates[index][2]);
+					Debug.Log(hipPos);
+					Debug.Log(index);
+					if ((pos-hipPos).sqrMagnitude < distance)
                     {
                         distance = (pos - hipPos).sqrMagnitude;
                         fromIndex = index;
                     }
                 }
                     
-                toIndex = fromIndex + PositionSerializerAdam.jointsNumbers;
+                toIndex = fromIndex + (PositionSerializerAdam.jointsNumbers + 1); //+1 stays for position rotation of first 
                     
                 for (int j = fromIndex; j < toIndex && j >= 0; j++)
                 {
+					if (j== fromIndex)
+					{
+						//time + position parent
+						coordsToSerialize[coordinateToSerializeIndex] = time;
+						coordsToSerialize[coordinateToSerializeIndex + 1] = coordinates[j][0];
+						coordsToSerialize[coordinateToSerializeIndex + 2] = coordinates[j][1];
+						coordsToSerialize[coordinateToSerializeIndex + 3] = coordinates[j][2];
+						
+						//move forward 
+						j++;
+						coordinateToSerializeIndex += (PositionSerializerAdam.timeAndIndex + PositionSerializerAdam.positionCoord);
 
-                    coordsToSerialize[coordinateToSerializeIndex] = time;
-                    coordsToSerialize[coordinateToSerializeIndex + 1] = id;
-                    coordsToSerialize[coordinateToSerializeIndex + 2] = coordinates[j][2];
-                    coordsToSerialize[coordinateToSerializeIndex + 3] = coordinates[j][3];
-                    coordsToSerialize[coordinateToSerializeIndex + 4] = coordinates[j][4];
-                    coordsToSerialize[coordinateToSerializeIndex + 5] = coordinates[j][5];
-                    coordsToSerialize[coordinateToSerializeIndex + 6] = coordinates[j][6];
-                    coordsToSerialize[coordinateToSerializeIndex + 7] = coordinates[j][7];
-                    coordsToSerialize[coordinateToSerializeIndex + 8] = coordinates[j][8];
+						//rotation parent 
+						coordsToSerialize[coordinateToSerializeIndex] = coordinates[j][0];
+						coordsToSerialize[coordinateToSerializeIndex + 1] = coordinates[j][1];
+						coordsToSerialize[coordinateToSerializeIndex + 2] = coordinates[j][2];
+						coordsToSerialize[coordinateToSerializeIndex + 3] = coordinates[j][3];
+					}
+					else
+					{
+						//local rotation per joint
+						coordsToSerialize[coordinateToSerializeIndex] = coordinates[j][0];
+						coordsToSerialize[coordinateToSerializeIndex + 1] = coordinates[j][1];
+						coordsToSerialize[coordinateToSerializeIndex + 2] = coordinates[j][2];
+						coordsToSerialize[coordinateToSerializeIndex + 3] = coordinates[j][3];
+					}
+					
                     coordinateToSerializeIndex += (PositionSerializerAdam.timeAndIndex + PositionSerializerAdam.positionCoord);
                 }
                 initialIndexFromCoordinates = fromIndex; //conservative (toindex)
@@ -191,53 +210,45 @@ namespace SIGGRAPH_2017 {
 
         public void Serialize()
         {
-            // ask to AnimationInputHandlerFromSimulation the timedposition and consider the next one to do, 
-            // grab the Vector and control the hip position and th next position, dynamic is always the same but if hip position and target are below a distance 
-            // threshold the position is serialized and the time is the currentTimeStep.
-            // if yes save the value, otherwise NaN
-            int indexJoint = 0;
+    
+           
             foreach (Transform sj in skeletonJoints)
             {
-				float[] values = new float[9];
+				float[] valuesR = new float[4];
+				float[] valuesP = new float[4];
 
 				if (sj.name.Contains("Skeleton"))
-				{
-					
-					values[0] = index;
-					values[1] = indexJoint; //set the sequence index, GetComponent<AnimationInputHandlerFromSimulation>().timedPositions[currentIndex].time
-					values[2] = sj.position.x;
-					values[3] = sj.position.y;
-					values[4] = sj.position.z;
-					values[5] = sj.rotation.x;
-					values[6] = sj.rotation.y;
-					values[7] = sj.rotation.z;
-					values[8] = sj.rotation.w;
-					Quaternion Q = pc.ApplicaDuringSerialization(sj);
+				{					
+					valuesP[0] = sj.position.x;
+					valuesP[1] = sj.position.y;
+					valuesP[2] = sj.position.z;
+					valuesP[3] = 0f;
+					coordinates.Add(valuesP);
 
+					valuesR = new float[4];
+
+					valuesR[0] = sj.rotation.x;
+					valuesR[1] = sj.rotation.y;
+					valuesR[2] = sj.rotation.z;
+					valuesR[3] = sj.rotation.w;
+					coordinates.Add(valuesR);
+					
+					Quaternion Q = pc.ApplicaDuringSerialization(sj); //check if this can be removed
 				}
 				else
 				{
 
-					values[0] = index;
-					values[1] = indexJoint; //set the sequence index, GetComponent<AnimationInputHandlerFromSimulation>().timedPositions[currentIndex].time
-					values[2] = sj.localPosition.x;
-					values[3] = sj.localPosition.y;
-					values[4] = sj.localPosition.z;
-
 					Quaternion Q = pc.ApplicaDuringSerialization(sj);  
-					values[5] = Q.x;
-					values[6] = Q.y;
-					values[7] = Q.z;
-					values[8] = Q.w;
-
+					valuesR[0] = Q.x;
+					valuesR[1] = Q.y;
+					valuesR[2] = Q.z;
+					valuesR[3] = Q.w;
+					coordinates.Add(valuesR);
 					
                 }
-				coordinates.Add(values);
-                indexJoint++;
-
-			}
-            index++;
+			}          
         }
+
 		void Update() {
             if (SimulationManagerAdam.status != SimulationManagerAdam.STATUS.RECORD) return;
             Time.captureDeltaTime = PositionSerializerAdam.framerate;
