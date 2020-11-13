@@ -113,8 +113,8 @@ NavMeshSettings:
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
-    manualCellSize: 0
-    cellSize: 0.016666668
+    manualCellSize: 1
+    cellSize: 0.05
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -285,11 +285,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 283993948}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2999a666f5553a14183f3a2cd9c67b95, type: 3}
+  m_Script: {fileID: 11500000, guid: 7e1a0f76e4de14b4fa66490e253bfc03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  csvFile: {fileID: 102900000, guid: 10917b5fb5dd59645a1af585c104a459, type: 3}
-  scaleCsv: 0.02
+  csvFile: {fileID: 102900000, guid: a18d55346556214439def0f7da5a6974, type: 3}
+  scaleCsv: 0.04
   sceneHeight: 3
   scaleVelocity: 10
   precisionFloatLoad: 4

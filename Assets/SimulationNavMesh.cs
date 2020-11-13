@@ -15,6 +15,7 @@ public class SimulationNavMesh : MonoBehaviour
 {
     List<GameObject> navMeshAgents = new List<GameObject>();
 
+
     class AgentProperties
     {
         public int id;
@@ -245,6 +246,7 @@ public class SimulationNavMesh : MonoBehaviour
         foreach (CrowdCSVReader.Row row in list)
         {
             arr[0] = row.id != "" ? float.Parse(row.id) : float.MinValue;
+            
             arr[1] = row.gid != "" ? float.Parse(row.gid) : float.MinValue;
             arr[2] = row.x != "" ? float.Parse(row.x) * scaleCsv : float.MinValue;
             arr[3] = row.y != "" ? float.Parse(row.y) * scaleCsv : float.MinValue;
@@ -252,6 +254,9 @@ public class SimulationNavMesh : MonoBehaviour
             arr[5] = row.dir_y != "" ? float.Parse(row.dir_y) * scaleCsv : float.MinValue;
             arr[6] = row.radius != "" ? float.Parse(row.radius) * scaleCsv : float.MinValue;
             arr[7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time), precisionFloatLoad) : float.MinValue;
+
+            
+
             coordinates.Add(arr);
             count += numberOfColumns;
             frameCount += 1;
@@ -270,10 +275,51 @@ public class SimulationNavMesh : MonoBehaviour
 
             infoAgents[infoAgents.Count - 1].endingTime = arr[7];
             infoAgents[infoAgents.Count - 1].endingPosition = new Vector2(arr[2], arr[3]);
-            
         }
+
+
+        Bounds b = getCsvTrajectoriesBounds();
+
+        var boundPoint1 = b.min;
+        var boundPoint2 = b.max;
+        var boundPoint3 = new Vector3(boundPoint1.x, boundPoint1.y, boundPoint2.z);
+        var boundPoint4 = new Vector3(boundPoint1.x, boundPoint2.y, boundPoint1.z);
+        var boundPoint5 = new Vector3(boundPoint2.x, boundPoint1.y, boundPoint1.z);
+        var boundPoint6 = new Vector3(boundPoint1.x, boundPoint2.y, boundPoint2.z);
+        var boundPoint7 = new Vector3(boundPoint2.x, boundPoint1.y, boundPoint2.z);
+        var boundPoint8 = new Vector3(boundPoint2.x, boundPoint2.y, boundPoint1.z);
+
+        float xmax = b.max.x;
+        float zmax = b.max.z;
+        float xmin = b.min.x;
+        float zmin = b.min.z;
+        for (int k=0; k<infoAgents.Count; k++)
+        {
+           if(infoAgents[k].endingPosition.x > xmax)
+           {
+                infoAgents[k].endingPosition.x = xmax;
+           }
+
+           if (infoAgents[k].endingPosition.y > zmax)
+           {
+                infoAgents[k].endingPosition.y = zmax;
+           }
+
+            if (infoAgents[k].endingPosition.x < xmin)
+            {
+                infoAgents[k].endingPosition.x = xmin;
+            }
+
+            if (infoAgents[k].endingPosition.y < zmin)
+            {
+                infoAgents[k].endingPosition.y = zmin;
+            }
+        }
+
+
     }
-    
+
+
     void InstantiateAllTheActors()
     {
         Transform group = GameObject.Find("NavmeshSimulationToRecord").transform;
@@ -300,6 +346,65 @@ public class SimulationNavMesh : MonoBehaviour
         allFinished = true; // start th check to see if it finished.
         initSimulationTime = -1.0f;
         Time.captureDeltaTime = 0.00139f * scaleVelocity;
+    }
+
+    public void DrawBounds()
+    {
+
+        ///////////////////////////////////////////////////////
+
+        GameObject boundLine = GameObject.Find("boundsline");
+
+        if (Application.isEditor)
+            UnityEngine.Object.DestroyImmediate(boundLine);
+        else
+            UnityEngine.Object.Destroy(boundLine);
+
+        ///////////////////////////////////////////////////
+
+
+        Bounds b = getCsvTrajectoriesBounds();
+
+        var boundPoint1 = b.min;
+        var boundPoint2 = b.max;
+        var boundPoint3 = new Vector3(boundPoint1.x, boundPoint1.y, boundPoint2.z);
+        var boundPoint4 = new Vector3(boundPoint1.x, boundPoint2.y, boundPoint1.z);
+        var boundPoint5 = new Vector3(boundPoint2.x, boundPoint1.y, boundPoint1.z);
+        var boundPoint6 = new Vector3(boundPoint1.x, boundPoint2.y, boundPoint2.z);
+        var boundPoint7 = new Vector3(boundPoint2.x, boundPoint1.y, boundPoint2.z);
+        var boundPoint8 = new Vector3(boundPoint2.x, boundPoint2.y, boundPoint1.z);
+
+
+        boundLine = new GameObject();
+
+        float c = UnityEngine.Random.Range(0f, 1f);
+        Color color = new Color(c, c, c);
+
+        Vector2? start = null;
+        boundLine.AddComponent<LineRenderer>();
+        LineRenderer lr = boundLine.GetComponent<LineRenderer>();
+
+        Material yourMaterial = (Material)Resources.Load("Arrow", typeof(Material));
+
+        lr.material = new Material(yourMaterial);
+        lr.SetColors(color, color);
+        lr.SetWidth(0.05f, 0.05f);
+
+        lr.positionCount = 5;
+
+        int i = 0;
+
+        boundLine.transform.position = boundPoint1;
+        lr.SetPosition(0, boundPoint1);
+        lr.SetPosition(1, boundPoint3);
+        lr.SetPosition(2, boundPoint7);
+        lr.SetPosition(3, boundPoint5);
+        lr.SetPosition(4, boundPoint1);
+
+        boundLine.name = "boundsline";
+
+
+
     }
 
 #if UNITY_EDITOR
@@ -361,6 +466,11 @@ public class SimulationNavMesh : MonoBehaviour
                 {
                     Target.Init();
                     Target.InstantiateAllTheActors();
+                }
+                if (Utility.GUIButton("Draw Bounds", UltiDraw.DarkGrey, UltiDraw.White))
+                {
+                    Target.Init();
+                    Target.DrawBounds();
                 }
                 if (Utility.GUIButton("Resize/Create Scene", UltiDraw.DarkGrey, UltiDraw.White))
                 {
