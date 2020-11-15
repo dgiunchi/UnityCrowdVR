@@ -162,8 +162,6 @@ namespace SIGGRAPH_2017 {
                 for (int index= initialIndexFromCoordinates; index < coordinates.Count; index+= PositionSerializerAdam.jointsNumbers+1) //the first is the hip (skeleton)
                 {
                     Vector2 hipPos = new Vector2(coordinates[index][0], coordinates[index][2]);
-					Debug.Log(hipPos);
-					Debug.Log(index);
 					if ((pos-hipPos).sqrMagnitude < distance)
                     {
                         distance = (pos - hipPos).sqrMagnitude;

@@ -206,7 +206,8 @@ public class SimulationNavMesh : MonoBehaviour
             // merge all //@@todo
             int xprecision2 = 5;
             string formatString = "{0:G" + xprecision2 + "},{1:G" + xprecision2 + "},{2:G" + xprecision2 + "},{3:G" + xprecision2 + "},{4:G" + xprecision2 + "},{5:G" + xprecision2 + "},{6:G" + xprecision2 + "},{7:0.0000}";
-            using (var outf = new StreamWriter(Path.Combine(path, "navMesh.csv")))
+            string fp = Path.Combine(path, csvFile.name + "_navMesh.csv");
+            using (var outf = new StreamWriter(fp))
             {
                 // serialize hader
                 outf.WriteLine("id,gid,x,y,dir_x,dir_y,radius,time");
