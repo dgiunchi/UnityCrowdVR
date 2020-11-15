@@ -16,11 +16,11 @@
             "."
         ],
         "fbxSavePaths": [
-            "Avatars/Adults/Female_Adult_01/Source",
-            "Avatars/Adults/Female_Adult_14/Export",
-            "Avatars/Adults/Female_Adult_13/Export",
-            "Avatars/Adults/Female_Adult_12/Export",
-            "Avatars/Adults/Female_Adult_11/Export"
+            "Resources/Avatars/Adults/Male_Adult_20/Source",
+            "Resources/Avatars/Adults/Male_Adult_21/Source",
+            "Resources/Avatars/Adults/Male_Adult_19/Source",
+            "Resources/Avatars/Adults/Male_Adult_18/Source",
+            "Resources/Avatars/Adults/Male_Adult_16/Source"
         ],
         "selectedFbxPath": 0,
         "selectedPrefabPath": 0,
@@ -36,7 +36,7 @@
             "exportUnrendered": true
         },
         "convertToPrefabSettingsSerialize": {
-            "exportFormat": 0,
+            "exportFormat": 1,
             "animatedSkinnedMesh": false,
             "mayaCompatibleNaming": true
         }
