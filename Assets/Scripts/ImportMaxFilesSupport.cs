@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿
+#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 using Autodesk.Fbx;
 using System;
@@ -179,7 +181,6 @@ public class ImportMaxFilesSupport : MonoBehaviour
 
     }
 
-  
-
-
+ 
 }
+#endif 
