@@ -1,10 +1,7 @@
 fileFormatVersion: 2
 guid: 67bbd8c5103323b4688fcfa3abe68927
-labels:
-- font
-timeCreated: 1516718196
-licenseType: Store
-TextScriptImporter:
+DefaultImporter:
+  externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
