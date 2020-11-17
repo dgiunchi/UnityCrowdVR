@@ -8,7 +8,7 @@ public class count : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log(this.gameObject.transform.GetChildCount());
+        Debug.Log(this.gameObject.transform.childCount);
     }
 
     // Update is called once per frame

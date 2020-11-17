@@ -234,6 +234,11 @@ public class SimulationManagerAdam : MonoBehaviour
         status = STATUS.STOP;
     }
 
+    public void StopAndSave()
+    {
+        PositionSerializerAdam.forceSerialization = true;
+    }
+
     public void Show()
     {
         foreach (GameObject go in skeletons)
@@ -609,6 +614,10 @@ public class SimulationManagerAdam : MonoBehaviour
                 {
                     Target.PlayCsv();
                 }
+                if (Utility.GUIButton("Stop&Save", UltiDraw.DarkGrey, UltiDraw.White))
+                {
+                    Target.StopAndSave();
+                }
                 /*if (Utility.GUIButton("Pause", UltiDraw.DarkGrey, UltiDraw.White))
                 {
                     Target.Pause();
@@ -621,9 +630,9 @@ public class SimulationManagerAdam : MonoBehaviour
                 {
                     Target.Show();
                 }*/
- 
 
-                
+
+
 
             }
         }

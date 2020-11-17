@@ -40,7 +40,7 @@ public class AnimationInputHandlerFromAdamSimulation : MonoBehaviour
     bool started = false;
     bool arrived = false;
     int realClosestIndex;
-    private float threshold = 0.01f;
+    private float threshold = 0.1f;
 
     Vector2 currentDirection;
 
@@ -115,28 +115,38 @@ public class AnimationInputHandlerFromAdamSimulation : MonoBehaviour
         gameObject.SetActive(isSim);    
     }
 
-    Vector3 GetDirection()
+    Vector3 updateCurrentDirection()
     {
-        if (isArrived()) return transform.forward;
         SIGGRAPH_2017.BioAnimation_Adam_Simulation component = GetComponent<SIGGRAPH_2017.BioAnimation_Adam_Simulation>();
-        float threshold = 0.5f; //need to be distant
+        float arrivethreshold = 0.3f; //need to be distant
         float distance = component.distanceToTarget(timedPositions[currentIndex].position);
-        bool arrivedToTarget = distance < threshold;
+        bool arrivedToTarget = distance < arrivethreshold;
 
         currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
         float dotProduct = Vector2.Dot(timedPositions[currentIndex].direction.normalized, currentDirection.normalized);
-        
+
         component.Serialize(); //@@todo what we serialize? the current index or a future index?
 
-        if (arrivedToTarget || dotProduct <=0.95)
-    
+        if (arrivedToTarget || dotProduct <= 0.95)
         {
-            currentIndex++;
+            do
+            {
+                if(currentIndex < timedPositions.Count - 1) currentIndex++;
+                distance = component.distanceToTarget(timedPositions[currentIndex].position);
+            } while (distance < arrivethreshold && currentIndex != timedPositions.Count-1);
+
             if (isArrived() || currentIndex >= timedPositions.Count) return transform.forward;
             currentDirection = component.CalculateNewDirection(timedPositions[currentIndex].position);
         }
+        return currentDirection;
+    }
 
-        Vector3 newCurrentdirection = new Vector3(currentDirection.x,0f,currentDirection.y);
+    Vector3 GetDirection()
+    {
+        if (isArrived()) return transform.forward;
+
+        Vector3 r = updateCurrentDirection();
+        Vector3 newCurrentdirection = new Vector3(r.x,0f,r.y);
 
         return newCurrentdirection; 
     }

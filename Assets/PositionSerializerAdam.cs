@@ -76,7 +76,7 @@ public class PositionSerializerAdam : MonoBehaviour
     private float initialTime = float.MaxValue;
     private float endingTime = float.MinValue;
     private float simulationTimeLength;
-
+    public static bool forceSerialization = false;
     public int precisionFloatLoad = 3;
     private int lastCountPlay = -1;
 
@@ -323,12 +323,9 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     void LoadDatasetTest()
     {
-#if UNITY_EDITOR
-        Deserialize(); // UNITY_EDITOR
-#elif UNITY_ANDROID
        StartCoroutine(DeserializeOnAndroid());
-#endif
     }
+
     void SerializeAll()
     {
         if (serializationDone) return;
@@ -447,12 +444,12 @@ public class PositionSerializerAdam : MonoBehaviour
 
         Debug.Log("End Of Serialisation");
 
-        int xprecision = 5;
+        /*int xprecision = 5;
         string formatString = "{0:G" + xprecision + "}\t{1:G" + xprecision + "}\t{2:G" + xprecision + "}\t{3:G" + xprecision + "}";
 
         using (var outf = new StreamWriter(Path.Combine(path, txtFileName)))
             for (int i = 0; i < coordinates.Length; i=i+4)
-                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3]);
+                outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3]);*/
          
     }
     void Deserialize()
@@ -482,15 +479,7 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public void LoadFromCSV()
     {
-#if UNITY_EDITOR
-        DeserializeFromCSV();
-        ConversionFromPositionsToVariations();
-        CalculateInitialAndEndingTime();
-
-#elif UNITY_ANDROID
-       
         StartCoroutine(DeserializeFromCSVOnAndroid());
-#endif
     }
 
     void DeserializeFromCSV()
@@ -865,7 +854,15 @@ public class PositionSerializerAdam : MonoBehaviour
             }
         }
 
-        if (lastSerialization)
+        if (forceSerialization)
+        {
+            for (int i = 0; i < skeletonsList.Count; i++)
+            {
+                skeletonsList[i].SetActive(false);
+            }
+        }
+
+        if (lastSerialization || forceSerialization)
         {
             SerializeAll(); // serialize when finished
         }
