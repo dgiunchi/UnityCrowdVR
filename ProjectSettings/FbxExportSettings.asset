@@ -16,11 +16,11 @@
             "."
         ],
         "fbxSavePaths": [
-            "Resources/Avatars/Adults/Male_Adult_20/Source",
-            "Resources/Avatars/Adults/Male_Adult_21/Source",
-            "Resources/Avatars/Adults/Male_Adult_19/Source",
-            "Resources/Avatars/Adults/Male_Adult_18/Source",
-            "Resources/Avatars/Adults/Male_Adult_16/Source"
+            "Resources/Avatars/Professions/Construction_Male_08/Source",
+            "Resources/Avatars/Professions/Construction_Male_03/Source",
+            "Resources/Avatars/Professions/Chef_Female_01/Source",
+            "Resources/Avatars/Professions/Business_Female_04/Source",
+            "Resources/Avatars/Professions/Business_Female_03/Source"
         ],
         "selectedFbxPath": 0,
         "selectedPrefabPath": 0,
