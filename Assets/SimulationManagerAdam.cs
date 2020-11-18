@@ -411,7 +411,7 @@ public class SimulationManagerAdam : MonoBehaviour
         serializer.Name = dataname;
         serializer.scaleValue = scaleCsv;
         serializer.Init();
-        serializer.LoadFromCSV();
+        serializer.DeserializeCSV();
 
         GameObject points = new GameObject();
         points.name = "bounds";
