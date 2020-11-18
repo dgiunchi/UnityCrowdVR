@@ -74,7 +74,7 @@ public class SimulationManagerAdam : MonoBehaviour
         serializer.scaleValue = scaleCsv;    
     }
 
-    void OnStartRecord()
+    public void OnStartRecord()
     {
         Time.captureDeltaTime = PositionSerializerAdam.framerate;
         group = GameObject.Find("SkeletonsAnimatedFromSimulation").transform;
@@ -185,14 +185,9 @@ public class SimulationManagerAdam : MonoBehaviour
 
     public void Record()
     {
-
         status = STATUS.RECORD;
         serializer.Init();
         serializer.LoadFromCSV();
-        
-
-        currentTime = 0.0f;
-        OnStartRecord();   
     }
 
     public void Play()
@@ -201,13 +196,6 @@ public class SimulationManagerAdam : MonoBehaviour
         status = STATUS.PLAY;
         serializer.Init();
         serializer.LoadFromCSV();
-
-
-#if UNITY_EDITOR
-        currentTime = 0.0f;
-        OnStartPlay();
-#endif
-
     }
 
     public void PlayCsv() {
@@ -264,7 +252,7 @@ public class SimulationManagerAdam : MonoBehaviour
         serializer.Name = dataname;
         serializer.scaleValue = scaleCsv;
         serializer.Init();
-        serializer.LoadFromCSV();
+        serializer.DeserializeCSV();
 
         trajectories = new GameObject();
         trajectories.name = "trajectories";
@@ -488,6 +476,7 @@ public class SimulationManagerAdam : MonoBehaviour
         {
             if(initTime == 0)
             {
+
                 initTime = Time.fixedTime;
             }
             currentTime = Time.fixedTime - initTime;
