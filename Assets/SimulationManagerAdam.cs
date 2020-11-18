@@ -115,12 +115,7 @@ public class SimulationManagerAdam : MonoBehaviour
             aihfs.timedPositions = new List<AnimationInputHandlerFromAdamSimulation.TimedPosition>(serializer.personsRecord[i]);
             aihfs.SetInitalAndEningTimes();
             skeletons.Add(obj);
-            
-            
 
-            //if (initTime != serializer.initialTime) {
-            //    obj.SetActive(false);
-            //}
         }
 
         serializer.UpdateSkeletons(skeletons);
@@ -468,6 +463,7 @@ public class SimulationManagerAdam : MonoBehaviour
             triggerPlay = true;
             Play();
         }
+       
 #endif
 
 
