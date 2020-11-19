@@ -827,7 +827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Destination: Assets\AnimationWalkPackage\Demo\Adam
-  Parameters: {fileID: 11400000, guid: e264254ea95a9894ab8e17ecd5a3efd3, type: 2}
+  Parameters: {fileID: 11400000, guid: a49347052504d624dbcab11346d5ac9b, type: 2}
   XDim: 468
   HDim: 512
   YDim: 376
@@ -909,7 +909,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df0e80ba5c0d5d342b7a150b2a79a1ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drawVerboseGizmo: 0
+  drawVerboseGizmo: 1
   currentIndex: 0
   initialTime: 0
   endingTime: 0

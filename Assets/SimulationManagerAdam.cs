@@ -63,17 +63,21 @@ public class SimulationManagerAdam : MonoBehaviour
 
     public float currentTime;
 
-    public enum STATUS { RECORD, PLAY, PLAYCSV, PAUSE, STOP, NONE};
+    public enum STATUS { RECORD, PLAY, PLAYCSV, PAUSE, STOP, LOADED, NONE};
     public static STATUS status = STATUS.NONE;
 
     bool triggerPlay = false;
+
+    [HideInInspector]
+    public bool sceneLoaded = false;
+
     // Start is called before the first frame update
     void Start()
     {
         serializer.Name = dataname;
         serializer.scaleValue = scaleCsv;    
     }
-
+ 
     public void OnStartRecord()
     {
         Time.captureDeltaTime = PositionSerializerAdam.framerate;
@@ -152,10 +156,26 @@ public class SimulationManagerAdam : MonoBehaviour
         serializer.UpdateSkeletons(skeletons);
     }
 
+    void ClearAll()
+    {
+        group = GameObject.Find("ToPlay").transform;
+        foreach (Transform child in group.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        group = GameObject.Find("SkeletonsAnimatedFromSimulation").transform;
+        foreach (Transform child in group.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        skeletons.Clear();
+    }
+
     void OnStartPlayCsv()
     {
         group = GameObject.Find("ToPlay").transform;
-
         rigidAvatars.Clear();
 
         int numberOfPersons = serializer.persons.Count;
@@ -178,33 +198,37 @@ public class SimulationManagerAdam : MonoBehaviour
         serializer.UpdateRigidAvatars(rigidAvatars);
     }
 
+    public void LoadScene()
+    {
+        status = STATUS.LOADED;
+        serializer.Init();
+        serializer.LoadFromCSV();
+    }
+
     public void Record()
     {
         status = STATUS.RECORD;
+        sceneLoaded = true;
+        ClearAll();
         serializer.Init();
         serializer.LoadFromCSV();
     }
 
     public void Play()
     {
-       
         status = STATUS.PLAY;
-        serializer.Init();
-        serializer.LoadFromCSV();
     }
 
     public void PlayCsv() {
 
         status = STATUS.PLAYCSV;
         //this is a trick
-        serializer.Init();
-        serializer.LoadFromCSV();
-        serializer.CalculateInitialAndEndingTime();
-        
+        //serializer.Init();
+        //serializer.LoadFromCSV();
+        //serializer.CalculateInitialAndEndingTime();
+        ClearAll();
         currentTime = 0.0f;
-
-        OnStartPlayCsv();
-
+        OnStartPlayCsv(); //hee it loads
     }
 
     public void Pause()
