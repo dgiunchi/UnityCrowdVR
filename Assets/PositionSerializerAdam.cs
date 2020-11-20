@@ -53,7 +53,6 @@ public class PositionSerializerAdam : MonoBehaviour
     float initSimulationTime = -1.0f;
     //string path = @"C:\Users\dannox\Desktop\crowdCount\CrowdVR\UnityCrowdVR\";
     
-    bool end = false;
     bool serializationDone = false;
 
     private int allFramesAndPersonsFromCSVLoad = 0; //number of lines of the cvd
@@ -83,12 +82,14 @@ public class PositionSerializerAdam : MonoBehaviour
     TextAsset csvAsset;
 
     WWW file;
+    [HideInInspector]
     bool csvLoaded = false;
     bool csvDidLoad = false;
 
     WWW www;
     bool binaryLoaded = false;
     bool binaryDidLoad = false;
+
     private void Awake()
     {
         d["Skeleton"] = "Bip01";
@@ -133,8 +134,45 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     public void Init()
     {
-        path = Application.streamingAssetsPath;       
-    }
+        path = Application.streamingAssetsPath;
+
+        file = null;
+        csvLoaded = false;
+        csvDidLoad = false;
+
+        www = null;
+        binaryLoaded = false;
+        binaryDidLoad = false;
+
+        if (csvNumberOfFramesPerPerson != null) csvNumberOfFramesPerPerson.Clear();
+        if (timeFrameToIndex != null) timeFrameToIndex.Clear();
+        if (peopleIndexes != null) peopleIndexes.Clear();
+        if (personsOriginal != null) personsOriginal.Clear();
+        if (persons != null) persons.Clear();
+        if (personsRecord != null) personsRecord.Clear();
+
+        if(skeletonsList != null) skeletonsList.Clear();
+        if (skeletonJoints != null) skeletonJoints.Clear();
+        if (rigidAvatars != null) rigidAvatars.Clear();
+
+        numberOfPesonsFromCSVLoad = 0;
+        count = 0;
+        countPlay = 0;
+        currentTime = 0;
+        initSimulationTime = -1.0f;
+
+        allFramesAndPersonsFromCSVLoad = 0; //number of lines of the cvd
+        dataPerPersonAndFrameFromCSVLoad = 0; // number of columns
+        numberOfPesonsFromCSVLoad = 0; // total number of persons   
+        initialTime = float.MaxValue;
+        endingTime = float.MinValue;
+
+        lastCountPlay = -1;
+
+    
+    int frameStartIndex;
+
+}
     static public List<Transform> getJoints(GameObject skeleton) {
 
         List<Transform> joints = new List<Transform>();
@@ -291,9 +329,17 @@ public class PositionSerializerAdam : MonoBehaviour
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAYCSV)
         {
-            //anything here?
+            
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
+        {
+            /*n1 = skeletonNumbers * (jointsNumbers + 1) * (timeAndIndex + positionCoord);
+            n2 = (jointsNumbers + 1) * (timeAndIndex + positionCoord);
+            n3 = (timeAndIndex + positionCoord);
+
+            LoadDatasetTest();*/
+        }
+        else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
         {
             n1 = skeletonNumbers * (jointsNumbers + 1) * (timeAndIndex + positionCoord);
             n2 = (jointsNumbers + 1) * (timeAndIndex + positionCoord);
@@ -308,17 +354,27 @@ public class PositionSerializerAdam : MonoBehaviour
         if (!CSVLoaded()) return;
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD)
         {
+            SimulationManagerAdam.Instance.sceneLoaded = true;
             DelegatedCumulateData();
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAYCSV)
         {
-             ReadDataPerFrameCsv();
+            SimulationManagerAdam.Instance.sceneLoaded = true;
+            ReadDataPerFrameCsv();
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
         {
             if (BinaryLoaded())
             {
-                    ReadDataFromSimulationPerFrame();
+                SimulationManagerAdam.Instance.sceneLoaded = true;
+                ReadDataFromSimulationPerFrame();
+            }
+        }
+        else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
+        {
+            if (BinaryLoaded())
+            {
+                SimulationManagerAdam.Instance.sceneLoaded = true;
             }
         }
     }
@@ -563,6 +619,7 @@ public class PositionSerializerAdam : MonoBehaviour
         if (binaryDidLoad == true) return true;
         if (binaryLoaded == false) return false;
 
+        if (www.bytes.Length == 0) return false;
         binaryDidLoad = true;
 
         MemoryStream ms = new MemoryStream(www.bytes);
@@ -711,7 +768,8 @@ public class PositionSerializerAdam : MonoBehaviour
         ConversionFromPositionsToVariations();
         CalculateInitialAndEndingTime();
 
-        if(SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
+        SimulationManagerAdam.Instance.ResizeScene();
+        if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
         {
             SimulationManagerAdam.Instance.currentTime = 0.0f;
             SimulationManagerAdam.Instance.OnStartPlay();
@@ -720,7 +778,7 @@ public class PositionSerializerAdam : MonoBehaviour
             currentTime = 0.0f;
             SimulationManagerAdam.Instance.OnStartRecord();
         }
-        
+
         return true;
     }
 
