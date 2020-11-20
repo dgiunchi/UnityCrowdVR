@@ -74,10 +74,13 @@ public class SimulationManagerAdam : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        serializer.Name = dataname;
-        serializer.scaleValue = scaleCsv;    
+        SetSerializerOptions();
     }
- 
+    private void SetSerializerOptions()
+    {
+        serializer.Name = dataname;
+        serializer.scaleValue = scaleCsv;
+    }
     public void OnStartRecord()
     {
         Time.captureDeltaTime = PositionSerializerAdam.framerate;
@@ -171,6 +174,7 @@ public class SimulationManagerAdam : MonoBehaviour
         }
 
         skeletons.Clear();
+        sceneLoaded = false;
     }
 
     void OnStartPlayCsv()
@@ -198,6 +202,13 @@ public class SimulationManagerAdam : MonoBehaviour
         serializer.UpdateRigidAvatars(rigidAvatars);
     }
 
+    public void Reload()
+    {
+        ClearAll();
+        SetSerializerOptions();
+        LoadScene();
+    }
+
     public void LoadScene()
     {
         status = STATUS.LOADED;
@@ -208,7 +219,6 @@ public class SimulationManagerAdam : MonoBehaviour
     public void Record()
     {
         status = STATUS.RECORD;
-        sceneLoaded = true;
         ClearAll();
         serializer.Init();
         serializer.LoadFromCSV();
@@ -431,12 +441,15 @@ public class SimulationManagerAdam : MonoBehaviour
     }
 
     public Bounds getCsvTrajectoriesBounds() {
-
-        serializer.Name = dataname;
-        serializer.scaleValue = scaleCsv;
-        serializer.Init();
-        serializer.DeserializeCSV();
-
+        
+        if (Application.isPlaying == false)
+        {
+            serializer.Name = dataname;
+            serializer.scaleValue = scaleCsv;
+            serializer.Init();
+            serializer.DeserializeCSV();
+        }  
+        
         GameObject points = new GameObject();
         points.name = "bounds";
 
@@ -568,18 +581,22 @@ public class SimulationManagerAdam : MonoBehaviour
                 Target.sceneHeight = EditorGUILayout.FloatField("Scene Hight:", Target.sceneHeight);
                 Target.scenePrefab = EditorGUILayout.ObjectField("Scene prefab:", Target.scenePrefab, typeof(GameObject), true) as GameObject;
                 Target.indexPlay = EditorGUILayout.IntField("Single Play Index:", Target.indexPlay);
-                if (Utility.GUIButton("Draw Trajectories", UltiDraw.DarkGrey, UltiDraw.White))
+                if (Application.isPlaying == false)
                 {
-                    Target.Draw();
+                    if (Utility.GUIButton("Draw Trajectories", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.Draw();
+                    }
+                    if (Utility.GUIButton("Draw Boundaries", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.DrawBounds();
+                    }
+                    if (Utility.GUIButton("Resize/Create Scene", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.ResizeScene();
+                    }
                 }
-                if (Utility.GUIButton("Draw Boundaries", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.DrawBounds();
-                }
-                if (Utility.GUIButton("Resize/Create Scene", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.ResizeScene();
-                }
+                
 
                 ////////////////////////////////////////////
 
@@ -600,48 +617,46 @@ public class SimulationManagerAdam : MonoBehaviour
                 so.ApplyModifiedProperties();
 
 
-                Target.rigidAvatarPrefab = EditorGUILayout.ObjectField("RigidAvatarPlayCsv", Target.rigidAvatarPrefab, typeof(GameObject), true) as GameObject;             
+                Target.rigidAvatarPrefab = EditorGUILayout.ObjectField("RigidAvatarPlayCsv", Target.rigidAvatarPrefab, typeof(GameObject), true) as GameObject;
+                if (Application.isPlaying == true)
+                {
+                    if (Utility.GUIButton("Record", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.Record();
+                    }
 
-                if (Utility.GUIButton("Record", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.Record();
-                }
+                    //Target.datafile = EditorGUILayout.ObjectField(" Data file to load:", Target.datafile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
 
-                //Target.datafile = EditorGUILayout.ObjectField(" Data file to load:", Target.datafile, typeof(UnityEngine.Object), true) as UnityEngine.Object;
-
-                if (Utility.GUIButton("Play", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.singlePlay = false;
-                    Target.Play();
+                    if (Utility.GUIButton("Play", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.singlePlay = false;
+                        Target.Play();
+                    }
+                    if (Utility.GUIButton("Reload", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.Reload();
+                    }
+                    if (Utility.GUIButton("PlayCSV", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.PlayCsv();
+                    }
+                    if (Utility.GUIButton("Stop&Save", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.StopAndSave();
+                    }
+                    /*if (Utility.GUIButton("Pause", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.Pause();
+                    }
+                    if (Utility.GUIButton("Stop", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.Stop();
+                    }
+                    if (Utility.GUIButton("Show", UltiDraw.DarkGrey, UltiDraw.White))
+                    {
+                        Target.Show();
+                    }*/
                 }
-                if (Utility.GUIButton("Play Single", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.singlePlay = true;
-                    Target.Play();
-                }
-                if (Utility.GUIButton("PlayCSV", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.PlayCsv();
-                }
-                if (Utility.GUIButton("Stop&Save", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.StopAndSave();
-                }
-                /*if (Utility.GUIButton("Pause", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.Pause();
-                }
-                if (Utility.GUIButton("Stop", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.Stop();
-                }
-                if (Utility.GUIButton("Show", UltiDraw.DarkGrey, UltiDraw.White))
-                {
-                    Target.Show();
-                }*/
-
-
-
 
             }
         }

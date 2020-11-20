@@ -82,6 +82,7 @@ public class PositionSerializerAdam : MonoBehaviour
     TextAsset csvAsset;
 
     WWW file;
+    [HideInInspector]
     bool csvLoaded = false;
     bool csvDidLoad = false;
 
@@ -328,7 +329,7 @@ public class PositionSerializerAdam : MonoBehaviour
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAYCSV)
         {
-            //anything here?
+            
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
         {
@@ -353,11 +354,13 @@ public class PositionSerializerAdam : MonoBehaviour
         if (!CSVLoaded()) return;
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD)
         {
+            SimulationManagerAdam.Instance.sceneLoaded = true;
             DelegatedCumulateData();
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAYCSV)
         {
-             ReadDataPerFrameCsv();
+            SimulationManagerAdam.Instance.sceneLoaded = true;
+            ReadDataPerFrameCsv();
         }
         else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
         {
@@ -765,7 +768,8 @@ public class PositionSerializerAdam : MonoBehaviour
         ConversionFromPositionsToVariations();
         CalculateInitialAndEndingTime();
 
-        if(SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
+        SimulationManagerAdam.Instance.ResizeScene();
+        if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
         {
             SimulationManagerAdam.Instance.currentTime = 0.0f;
             SimulationManagerAdam.Instance.OnStartPlay();
@@ -774,7 +778,7 @@ public class PositionSerializerAdam : MonoBehaviour
             currentTime = 0.0f;
             SimulationManagerAdam.Instance.OnStartRecord();
         }
-        
+
         return true;
     }
 

@@ -22,13 +22,15 @@ public class TransitionFromLoading : MonoBehaviour
         if (SimulationManagerAdam.Instance.sceneLoaded)
         {
             //show the scene
-            DestroyImmediate(logo);
+            logo.SetActive(false);
 
             camera.cullingMask = ~(1 << LayerMask.NameToLayer("logo"));
             camera.clearFlags = CameraClearFlags.Skybox;
             
         } else //show the logo
         {
+            logo.SetActive(true);
+
             camera.cullingMask = 1 << LayerMask.NameToLayer("logo");
             camera.clearFlags = CameraClearFlags.SolidColor;
         }
@@ -44,6 +46,7 @@ public class TransitionFromLoading : MonoBehaviour
     void LoadGame()
     {
         startLoad = true;
+        logo.GetComponent<TMPro.TextMeshPro>().text = SimulationManagerAdam.Instance.dataname + " Loading..."; 
         SimulationManagerAdam.Instance.LoadScene();
     }
 
