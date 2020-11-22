@@ -24,6 +24,7 @@ public class AnimationConverterFromNavmesh : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        NavMesh.avoidancePredictionTime = 6.0f;
         agent = GetComponent<NavMeshAgent>();
         previousPosition = transform.localPosition;
         //Time.captureDeltaTime = 1.0f / 72.0f;
