@@ -8,6 +8,20 @@ TagManager:
   - rvo2
   - skeleton
   - Bullet
+  - VRUIText
+  - VRUIRadio
+  - VRUIButton
+  - VRUIBackground
+  - VRUISlider
+  - VRUIOutline
+  - VRUIAccent
+  - VRUIIcon
+  - VRUIButtonTab
+  - VRUIButtonControlBar
+  - VRUIButtonList
+  - VRUICheckbox
+  - VRUIToggle
+  - VRUIButtonIcon
   layers:
   - Default
   - TransparentFX
