@@ -22,6 +22,7 @@ TagManager:
   - VRUICheckbox
   - VRUIToggle
   - VRUIButtonIcon
+  - Notification
   layers:
   - Default
   - TransparentFX

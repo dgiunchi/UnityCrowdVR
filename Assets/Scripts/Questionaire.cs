@@ -22,16 +22,10 @@ public class QuestionairePart
 {
     public string name;
     public string description;
-    public QuestionaireQuestionSet QuestionSet;
-
-}
-
-[Serializable]
-public class QuestionaireQuestionSet
-{
-    public string description;
     public QuestionaireQuestion[] questions;
+
 }
+
 
 
 [Serializable]
@@ -43,9 +37,8 @@ public class QuestionaireQuestion
     public bool valuebool;
     public float valuefloat;
     public string[] Options;
+    public string answer;
 }
-
-
 
 
 public enum UitType

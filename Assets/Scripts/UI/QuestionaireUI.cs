@@ -30,5 +30,8 @@ public class QuestionaireUI : ScriptableObject
 
     [SerializeField]
     public GameObject Button;
+
+    [SerializeField]
+    public GameObject Notifications;
 }
 

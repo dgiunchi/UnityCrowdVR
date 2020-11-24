@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -37,6 +38,7 @@ namespace SpaceBear.VRUI
 			base.OnPointerClick(eventData);
 
 			onPointerClick.Invoke(base.isOn);
+
 		}
 
 

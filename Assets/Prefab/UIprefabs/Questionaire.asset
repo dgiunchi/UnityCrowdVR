@@ -14,31 +14,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questionaire:
     parts:
-    - name: Panel 1
+    - name: Realism of crowd simulation trajectories
       description: 
-      QuestionSet:
-        description: 
-        questions:
-        - question: Was it real ?
-          helpText: 'Description text '
-          uielement: 1
-          valuebool: 0
-          valuefloat: 0
-          Options:
-          - Real
-          - Fake
-        - question: How real was it ?
-          helpText: 'Description text '
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-        - question: Realistic?
-          helpText: 'Description text '
-          uielement: 1
-          valuebool: 0
-          valuefloat: 0
-          Options:
-          - mah
-          - yes
-          - no
+      questions:
+      - question: Was this real trajectory Data?
+        helpText: further explain this question here
+        uielement: 1
+        valuebool: 0
+        valuefloat: 0
+        Options:
+        - 'Real '
+        - Fake
+        answer: 
+      - question: Do you think this data was realistic?
+        helpText: further explain this question here
+        uielement: 0
+        valuebool: 0
+        valuefloat: 0
+        Options: []
+        answer: 
+      - question: Another Question with 3 options?
+        helpText: further explain this question here
+        uielement: 1
+        valuebool: 0
+        valuefloat: 0
+        Options:
+        - option 1
+        - option 2
+        - option 3
+        answer: 
