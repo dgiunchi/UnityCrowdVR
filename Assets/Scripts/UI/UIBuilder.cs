@@ -22,8 +22,10 @@ public class UIBuilder : MonoBehaviour
 
     protected Questionaire q;
 
-    public delegate void EndQuestionaire();
-    public static event EndQuestionaire Ended;
+    public Firebase databaseManager;
+
+    //public delegate void EndQuestionaire();
+    //public static event EndQuestionaire Ended;
 
     void Build() {
 
@@ -77,7 +79,7 @@ public class UIBuilder : MonoBehaviour
         }
 
         GameObject Button = Instantiate(ui.Button, Container.transform);
-        
+        Button.GetComponentInChildren<Button>().onClick.AddListener(delegate { databaseManager.SaveQuestionaire(q); });
 
     }
 
@@ -130,6 +132,7 @@ public class UIBuilder : MonoBehaviour
 
                 Target.questionaire = EditorGUILayout.ObjectField("questionaire", Target.questionaire, typeof(ScriptableObject), true) as ScriptableObject;
                 Target.useriinterface = EditorGUILayout.ObjectField("ui", Target.useriinterface, typeof(ScriptableObject), true) as ScriptableObject;
+                Target.databaseManager = EditorGUILayout.ObjectField("databaseManager", Target.databaseManager, typeof(Firebase), true) as Firebase;
 
                 if (Utility.GUIButton("Create Panel", UltiDraw.DarkGrey, UltiDraw.White))
                 {

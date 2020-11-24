@@ -22,7 +22,11 @@ public class Firebase : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(Test());
+        //uncomment to test on a scene 
+        //StartCoroutine(Test());
+
+        //attempt to authenticate as soon as the experiment starts
+        StartCoroutine(AutenticateAsync());
     }
 
     IEnumerator Test()
@@ -33,7 +37,7 @@ public class Firebase : MonoBehaviour
     }
 
     IEnumerator AutenticateAsync()
-    {        
+    {   
         string url = identitytoolkitUri + anonymousAuthentication + apiKey;
 
         var request = new UnityWebRequest(url, "POST");
@@ -57,9 +61,20 @@ public class Firebase : MonoBehaviour
      
     }
 
+    public void SaveQuestionaire(Questionaire questionaire) {
+
+        string json = JsonUtility.ToJson(Questionaire);
+        StartCoroutine(SaveData(json));
+
+    }
+
     IEnumerator SaveData(string json)
     {
-        string url = realTimeDatabase + authResponse.localId + "/data.json?auth=" + authResponse.idToken;
+        // if there is no authenticated data than attempt to authenticate 
+        if (authResponse.localId == null) yield return AutenticateAsync();
+        if (authResponse.localId == null) yield break;
+
+            string url = realTimeDatabase + authResponse.localId + "/data.json?auth=" + authResponse.idToken;
 
         var request = new UnityWebRequest(url, "PUT");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
