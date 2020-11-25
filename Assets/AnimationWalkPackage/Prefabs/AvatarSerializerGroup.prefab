@@ -78,7 +78,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LocalAvatar: {fileID: 7935187156453366589}
   LoopbackAvatar: {fileID: 4563068407546935527}
-  record: 0
+  ovrPlayer: {fileID: 0}
+  record: 1
   playback: 0
 --- !u!1001 &1856854863717877808
 PrefabInstance:
