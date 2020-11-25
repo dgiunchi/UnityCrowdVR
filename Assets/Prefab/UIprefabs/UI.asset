@@ -22,3 +22,5 @@ MonoBehaviour:
   Text: {fileID: 1231229959634140257, guid: 9b99792d945ab4e49b3e5ac2200e859f, type: 3}
   Radio: {fileID: 4925761793013971008, guid: 4ab7ab08338b1ad4ebde4526e22abfa6, type: 3}
   Button: {fileID: 164291860591527943, guid: aad1cfc1dcc42b147b910916ce5fed2e, type: 3}
+  Notifications: {fileID: 7296900948757224305, guid: 1f6dfa2d5acc88c4ebfbc3d78e3aa3af,
+    type: 3}
