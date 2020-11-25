@@ -148,7 +148,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Alert message
+  m_Text: Complete Question
 --- !u!1 &7296766574080718111
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,7 +501,7 @@ PrefabInstance:
     - target: {fileID: 4700100130062009618, guid: bf0cfa42509ec8c4ea777d5a4c973129,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 64
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4700100130062009618, guid: bf0cfa42509ec8c4ea777d5a4c973129,
         type: 3}
@@ -542,6 +542,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: VRUI-Button_Simple
+      objectReference: {fileID: 0}
+    - target: {fileID: 4878126394279636944, guid: bf0cfa42509ec8c4ea777d5a4c973129,
+        type: 3}
+      propertyPath: m_Text
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf0cfa42509ec8c4ea777d5a4c973129, type: 3}

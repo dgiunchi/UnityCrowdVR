@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: a030b94e266d1ab4f9639a2b4e5dd09d, type: 3}
   m_Name: UI
   m_EditorClassIdentifier: Assembly-CSharp::QuestionaireUI
   Container: {fileID: 3519904066260106921, guid: 0c26e8b51c877114092d192807262329,

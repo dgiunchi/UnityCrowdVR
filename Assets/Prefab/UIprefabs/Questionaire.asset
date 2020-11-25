@@ -25,14 +25,14 @@ MonoBehaviour:
         Options:
         - 'Real '
         - Fake
-        answer: 
+        answer: Fake
       - question: Do you think this data was realistic?
         helpText: further explain this question here
         uielement: 0
         valuebool: 0
         valuefloat: 0
         Options: []
-        answer: 
+        answer: 0.5939919
       - question: Another Question with 3 options?
         helpText: further explain this question here
         uielement: 1
@@ -42,4 +42,14 @@ MonoBehaviour:
         - option 1
         - option 2
         - option 3
+        answer: option 1
+    - name: Realism of crowd simulation trajectories
+      description: 
+      questions:
+      - question: Question 1
+        helpText: hbtgfhgfbgfg
+        uielement: 0
+        valuebool: 0
+        valuefloat: 0
+        Options: []
         answer: 
