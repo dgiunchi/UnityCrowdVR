@@ -18,7 +18,7 @@ public class ExperimentManager : MonoBehaviour
 
     private bool started;
 
-    private Queue<ExperiementAction> ActionQueue = new Queue<ExperiementAction>();
+    private Queue<ExperimentAction> ActionQueue = new Queue<ExperimentAction>();
 
     private bool Executing = false;
 
@@ -59,10 +59,10 @@ public class ExperimentManager : MonoBehaviour
             {
                 foreach (Trial t in s.trials)
                 {
-                    ExperiementAction scene = new ExperiementAction(ExperimentActionType.scene,t.sceneName);
+                    ExperimentAction scene = new ExperimentAction(ExperimentActionType.scene,t.sceneName);
                     ActionQueue.Enqueue(scene);
                     
-                    ExperiementAction questionaire = new ExperiementAction(ExperimentActionType.QuestoinairePart, t.questionaireRefName);
+                    ExperimentAction questionaire = new ExperimentAction(ExperimentActionType.QuestoinairePart, t.questionaireRefName);
                     ActionQueue.Enqueue(questionaire);
                 }
             }
@@ -70,9 +70,9 @@ public class ExperimentManager : MonoBehaviour
 
     }
 
-    Queue<ExperiementAction> RandomizeTrialOrder(Session s) {
+    Queue<ExperimentAction> RandomizeTrialOrder(Session s) {
         
-        Queue<ExperiementAction> q = new Queue<ExperiementAction>();
+        Queue<ExperimentAction> q = new Queue<ExperimentAction>();
 
         List<int> array = new List<int>();
 
@@ -90,10 +90,10 @@ public class ExperimentManager : MonoBehaviour
 
         foreach (int i in array) {
 
-            ExperiementAction scene = new ExperiementAction(ExperimentActionType.scene, s.trials[i].sceneName);
+            ExperimentAction scene = new ExperimentAction(ExperimentActionType.scene, s.trials[i].sceneName);
             q.Enqueue(scene);
 
-            ExperiementAction questionaire = new ExperiementAction(ExperimentActionType.QuestoinairePart, s.trials[i].questionaireRefName);
+            ExperimentAction questionaire = new ExperimentAction(ExperimentActionType.QuestoinairePart, s.trials[i].questionaireRefName);
             q.Enqueue(questionaire);
         }
 
@@ -124,7 +124,7 @@ public class ExperimentManager : MonoBehaviour
 
     }
 
-    IEnumerator ExecuteAction(ExperiementAction a)
+    IEnumerator ExecuteAction(ExperimentAction a)
     {
        
 
@@ -177,12 +177,12 @@ public class ExperimentManager : MonoBehaviour
 
 }
 
-public class ExperiementAction {
+public class ExperimentAction {
 
     public ExperimentActionType type;
     public string ActionName;
 
-    public ExperiementAction(ExperimentActionType scene, string sceneName)
+    public ExperimentAction(ExperimentActionType scene, string sceneName)
     {
         this.type = scene;
         this.ActionName = sceneName;
