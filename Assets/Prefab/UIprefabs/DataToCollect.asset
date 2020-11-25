@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdbc70ccbedd0674f8ea5e69b0e38079, type: 3}
+  m_Name: DataToCollect
+  m_EditorClassIdentifier: 
+  questionaire:
+    parts:
+    - name: Perceived Realism of trajectories
+      referenceName: ImmersiveReal
+      description: In this questionaire part we will ask you to score the percived
+        realism of the pedestrian trajectories in the scene you just experienced
+      questions:
+      - question: Were the tracjectories real ?
+        helpText: 'The trajectories of pedestrians you just observed could either
+          be extracted from a real scene (tracing of pedestrian trajectories on video)
+          or simulated by a software algorithm.  In the scene you just observed whatdo
+          you think is the case :'
+        uielement: 1
+        valuebool: 0
+        valuefloat: 0
+        Options:
+        - Real (extracted by real pedestrians )
+        - Simulated by acrowd simulation algorithm
+        answer: 
+      - question: How realistic were the tracjectory ?
+        helpText: The trajectories of pedestrians you just observed could  be  trajectories
+          simulated by a crowd simulation algorithm.  How realistic would you rae
+          those trajectories  from 0 (slider completely grey to 1 slider completely
+          blue) )
+        uielement: 0
+        valuebool: 0
+        valuefloat: 0
+        Options: []
+        answer: 
+    - name: Perceived Realism of trajectories
+      referenceName: ImmersiveSimulated
+      description: In this questionaire part we will ask you to score the percived
+        realism of the pedestrian trajectories in the scene you just experienced
+      questions:
+      - question: Were the tracjectories real ?
+        helpText: 'The trajectories of pedestrians you just observed could either
+          be extracted from a real scene (tracing of pedestrian trajectories on video)
+          or simulated by a software algorithm.  In the scene you just observed whatdo
+          you think is the case :'
+        uielement: 1
+        valuebool: 0
+        valuefloat: 0
+        Options:
+        - Real (extracted by real pedestrians )
+        - Simulated by acrowd simulation algorithm
+        answer: 
+      - question: How realistic were the tracjectory ?
+        helpText: The trajectories of pedestrians you just observed could  be  trajectories
+          simulated by a crowd simulation algorithm.  How realistic would you rae
+          those trajectories  from 0 (slider completely grey to 1 slider completely
+          blue) )
+        uielement: 0
+        valuebool: 0
+        valuefloat: 0
+        Options: []
+        answer: 
+    - name: Perceived Realism of trajectories
+      referenceName: VideoReal
+      description: In this questionaire part we will ask you to score the percived
+        realism of the pedestrian trajectories in the scene you just experienced
+      questions:
+      - question: Were the tracjectories real ?
+        helpText: 'The trajectories of pedestrians you just observed could either
+          be extracted from a real scene (tracing of pedestrian trajectories on video)
+          or simulated by a software algorithm.  In the scene you just observed whatdo
+          you think is the case :'
+        uielement: 1
+        valuebool: 0
+        valuefloat: 0
+        Options:
+        - Real (extracted by real pedestrians )
+        - Simulated by acrowd simulation algorithm
+        answer: 
+      - question: How realistic were the tracjectory ?
+        helpText: The trajectories of pedestrians you just observed could  be  trajectories
+          simulated by a crowd simulation algorithm.  How realistic would you rae
+          those trajectories  from 0 (slider completely grey to 1 slider completely
+          blue) )
+        uielement: 0
+        valuebool: 0
+        valuefloat: 0
+        Options: []
+        answer: 
+    - name: Perceived Realism of trajectories
+      referenceName: VideoSimulated
+      description: In this questionaire part we will ask you to score the percived
+        realism of the pedestrian trajectories in the scene you just experienced
+      questions:
+      - question: Were the tracjectories real ?
+        helpText: 'The trajectories of pedestrians you just observed could either
+          be extracted from a real scene (tracing of pedestrian trajectories on video)
+          or simulated by a software algorithm.  In the scene you just observed whatdo
+          you think is the case :'
+        uielement: 0
+        valuebool: 0
+        valuefloat: 0
+        Options:
+        - Real (extracted by real pedestrians )
+        - Simulated by acrowd simulation algorithm
+        answer: 
+      - question: How realistic were the tracjectory ?
+        helpText: The trajectories of pedestrians you just observed could  be  trajectories
+          simulated by a crowd simulation algorithm.  How realistic would you rae
+          those trajectories  from 0 (slider completely grey to 1 slider completely
+          blue) )
+        uielement: 0
+        valuebool: 0
+        valuefloat: 0
+        Options: []
+        answer: 

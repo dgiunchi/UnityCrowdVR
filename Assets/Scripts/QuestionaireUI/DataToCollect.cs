@@ -4,15 +4,15 @@ using System;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Questionaire/NewQuestionaire")]
-public class Questionaire : ScriptableObject
+public class DataToCollect : ScriptableObject
 {
     [SerializeField]
-    public QuestionaireObject questionaire;
+    public Questionaire questionaire;
 
 }
 
 [Serializable]
-public class QuestionaireObject
+public class Questionaire
 {
     public QuestionairePart[] parts;
 }
@@ -21,6 +21,7 @@ public class QuestionaireObject
 public class QuestionairePart
 {
     public string name;
+    public string referenceName;
     public string description;
     public QuestionaireQuestion[] questions;
 
@@ -46,29 +47,29 @@ public enum UitType
 
 
 //upload dataset
-public class QuestionaireUpload : ScriptableObject
+public class DataToCollectUpload : ScriptableObject
 {
     [SerializeField]
-    public QuestionaireObjectUpload questionaire;
+    public QuestionaireUpload questionaire;
 
-    public QuestionaireUpload(QuestionaireObject v)
+    public DataToCollectUpload(Questionaire v)
     {
-        this.questionaire = (QuestionaireObjectUpload)v;
+        this.questionaire = (QuestionaireUpload)v;
     }
 
-    public static explicit operator QuestionaireUpload(Questionaire v)
+    public static explicit operator DataToCollectUpload(DataToCollect v)
     {
-        return new QuestionaireUpload(v.questionaire);
+        return new DataToCollectUpload(v.questionaire);
     }
 
 }
 
 [Serializable]
-public class QuestionaireObjectUpload
+public class QuestionaireUpload
 {
     public QuestionairePartUpload[] parts;
 
-    public QuestionaireObjectUpload(QuestionairePart[] v)
+    public QuestionaireUpload(QuestionairePart[] v)
     {
         this.parts = new QuestionairePartUpload[v.Length];
 
@@ -78,9 +79,9 @@ public class QuestionaireObjectUpload
         }
     }
 
-    public static explicit operator QuestionaireObjectUpload(QuestionaireObject v)
+    public static explicit operator QuestionaireUpload(Questionaire v)
     {
-        return new QuestionaireObjectUpload(v.parts);
+        return new QuestionaireUpload(v.parts);
     }
 }
 
@@ -108,7 +109,7 @@ public class QuestionairePartUpload
 
     public static explicit operator QuestionairePartUpload(QuestionairePart v)
     {
-        return new QuestionairePartUpload(v.name, v.description, v.questions);
+        return new QuestionairePartUpload(v.referenceName, v.description, v.questions);
     }
 }
 

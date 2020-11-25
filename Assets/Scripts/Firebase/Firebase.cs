@@ -61,9 +61,9 @@ public class Firebase : MonoBehaviour
      
     }
 
-    public void SaveQuestionaire(Questionaire questionaire) {
+    public void SaveQuestionaire(DataToCollect questionaire) {
 
-        QuestionaireUpload q = (QuestionaireUpload)questionaire;
+        DataToCollectUpload q = (DataToCollectUpload)questionaire;
         string json = JsonUtility.ToJson(q);
         StartCoroutine(SaveData(json));
 

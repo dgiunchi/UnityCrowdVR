@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 using SpaceBear.VRUI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class UIBuilder : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class UIBuilder : MonoBehaviour
 
     public Vector3 adjust;
 
-    public ScriptableObject questionaire;
+    public ScriptableObject dataToCollect;
 
     public ScriptableObject useriinterface;
 
@@ -28,14 +29,17 @@ public class UIBuilder : MonoBehaviour
 
     protected QuestionaireUI ui;
 
-    protected Questionaire q;
+    protected DataToCollect data;
 
     public Firebase databaseManager;
 
-    void onAwake() {
+    public UnityEvent OnQuestionairePartCompleted;
+
+
+    void Awake() {
 
         ui = (QuestionaireUI)useriinterface;
-        q = (Questionaire)questionaire;
+        data = (DataToCollect)dataToCollect;
 
         cleanQuestionaire();
     }
@@ -43,7 +47,7 @@ public class UIBuilder : MonoBehaviour
     void cleanQuestionaire() {
 
 
-        foreach (QuestionairePart p in q.questionaire.parts) {
+        foreach (QuestionairePart p in data.questionaire.parts) {
 
             foreach (QuestionaireQuestion q in p.questions) {
 
@@ -53,15 +57,32 @@ public class UIBuilder : MonoBehaviour
         }
     }
 
-    void Build(int part)
-    {
+    public void EditorBuild(int i) { 
 
 #if UNITY_EDITOR
+
         ui = (QuestionaireUI)useriinterface;
-        q = (Questionaire)questionaire;
+        data = (DataToCollect)dataToCollect;
 
         cleanQuestionaire();
-#endif 
+
+#endif
+
+        string referenceName = data.questionaire.parts[i].referenceName;
+
+        Build(referenceName);
+    } 
+
+    public void Build(string referenceName)
+    {
+
+        int part = GetQuestionairePartIndex(referenceName);
+
+        if (part == -1) {
+
+            Debug.Log("Questionaire with Refrence name -->" + referenceName+" not found can't build interface");
+            return;
+        }
 
         Panel = new GameObject("Questionaire Panel");
 
@@ -75,12 +96,12 @@ public class UIBuilder : MonoBehaviour
 
         GameObject Container = Instantiate(ui.Container, Panel.transform);
         GameObject PanelTitle = Instantiate(ui.PanelTitle, Container.transform);
-        PanelTitle.GetComponent<Text>().text = q.questionaire.parts[part].name;
+        PanelTitle.GetComponent<Text>().text = data.questionaire.parts[part].name;
 
-        for (int questionNumber = 0; questionNumber < q.questionaire.parts[part].questions.Length; questionNumber++)
+        for (int questionNumber = 0; questionNumber < data.questionaire.parts[part].questions.Length; questionNumber++)
         {
 
-            QuestionaireQuestion question = q.questionaire.parts[part].questions[questionNumber];
+            QuestionaireQuestion question = data.questionaire.parts[part].questions[questionNumber];
 
             GameObject QuestionTitle = Instantiate(ui.Title, Container.transform);
             QuestionTitle.GetComponent<Text>().text = question.question;
@@ -146,20 +167,37 @@ public class UIBuilder : MonoBehaviour
 
         GameObject Button = Instantiate(ui.Button, Container.transform);
         Button.GetComponentInChildren<Button>().onClick.AddListener(delegate { SaveQuestionaire(part); });
+
+    }
+
+    int GetQuestionairePartIndex(string referenceName) {
+
+
+        for (int i=0; i<data.questionaire.parts.Length; i++)
+        {
+
+            if (referenceName == data.questionaire.parts[i].referenceName)
+            { 
+                return i; 
+            }
+
+        }
+
+        return -1;
     }
 
     public void RadioValueChanged(int part,int questionNumber, int indexOption)
     {
-        string value = q.questionaire.parts[part].questions[questionNumber].Options[indexOption];
+        string value = data.questionaire.parts[part].questions[questionNumber].Options[indexOption];
         Debug.Log("Chaging Questionaire Part " + part.ToString() + " Question->" + questionNumber.ToString()+" Value->"+ value);
-        q.questionaire.parts[part].questions[questionNumber].answer = value;
+        data.questionaire.parts[part].questions[questionNumber].answer = value;
         deleteNotifications(part, questionNumber);
     }
 
     public void SliderValueChanged(int part, int questionNumber, float value)
     {
         Debug.Log("Chaging Questionaire Part "+ part.ToString() + " Question->" + questionNumber.ToString() + " Value->" + value.ToString());
-        q.questionaire.parts[part].questions[questionNumber].answer = value.ToString();
+        data.questionaire.parts[part].questions[questionNumber].answer = value.ToString();
         deleteNotifications(part, questionNumber);
     }
 
@@ -167,10 +205,14 @@ public class UIBuilder : MonoBehaviour
 
         if (!triggerNotifactions(part)) { 
 
-                databaseManager.SaveQuestionaire(q);
+                databaseManager.SaveQuestionaire(data);
                 Destroy();
+
+                //trigger event 
+                OnQuestionairePartCompleted.Invoke();
         }
-   
+        
+
     }
 
     public bool triggerNotifactions(int part) {
@@ -190,9 +232,9 @@ public class UIBuilder : MonoBehaviour
     {
         List<int> anaswered = new List<int>();
 
-        for (int i=0; i < q.questionaire.parts[part].questions.Length;i++)
+        for (int i=0; i < data.questionaire.parts[part].questions.Length;i++)
         {
-            QuestionaireQuestion question = q.questionaire.parts[part].questions[i];
+            QuestionaireQuestion question = data.questionaire.parts[part].questions[i];
 
             if (question.answer == null)
             {
@@ -291,16 +333,16 @@ public class UIBuilder : MonoBehaviour
 
                 EditorGUILayout.LabelField("UI builder");
 
-                Target.adjust = EditorGUILayout.Vector3Field("adjust", Target.adjust);
+                Target.adjust = EditorGUILayout.Vector3Field("Adjust", Target.adjust);
                 Target.scale = EditorGUILayout.FloatField("Scale", Target.scale);
                 Target.Parent = EditorGUILayout.ObjectField("Parent", Target.Parent, typeof(GameObject), true) as GameObject;
-                Target.questionaire = EditorGUILayout.ObjectField("questionaire", Target.questionaire, typeof(ScriptableObject), true) as ScriptableObject;
-                Target.useriinterface = EditorGUILayout.ObjectField("ui", Target.useriinterface, typeof(ScriptableObject), true) as ScriptableObject;
-                Target.databaseManager = EditorGUILayout.ObjectField("databaseManager", Target.databaseManager, typeof(Firebase), true) as Firebase;
+                Target.dataToCollect = EditorGUILayout.ObjectField("Data To Collect", Target.dataToCollect, typeof(ScriptableObject), true) as ScriptableObject;
+                Target.useriinterface = EditorGUILayout.ObjectField("Ui Prefabs", Target.useriinterface, typeof(ScriptableObject), true) as ScriptableObject;
+                Target.databaseManager = EditorGUILayout.ObjectField("Database Manager", Target.databaseManager, typeof(Firebase), true) as Firebase;
 
                 if (Utility.GUIButton("Layout Create Test", UltiDraw.DarkGrey, UltiDraw.White))
                 {
-                    Target.Build(0);
+                    Target.EditorBuild(0);
                 }
                 if (Utility.GUIButton("Destroy Test", UltiDraw.DarkGrey, UltiDraw.White))
                 {
@@ -314,7 +356,6 @@ public class UIBuilder : MonoBehaviour
         }
     }
 #endif
-
 
 }
 
