@@ -17,14 +17,14 @@ MonoBehaviour:
     randomizeTrialsOrder: 1
     trials:
     - name: Video - Real Data
-      sceneName: VideoReal
+      sceneName: VideoReal_e
       questionaireRefName: VideoReal
     - name: Video - Simulated Data
-      sceneName: VideoSimulated
+      sceneName: VideoSimulated_e
       questionaireRefName: VideoSimulated
     - name: Immersive- Simulated Data
-      sceneName: ImmersiveSimulated
+      sceneName: ImmersiveSimulated_e
       questionaireRefName: ImmersiveSimulated
     - name: Immersive- Real Data
-      sceneName: ImmersiveReal
+      sceneName: ImmersiveReal_e
       questionaireRefName: ImmersiveReal

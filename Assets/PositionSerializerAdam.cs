@@ -6,11 +6,15 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization;
 using System;
+using UnityEngine.Events;
 
 public class PositionSerializerAdam : MonoBehaviour
 {
 
     //public string datafile;
+
+    public UnityEvent OnEndOfTrialEvent;
+
 
     public List<List<Transform>> skeletonJoints;
 
@@ -803,6 +807,7 @@ public class PositionSerializerAdam : MonoBehaviour
         
         if(lastCountPlay == countPlay)
         {
+            OnEndOfTrialEvent.Invoke();
             return;
         } else
         {

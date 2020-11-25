@@ -7,6 +7,10 @@ using UnityEngine.SceneManagement;
 public class ExperimentManager : MonoBehaviour
 {
     //public 
+    public string Lobby;
+
+    public string End;
+
     public ScriptableObject experiment;
 
     public UIBuilder uimanager;
@@ -117,7 +121,7 @@ public class ExperimentManager : MonoBehaviour
             }
             else
             {
-                StartCoroutine(LoadYourAsyncScene("End"));
+                StartCoroutine(LoadYourAsyncScene(End));
             }
             
         }
@@ -131,7 +135,7 @@ public class ExperimentManager : MonoBehaviour
         if (a.type == ExperimentActionType.QuestoinairePart)
         {
             //load Lobby scene 
-            yield return LoadYourAsyncScene("Lobby");
+            yield return LoadYourAsyncScene(Lobby);
 
             //Build Questionaire UI
             uimanager.Build(a.ActionName);
@@ -145,6 +149,7 @@ public class ExperimentManager : MonoBehaviour
             yield return  LoadYourAsyncScene(a.ActionName);
 
             //find end of trialobject and link to OnEndOfTrialEvent
+            //GameObject.Find("[REPLACEWITHCORRECTNAME]").GetComponent<PositionSerializerAdam>().OnEndOfTrialEvent.AddListener(NextAction);
             GameObject.Find("EndOfTrialManager").GetComponent<EndOfTrialManager>().OnEndOfTrialEvent.AddListener(NextAction);
 
         }

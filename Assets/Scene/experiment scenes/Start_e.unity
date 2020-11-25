@@ -147,7 +147,7 @@ TextMesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40287963}
-  m_Text: 'Start
+  m_Text: 'Start_e
 
 '
   m_OffsetZ: 0
