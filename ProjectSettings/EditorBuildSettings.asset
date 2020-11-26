@@ -30,23 +30,23 @@ EditorBuildSettings:
     path: Assets/Scene/experiment scenes/End_e.unity
     guid: ca7bed5ac6b0d4a479c3106e1d8fb55f
   - enabled: 1
-    path: Assets/Scene/experiment scenes/ImmersiveReal_e.unity
-    guid: 6c8d8aa3b51421d42bc8359ad68d362e
-  - enabled: 1
-    path: Assets/Scene/experiment scenes/ImmersiveSimulated_e.unity
-    guid: 779ccd73243318742a53419d3839e950
-  - enabled: 1
     path: Assets/Scene/experiment scenes/Lobby_e.unity
     guid: ee36181a16f8ac0449b46dd282106b7b
   - enabled: 1
     path: Assets/Scene/experiment scenes/Start_e.unity
     guid: a83e39183255bec4d8dd00e8e3a8f961
   - enabled: 1
-    path: Assets/Scene/experiment scenes/VideoReal_e.unity
-    guid: 28be725307c91824689dda9f3540ea67
+    path: Assets/Scene/experiment scenes/VideoReal_e_new.unity
+    guid: e920bee16fadcb742b92617e39f3d9f0
   - enabled: 1
-    path: Assets/Scene/experiment scenes/VideoSimulated_e.unity
-    guid: 300c534c3b903cb458073fbf354467ea
+    path: Assets/Scene/experiment scenes/VideoSimulated_e_new.unity
+    guid: c6fbaa6340b73684b8e15fa9da21878c
+  - enabled: 1
+    path: Assets/Scene/experiment scenes/ImmersiveReal_e_new.unity
+    guid: 23de1451190d4d84bafc03e13ebbd0ea
+  - enabled: 1
+    path: Assets/Scene/experiment scenes/ImmersiveSimulated_e_new.unity
+    guid: da8fe00e9a0f75345850dc645da8b7c2
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 10fd3cf6e90fb6541af008bf8baf3279,
       type: 2}

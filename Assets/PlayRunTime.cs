@@ -1,21 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Video;
 public class PlayRunTime : MonoBehaviour
 {
     bool triggerPlay = false;
-    private VideoPlayer MyVideoPlayer;
+    private VideoPlayer videoPlayer;
+    public UnityEvent OnEndOfTrialEvent;
+
+    private void Start()
+    {
+        videoPlayer = GetComponent<VideoPlayer>();
+        //videoPlayer.loopPointReached += EndReached;
+    }
 
     public void PlayVideo()
     {
-        MyVideoPlayer = GetComponent<VideoPlayer>();
+        
         // play video player
-        MyVideoPlayer.Play();
+        videoPlayer.Play();
     }
 
-    // Update is called once per frame
-    void Update()
+    void EndReached(UnityEngine.Video.VideoPlayer vp)
+    {
+        OnEndOfTrialEvent.Invoke();
+    }
+    
+// Update is called once per frame
+void Update()
     {
         if ( Input.GetKeyDown(KeyCode.P) || OVRInput.Get(OVRInput.Button.Three) && triggerPlay == false)
         {

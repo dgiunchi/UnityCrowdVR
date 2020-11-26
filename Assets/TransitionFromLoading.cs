@@ -6,14 +6,22 @@ public class TransitionFromLoading : MonoBehaviour
 {
     private bool switchToGame = false;
     private bool isLoaded = false;
-    public GameObject logo;
 
     private bool startLoad = false;
     Camera camera;
+    private GameObject logo;
     // Start is called before the first frame update
     void Start()
     {
         camera = GetComponent<Camera>();
+        if(camera == null)
+        {
+            camera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
+            camera.clearFlags = CameraClearFlags.SolidColor;
+            camera.backgroundColor = Color.black;
+        }
+
+        logo = GameObject.Find("LoadingLogo") as GameObject;
     }
 
     // Update is called once per frame
