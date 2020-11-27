@@ -554,9 +554,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6b2b512539e454448dfabbfedf839c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  datafile: 
   rigidAvatars: []
-  csvFileName: navMesh.csv
   scaleValue: 1
   timeStep: 0
   precisionFloatLoad: 4
@@ -3928,7 +3926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Inspect: 1
-  datafile: {fileID: 0}
+  dataname: data_2
   serializer: {fileID: 68871218}
   skeletonRecordPrefab: {fileID: 5141845633088029211, guid: ec980fac6573bc440916f58e5fe80292,
     type: 3}

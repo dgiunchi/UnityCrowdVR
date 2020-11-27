@@ -612,6 +612,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1007851321}
   - component: {fileID: 1007851322}
+  - component: {fileID: 1007851323}
   m_Layer: 0
   m_Name: ExperimentManager
   m_TagString: Untagged
@@ -656,6 +657,18 @@ MonoBehaviour:
   - {fileID: 2118473837}
   - {fileID: 1024933042}
   - {fileID: 2085946400}
+--- !u!114 &1007851323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007851320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e0c324054be40b47bb30a3194ffaf19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1024933042
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,6 +744,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OnEndOfTrialEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPrepareCameraForTransition:
     m_PersistentCalls:
       m_Calls: []
   invoked: 0
@@ -1036,25 +1052,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e277d182b8d5db149b05ef1a6c1e5695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1835652317 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 100012, guid: ce816f2e6abb0504092c23ed9b970dfd,
-    type: 3}
-  m_PrefabInstance: {fileID: 605522430}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1835652319
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1835652317}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5e4fb5567bba774ab314b35534ef3b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  logo: {fileID: 0}
 --- !u!1 &1848959322
 GameObject:
   m_ObjectHideFlags: 0

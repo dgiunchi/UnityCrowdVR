@@ -16,6 +16,7 @@ public class RemoteLoopbackManager : MonoBehaviour
 
     public OvrAvatar LocalAvatar;
     public OvrAvatar LoopbackAvatar;
+    public Transform ovrPlayerController;
 
     [System.Serializable]
     public class SimulatedLatencySettings
@@ -35,7 +36,7 @@ public class RemoteLoopbackManager : MonoBehaviour
         internal float AverageWindow = 0f;
         internal float LatencySum = 0f;
         internal LinkedList<float> LatencyValues = new LinkedList<float>();
-
+        
         public float NextValue()
         {
             AverageWindow = LatencySum / (float)LatencyValues.Count;

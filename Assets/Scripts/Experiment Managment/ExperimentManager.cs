@@ -130,8 +130,6 @@ public class ExperimentManager : MonoBehaviour
 
     IEnumerator ExecuteAction(ExperimentAction a)
     {
-       
-
         if (a.type == ExperimentActionType.QuestoinairePart)
         {
             //load Lobby scene 
@@ -142,7 +140,7 @@ public class ExperimentManager : MonoBehaviour
 
             //add listener to move to next action 
             uimanager.OnQuestionairePartCompleted.AddListener(NextAction);
-
+            
         }
         else if (a.type == ExperimentActionType.scene)
         {
@@ -151,9 +149,9 @@ public class ExperimentManager : MonoBehaviour
             //find end of trialobject and link to OnEndOfTrialEvent
             //GameObject.Find("[REPLACEWITHCORRECTNAME]").GetComponent<PositionSerializerAdam>().OnEndOfTrialEvent.AddListener(NextAction);
             GameObject.Find("EndOfTrialManager").GetComponent<EndOfTrialManager>().OnEndOfTrialEvent.AddListener(NextAction);
-
+            
         }
-
+        
         Executing = false;
     }
 
@@ -163,7 +161,7 @@ public class ExperimentManager : MonoBehaviour
         // This is particularly good for creating loading screens.
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
-
+        
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenename);
 
         // Wait until the asynchronous scene fully loads
@@ -192,9 +190,8 @@ public class ExperimentAction {
         this.type = scene;
         this.ActionName = sceneName;
     }
-
-
 }
+
 
 public enum ExperimentActionType { 
 

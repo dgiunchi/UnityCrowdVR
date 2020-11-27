@@ -115,10 +115,10 @@ public class UIBuilder : MonoBehaviour
                 QuestionUiElement.name = "Q"+part.ToString() + questionNumber.ToString();
 
                 Transform ChildOption = QuestionUiElement.transform.GetChild(0);
-                int l = QuestionUiElement.transform.GetChildCount();
+                int l = QuestionUiElement.transform.childCount;
                 for (int i = 1; i < l; i++)
                 {
-                    Transform QuestionUiElementChild = QuestionUiElement.transform.GetChild(QuestionUiElement.transform.GetChildCount() - 1);
+                    Transform QuestionUiElementChild = QuestionUiElement.transform.GetChild(QuestionUiElement.transform.childCount - 1);
 
 #if UNITY_EDITOR
                     DestroyImmediate(QuestionUiElementChild.gameObject);

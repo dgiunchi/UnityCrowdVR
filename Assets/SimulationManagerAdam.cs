@@ -37,7 +37,7 @@ public class SimulationManagerAdam : MonoBehaviour
         }
 
         instance = this;
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject); //@@check in the final version if needed
     }
 
     public GameObject skeletonRecordPrefab;
@@ -502,7 +502,10 @@ public class SimulationManagerAdam : MonoBehaviour
         }
        
 #endif
-
+        /*if(sceneLoaded && TransitionManager.Instance.isWaiting)
+        {
+            TransitionManager.Instance.setExperimentView();
+        }*/
 
 
         if (status == STATUS.RECORD)
