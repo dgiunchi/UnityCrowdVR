@@ -11,7 +11,7 @@ public class PlayRunTime : MonoBehaviour
 
     private void Start()
     {
-        //TransitionManager.Instance.setExperimentView();
+        TransitionManager.Instance.setExperimentView();
         videoPlayer = GetComponent<VideoPlayer>();
         //videoPlayer.loopPointReached += EndReached;
     }

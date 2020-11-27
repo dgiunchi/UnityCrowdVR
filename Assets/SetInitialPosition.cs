@@ -19,7 +19,7 @@ public class SetInitialPosition : MonoBehaviour
             bounds.Encapsulate(c.bounds);
         }
         Transform target = GameObject.Find("OVRPlayerController").transform;
-        target.position = new Vector3(bounds.center.x, bounds.center.y + 1.0f, bounds.center.z);
+        target.position = new Vector3(bounds.center.x, bounds.center.y + 2.0f, bounds.center.z);
         Transform ui = GameObject.Find("EndOfTrialManager").transform;
         ui.position = new Vector3(target.position.x, target.position.y, target.position.z + 3f);
     }

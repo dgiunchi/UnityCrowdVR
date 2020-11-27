@@ -208,11 +208,16 @@ public class UIBuilder : MonoBehaviour
                 databaseManager.SaveQuestionaire(data);
                 Destroy();
 
-                //trigger event 
-                OnQuestionairePartCompleted.Invoke();
+            TransitionManager.Instance.setWaitingView();
+            StartCoroutine(SaveQuestionnaireCoroutine());
+            
         }
-        
+    }
 
+    IEnumerator SaveQuestionnaireCoroutine()
+    {
+        yield return new WaitForSeconds(1);
+        OnQuestionairePartCompleted.Invoke();
     }
 
     public bool triggerNotifactions(int part) {

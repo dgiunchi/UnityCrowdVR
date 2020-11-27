@@ -502,10 +502,10 @@ public class SimulationManagerAdam : MonoBehaviour
         }
        
 #endif
-        /*if(sceneLoaded && TransitionManager.Instance.isWaiting)
+        if(sceneLoaded && TransitionManager.Instance.isWaiting)
         {
             TransitionManager.Instance.setExperimentView();
-        }*/
+        }
 
 
         if (status == STATUS.RECORD)
