@@ -161,7 +161,10 @@ public class ExperimentManager : MonoBehaviour
         // This is particularly good for creating loading screens.
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
-        
+
+        TransitionManager.Instance.setWaitingView();
+        yield return new WaitForSeconds(1.0f);
+
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenename);
 
         // Wait until the asynchronous scene fully loads

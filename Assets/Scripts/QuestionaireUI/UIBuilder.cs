@@ -205,19 +205,12 @@ public class UIBuilder : MonoBehaviour
 
         if (!triggerNotifactions(part)) { 
 
-                databaseManager.SaveQuestionaire(data);
-                Destroy();
+            databaseManager.SaveQuestionaire(data);
+            Destroy();
 
-            TransitionManager.Instance.setWaitingView();
-            StartCoroutine(SaveQuestionnaireCoroutine());
-            
+            OnQuestionairePartCompleted.Invoke();
+
         }
-    }
-
-    IEnumerator SaveQuestionnaireCoroutine()
-    {
-        yield return new WaitForSeconds(1);
-        OnQuestionairePartCompleted.Invoke();
     }
 
     public bool triggerNotifactions(int part) {

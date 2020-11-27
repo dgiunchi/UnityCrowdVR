@@ -44,7 +44,7 @@ public class TransitionManager : MonoBehaviour
         camera.clearFlags = CameraClearFlags.SolidColor;
     }
 
-    public void setExperimentView ()
+    public void setExperimentView()
     {
         camera.cullingMask = ~(1 << LayerMask.NameToLayer("logo"));
         camera.clearFlags = CameraClearFlags.Skybox;

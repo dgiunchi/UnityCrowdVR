@@ -18,7 +18,6 @@ public class EndOfTrialManager : MonoBehaviour
         }
         else
         {
-            TransitionManager.Instance.setWaitingView();
             invoked = false;
             OnEndOfTrialEvent.Invoke();
         }
