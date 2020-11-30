@@ -49,10 +49,13 @@ public class UIBuilder : MonoBehaviour
 
         foreach (QuestionairePart p in data.questionaire.parts) {
 
-            foreach (QuestionaireQuestion q in p.questions) {
+            foreach (QuestionaireSubPart sp in p.subparts) {
 
-                q.answer = null;
-
+                foreach(QuestionaireQuestion q in sp.questions)
+                {
+                    q.answer = null;
+                }
+                   
             }
         }
     }
@@ -62,6 +65,7 @@ public class UIBuilder : MonoBehaviour
 #if UNITY_EDITOR
 
         ui = (QuestionaireUI)useriinterface;
+        //DataToCollectTest datatest = (DataToCollectTest)dataToCollect;
         data = (DataToCollect)dataToCollect;
 
         cleanQuestionaire();
@@ -73,12 +77,12 @@ public class UIBuilder : MonoBehaviour
         Build(referenceName);
     } 
 
-    public void Build(string referenceName)
+    public void Build(string referenceName, int subPartNumber=0)
     {
 
-        int part = GetQuestionairePartIndex(referenceName);
+        int partNumber = GetQuestionairePartIndex(referenceName);
 
-        if (part == -1) {
+        if (partNumber == -1) {
 
             Debug.Log("Questionaire with Refrence name -->" + referenceName+" not found can't build interface");
             return;
@@ -96,12 +100,14 @@ public class UIBuilder : MonoBehaviour
 
         GameObject Container = Instantiate(ui.Container, Panel.transform);
         GameObject PanelTitle = Instantiate(ui.PanelTitle, Container.transform);
-        PanelTitle.GetComponent<Text>().text = data.questionaire.parts[part].name;
+        PanelTitle.GetComponent<Text>().text = data.questionaire.parts[partNumber].name;
 
-        for (int questionNumber = 0; questionNumber < data.questionaire.parts[part].questions.Length; questionNumber++)
+      
+
+        for (int questionNumber = 0; questionNumber < data.questionaire.parts[partNumber].subparts[subPartNumber].questions.Length; questionNumber++)
         {
 
-            QuestionaireQuestion question = data.questionaire.parts[part].questions[questionNumber];
+            QuestionaireQuestion question = data.questionaire.parts[partNumber].subparts[subPartNumber].questions[questionNumber];
 
             GameObject QuestionTitle = Instantiate(ui.Title, Container.transform);
             QuestionTitle.GetComponent<Text>().text = question.question;
@@ -112,7 +118,7 @@ public class UIBuilder : MonoBehaviour
             {
 
                 GameObject QuestionUiElement = Instantiate(ui.Radio, Container.transform);
-                QuestionUiElement.name = "Q"+part.ToString() + questionNumber.ToString();
+                QuestionUiElement.name = QuestionName(partNumber, subPartNumber, questionNumber);
 
                 Transform ChildOption = QuestionUiElement.transform.GetChild(0);
                 int l = QuestionUiElement.transform.childCount;
@@ -123,8 +129,8 @@ public class UIBuilder : MonoBehaviour
 #if UNITY_EDITOR
                     DestroyImmediate(QuestionUiElementChild.gameObject);
 #else
-                    Destroy(QuestionUiElementChild.gameObject);
-#endif 
+                Destroy(QuestionUiElementChild.gameObject);
+#endif
                 }
 
 
@@ -132,44 +138,58 @@ public class UIBuilder : MonoBehaviour
                 {
 
                     //generate captured variables for lambda functions
-                    var newPart = part;
+                    var newPart = partNumber;
+                    var newSubPart = subPartNumber;
                     var newQuestionNumber = questionNumber;
                     var newOptionNumber = i;
                     GameObject Option;
 
-                    if (i == 0)  Option = ChildOption.gameObject;
-                    else Option = Instantiate(ChildOption.gameObject, QuestionUiElement.transform);                       
-                    
+                    if (i == 0) Option = ChildOption.gameObject;
+                    else Option = Instantiate(ChildOption.gameObject, QuestionUiElement.transform);
+
                     Option.GetComponentInChildren<Text>().text = question.Options[i];
                     VRUIRadio vruiradio = Option.GetComponentInChildren<VRUIRadio>();
-                    vruiradio.onPointerClick.AddListener(delegate { RadioValueChanged(newPart, newQuestionNumber, newOptionNumber); });
-                   
+                    vruiradio.onPointerClick.AddListener(delegate { RadioValueChanged(newPart, newSubPart, newQuestionNumber, newOptionNumber); });
+
                 }
 
                 foreach (VRUIRadio vruiradio in QuestionUiElement.GetComponentsInChildren<VRUIRadio>())
                 {
-                     vruiradio.isOn = false;
+                    vruiradio.isOn = false;
                 }
 
             }
             else if (question.uielement == UitType.Slider)
             {
                 //generate captured variables for lambda functions
-                var newPart = part;
+                var newPartNumber = partNumber;
+                var newSubPartNumber = subPartNumber;
                 var newQuestionNumber = questionNumber;
 
                 GameObject QuestionUiElement = Instantiate(ui.Slider, Container.transform);
-                QuestionUiElement.name = "Q" + newPart.ToString() + newQuestionNumber.ToString();
-                QuestionUiElement.GetComponentInChildren<VRUISlider>().onValueChanged.AddListener((value) => SliderValueChanged(newPart, newQuestionNumber, value));
+                QuestionUiElement.name = QuestionName(newPartNumber, newSubPartNumber, newQuestionNumber);
+                QuestionUiElement.GetComponentInChildren<VRUISlider>().onValueChanged.AddListener((value) => SliderValueChanged(newPartNumber, newSubPartNumber, newQuestionNumber, value));
             }
 
         }
 
         GameObject Button = Instantiate(ui.Button, Container.transform);
-        Button.GetComponentInChildren<Button>().onClick.AddListener(delegate { SaveQuestionaire(part); });
 
+        if (subPartNumber == data.questionaire.parts[partNumber].subparts.Length - 1)
+        {
+            Button.GetComponentInChildren<Button>().onClick.AddListener(delegate { SaveQuestionaire(partNumber, subPartNumber); });
+        }
+        else {
+
+            Button.GetComponentInChildren<Button>().onClick.AddListener(delegate { MovetoNext(partNumber, subPartNumber); });
+        } 
+        
     }
 
+    string QuestionName(int part, int subPartNumber, int questionNumber) {
+
+        return "P" + part.ToString() + "-SP" +subPartNumber.ToString() +"-QN" +questionNumber.ToString();
+    }
     int GetQuestionairePartIndex(string referenceName) {
 
 
@@ -186,24 +206,25 @@ public class UIBuilder : MonoBehaviour
         return -1;
     }
 
-    public void RadioValueChanged(int part,int questionNumber, int indexOption)
+    public void RadioValueChanged(int part, int subPartNumber, int questionNumber, int indexOption)
     {
-        string value = data.questionaire.parts[part].questions[questionNumber].Options[indexOption];
+        string value = data.questionaire.parts[part].subparts[subPartNumber].questions[questionNumber].Options[indexOption];
         Debug.Log("Chaging Questionaire Part " + part.ToString() + " Question->" + questionNumber.ToString()+" Value->"+ value);
-        data.questionaire.parts[part].questions[questionNumber].answer = value;
+        data.questionaire.parts[part].subparts[subPartNumber].questions[questionNumber].answer = value;
         deleteNotifications(part, questionNumber);
     }
 
-    public void SliderValueChanged(int part, int questionNumber, float value)
+    public void SliderValueChanged(int part, int subPartNumber, int questionNumber, float value)
     {
         Debug.Log("Chaging Questionaire Part "+ part.ToString() + " Question->" + questionNumber.ToString() + " Value->" + value.ToString());
-        data.questionaire.parts[part].questions[questionNumber].answer = value.ToString();
+        data.questionaire.parts[part].subparts[subPartNumber].questions[questionNumber].answer = value.ToString();
         deleteNotifications(part, questionNumber);
     }
 
-    public void SaveQuestionaire(int part) {
+    public void SaveQuestionaire(int part, int subpart)
+    {
 
-        if (!triggerNotifactions(part)) { 
+        if (!triggerNotifactions(part, subpart)) { 
 
             databaseManager.SaveQuestionaire(data);
             Destroy();
@@ -213,26 +234,43 @@ public class UIBuilder : MonoBehaviour
         }
     }
 
-    public bool triggerNotifactions(int part) {
+
+    public void MovetoNext(int part,int subpart)
+    {
+
+        if (!triggerNotifactions(part,subpart))
+        {
+
+            Destroy();
+
+            //move to next 
+
+            var nextsubpart = subpart + 1;
+
+            Build(data.questionaire.parts[part].referenceName, nextsubpart);
+        }
+    }
+
+    public bool triggerNotifactions(int part, int subpart) {
        
-        List<int> AnansweredAnswers = checkAnansweredAnswers(part);
+        List<int> AnansweredAnswers = checkAnansweredAnswers(part,subpart);
 
         if (AnansweredAnswers.Count == 0) return false;
         else
         {
-            GenerateNotification(part, AnansweredAnswers);
+            GenerateNotification(part,subpart, AnansweredAnswers);
             return true;
         }
 
     }
 
-    List<int> checkAnansweredAnswers(int part)
+    List<int> checkAnansweredAnswers(int part, int subpart)
     {
         List<int> anaswered = new List<int>();
 
-        for (int i=0; i < data.questionaire.parts[part].questions.Length;i++)
+        for (int i=0; i < data.questionaire.parts[part].subparts[subpart].questions.Length;i++)
         {
-            QuestionaireQuestion question = data.questionaire.parts[part].questions[i];
+            QuestionaireQuestion question = data.questionaire.parts[part].subparts[subpart].questions[i];
 
             if (question.answer == null)
             {
@@ -243,13 +281,13 @@ public class UIBuilder : MonoBehaviour
         return anaswered;
     }
 
-    void GenerateNotification(int part, List<int> AnansweredAnswers) {
+    void GenerateNotification(int part, int subpart,  List<int> AnansweredAnswers) {
 
         deleteNotifications();
 
         foreach(int index in AnansweredAnswers){
 
-            Transform AnasweredQ = Panel.transform.FindDeepChild("Q"+part+index);
+            Transform AnasweredQ = Panel.transform.FindDeepChild(QuestionName(part,subpart,index));
             GameObject allert = Instantiate(ui.Notifications);           
             allert.name = "Notification" + part + index;
 

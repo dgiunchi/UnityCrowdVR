@@ -14,111 +14,150 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questionaire:
     parts:
-    - name: Perceived Realism of trajectories
+    - name: In between Trials Questionaire
       referenceName: ImmersiveReal
-      description: In this questionaire part we will ask you to score the percived
-        realism of the pedestrian trajectories in the scene you just experienced
-      questions:
-      - question: Were the tracjectories real ?
-        helpText: 'The trajectories of pedestrians you just observed could either
-          be extracted from a real scene (tracing of pedestrian trajectories on video)
-          or simulated by a software algorithm.  In the scene you just observed whatdo
-          you think is the case :'
-        uielement: 1
-        valuebool: 0
-        valuefloat: 0
-        Options:
-        - Real (extracted by real pedestrians )
-        - Simulated by acrowd simulation algorithm
-        answer: 
-      - question: How realistic were the tracjectory ?
-        helpText: The trajectories of pedestrians you just observed could  be  trajectories
-          simulated by a crowd simulation algorithm.  How realistic would you rae
-          those trajectories  from 0 (slider completely grey to 1 slider completely
-          blue) )
-        uielement: 0
-        valuebool: 0
-        valuefloat: 0
-        Options: []
-        answer: 
-    - name: Perceived Realism of trajectories
+      description: 
+      subparts:
+      - name: Percived Realism
+        description: 
+        questions:
+        - question: Real or fake data ?
+          helpText: 
+          uielement: 1
+          valuebool: 0
+          valuefloat: 0
+          Options:
+          - Real
+          - Fake
+          answer: 
+        - question: How realistic ?
+          helpText: 
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+      - name: Nasa Task Load Index
+        description: "Hart and Staveland\u2019s NASA Task Load Index (TLX) method
+          assesses work load on five 7-point scales. Increments of high, medium and
+          low estimates for each point result in 21 gradations on the scales."
+        questions:
+        - question: How mentally demanding was the task?
+          helpText: Mental Demand
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+        - question: How physically demanding was the task?
+          helpText: Physical Demand
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+        - question: How hurried or rushed was the pace of the task?
+          helpText: Temporal Demand
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+        - question: How successful were you in accomplishing what you were asked
+            to do?
+          helpText: Performance
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+        - question: How hard did you have to work to accomplish your level of performance?
+          helpText: Effort
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+        - question: How insecure, discouraged, irritated, stressed, and annoyed wereyou?
+          helpText: Frustration
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+    - name: In between Trials Questionaire
       referenceName: ImmersiveSimulated
-      description: In this questionaire part we will ask you to score the percived
-        realism of the pedestrian trajectories in the scene you just experienced
-      questions:
-      - question: Were the tracjectories real ?
-        helpText: 'The trajectories of pedestrians you just observed could either
-          be extracted from a real scene (tracing of pedestrian trajectories on video)
-          or simulated by a software algorithm.  In the scene you just observed whatdo
-          you think is the case :'
-        uielement: 1
-        valuebool: 0
-        valuefloat: 0
-        Options:
-        - Real (extracted by real pedestrians )
-        - Simulated by acrowd simulation algorithm
-        answer: 
-      - question: How realistic were the tracjectory ?
-        helpText: The trajectories of pedestrians you just observed could  be  trajectories
-          simulated by a crowd simulation algorithm.  How realistic would you rae
-          those trajectories  from 0 (slider completely grey to 1 slider completely
-          blue) )
-        uielement: 0
-        valuebool: 0
-        valuefloat: 0
-        Options: []
-        answer: 
-    - name: Perceived Realism of trajectories
+      description: 
+      subparts:
+      - name: Realism
+        description: 
+        questions:
+        - question: Real?
+          helpText: 
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+      - name: TLX
+        description: 
+        questions:
+        - question: TLX?
+          helpText: 
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+    - name: In between Trials Questionaire
       referenceName: VideoReal
-      description: In this questionaire part we will ask you to score the percived
-        realism of the pedestrian trajectories in the scene you just experienced
-      questions:
-      - question: Were the tracjectories real ?
-        helpText: 'The trajectories of pedestrians you just observed could either
-          be extracted from a real scene (tracing of pedestrian trajectories on video)
-          or simulated by a software algorithm.  In the scene you just observed whatdo
-          you think is the case :'
-        uielement: 1
-        valuebool: 0
-        valuefloat: 0
-        Options:
-        - Real (extracted by real pedestrians )
-        - Simulated by acrowd simulation algorithm
-        answer: 
-      - question: How realistic were the tracjectory ?
-        helpText: The trajectories of pedestrians you just observed could  be  trajectories
-          simulated by a crowd simulation algorithm.  How realistic would you rae
-          those trajectories  from 0 (slider completely grey to 1 slider completely
-          blue) )
-        uielement: 0
-        valuebool: 0
-        valuefloat: 0
-        Options: []
-        answer: 
-    - name: Perceived Realism of trajectories
+      description: 
+      subparts:
+      - name: Realism
+        description: 
+        questions:
+        - question: Real?
+          helpText: 
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+      - name: TLX
+        description: 
+        questions:
+        - question: TLX
+          helpText: 
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+    - name: In between Trials Questionaire
       referenceName: VideoSimulated
-      description: In this questionaire part we will ask you to score the percived
-        realism of the pedestrian trajectories in the scene you just experienced
-      questions:
-      - question: Were the tracjectories real ?
-        helpText: 'The trajectories of pedestrians you just observed could either
-          be extracted from a real scene (tracing of pedestrian trajectories on video)
-          or simulated by a software algorithm.  In the scene you just observed whatdo
-          you think is the case :'
-        uielement: 0
-        valuebool: 0
-        valuefloat: 0
-        Options:
-        - Real (extracted by real pedestrians )
-        - Simulated by acrowd simulation algorithm
-        answer: 
-      - question: How realistic were the tracjectory ?
-        helpText: The trajectories of pedestrians you just observed could  be  trajectories
-          simulated by a crowd simulation algorithm.  How realistic would you rae
-          those trajectories  from 0 (slider completely grey to 1 slider completely
-          blue) )
-        uielement: 0
-        valuebool: 0
-        valuefloat: 0
-        Options: []
-        answer: 
+      description: 
+      subparts:
+      - name: Perceived Realism
+        description: 
+        questions:
+        - question: Real?
+          helpText: 
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+      - name: Tlx
+        description: 
+        questions:
+        - question: TLX?
+          helpText: 
+          uielement: 0
+          valuebool: 0
+          valuefloat: 0
+          Options: []
+          answer: 
+    - name: Demographics
+      referenceName: Demographics
+      description: 
+      subparts: []

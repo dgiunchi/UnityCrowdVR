@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using System.ComponentModel;
 
-[CreateAssetMenu(menuName = "Questionaire/NewQuestionaire")]
+[CreateAssetMenu(menuName = "Questionaire/NewDataToCollect")]
 public class DataToCollect : ScriptableObject
 {
     [SerializeField]
@@ -17,11 +18,22 @@ public class Questionaire
     public QuestionairePart[] parts;
 }
 
+
 [Serializable]
 public class QuestionairePart
 {
     public string name;
     public string referenceName;
+    public string description;
+    public QuestionaireSubPart[] subparts;
+
+}
+
+
+[Serializable]
+public class QuestionaireSubPart : ScriptableObject
+{
+    public string name;
     public string description;
     public QuestionaireQuestion[] questions;
 
@@ -39,11 +51,7 @@ public class QuestionaireQuestion
     public string answer;
 }
 
-public enum UitType
-{
-    Slider,
-    Radio,
-}
+
 
 
 //upload dataset
@@ -90,26 +98,52 @@ public class QuestionairePartUpload
 {
     public string name;
     public string description;
-    public QuestionaireQuestionUpload[] questions;
+    public QuestionaireSubPartUpload[] subparts;
 
 
-    public QuestionairePartUpload(string name, string description, QuestionaireQuestion[] questions1)
+    public QuestionairePartUpload(string name, string description, QuestionaireSubPart[] subparts1)
     {
         this.name = name;
         this.description = description;
 
-        this.questions = new QuestionaireQuestionUpload[questions1.Length];
+        this.subparts = new QuestionaireSubPartUpload[subparts1.Length];
 
-        for (int i= 0; i < questions.Length; i++)
+        for (int i= 0; i < subparts1.Length; i++)
         {
-            this.questions[i] = (QuestionaireQuestionUpload)questions1[i];
+            this.subparts[i] = (QuestionaireSubPartUpload)subparts1[i];
         }
 
     }
 
     public static explicit operator QuestionairePartUpload(QuestionairePart v)
     {
-        return new QuestionairePartUpload(v.referenceName, v.description, v.questions);
+        return new QuestionairePartUpload(v.referenceName, v.description, v.subparts);
+    }
+}
+
+[Serializable]
+public class QuestionaireSubPartUpload
+{
+    public string name;
+    public string description;
+    public QuestionaireQuestionUpload[] questions;
+
+    public QuestionaireSubPartUpload(string name, string description, QuestionaireQuestion[] questions1) {
+
+        this.name = name;
+        this.description = description;
+
+        this.questions = new QuestionaireQuestionUpload[questions1.Length];
+
+        for (int i = 0; i < questions1.Length; i++)
+        {
+            this.questions[i] = (QuestionaireQuestionUpload)questions1[i];
+        }
+    }
+
+    public static explicit operator QuestionaireSubPartUpload(QuestionaireSubPart v)
+    {
+        return new QuestionaireSubPartUpload(v.name, v.description, v.questions);
     }
 }
 
@@ -130,4 +164,14 @@ public class QuestionaireQuestionUpload
     {
         return new QuestionaireQuestionUpload(v.question,v.answer);
     }
+}
+
+
+
+//enum
+
+public enum UitType
+{
+    Slider,
+    Radio,
 }

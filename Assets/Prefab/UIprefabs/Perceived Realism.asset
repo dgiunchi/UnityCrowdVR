@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
+  m_Name: Perceived Realism
+  m_EditorClassIdentifier: 
+  name: 'Percived Realism '
+  description: in this questionaire we ask you to score information about how realistic
+    the the humanoid trajectories were
+  questions:
+  - question: Is it real trajectories
+    helpText: Choose between the two options
+    uielement: 1
+    valuebool: 0
+    valuefloat: 0
+    Options:
+    - Real
+    - Fake
+    answer: 
+  - question: How Realistic were the observed trajectories
+    helpText: Use the slider to define how realistic ...
+    uielement: 0
+    valuebool: 0
+    valuefloat: 0
+    Options: []
+    answer: 

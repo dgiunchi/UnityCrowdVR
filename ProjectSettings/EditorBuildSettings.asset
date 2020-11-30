@@ -26,6 +26,27 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/experiment scenes/ImmersiveSimulated_e_new.unity
     guid: da8fe00e9a0f75345850dc645da8b7c2
+  - enabled: 1
+    path: Assets/Scene/example scenes/Lobby.unity
+    guid: 9a3111c6e84f9f543bba6abff62be96e
+  - enabled: 1
+    path: Assets/Scene/example scenes/ImmersiveReal.unity
+    guid: 8da48fafd06972d458410c9ca0de6c86
+  - enabled: 1
+    path: Assets/Scene/example scenes/ImmersiveSimulated.unity
+    guid: eed96f931e19c7e4aaef11d25eb0bc4a
+  - enabled: 1
+    path: Assets/Scene/example scenes/Start.unity
+    guid: 2edb023db3c757246aad4801db2cf5dc
+  - enabled: 1
+    path: Assets/Scene/example scenes/VideoReal.unity
+    guid: 5b9c81714ebfa3e4f913b56c3a9a86e5
+  - enabled: 1
+    path: Assets/Scene/example scenes/VideoSimulated.unity
+    guid: bb0ca561c4eeb634491333181b4dd330
+  - enabled: 1
+    path: Assets/Scene/example scenes/End.unity
+    guid: ac0cff145100919459e3cfcc93bbb89d
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 10fd3cf6e90fb6541af008bf8baf3279,
       type: 2}
