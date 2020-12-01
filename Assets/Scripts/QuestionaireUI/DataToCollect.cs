@@ -10,6 +10,56 @@ public class DataToCollect : ScriptableObject
     [SerializeField]
     public Questionaire questionaire;
 
+    private void Awake()
+    {
+        Init();
+    }
+
+    public void Init() {
+
+        loadScriptableObjects();
+        deepCopyScriptableObjects();
+        cleanAnswers();
+
+    }
+    private void deepCopyScriptableObjects() {
+
+        for (int j = 0; j < questionaire.parts.Length; j++)
+        {
+            for (int i = 0; i < questionaire.parts[j].subparts.Length; i++)
+            {
+
+                questionaire.parts[j].subparts[i] = questionaire.parts[j].subparts[i].DeepCopy();
+
+            }
+        }
+    }
+    private void cleanAnswers() {
+
+        for (int j = 0; j < questionaire.parts.Length; j++)
+        {
+            for (int i = 0; i < questionaire.parts[j].subparts.Length; i++)
+            {
+                for (int k = 0; k < questionaire.parts[j].subparts[i].questions.Length; k++)
+                {
+                    questionaire.parts[j].subparts[i].questions[k].answer = null;
+                }
+            }
+        }
+    }
+    private void loadScriptableObjects() {
+
+        for (int j = 0; j < questionaire.parts.Length; j++)
+        {
+            for (int i = 0; i < questionaire.parts[j].subpartsScripts.Length; i++)
+            {
+                var newObject = Instantiate(questionaire.parts[j].subpartsScripts[i]);
+                var qsp = (QuestionaireSubPart)newObject;
+                questionaire.parts[j].subparts[i] = qsp;
+            }
+        }
+
+    }
 }
 
 [Serializable]
@@ -25,32 +75,12 @@ public class QuestionairePart
     public string name;
     public string referenceName;
     public string description;
+    
+    [HideInInspector]
     public QuestionaireSubPart[] subparts;
-
+   
+    public ScriptableObject[] subpartsScripts;
 }
-
-
-[Serializable]
-public class QuestionaireSubPart : ScriptableObject
-{
-    public string name;
-    public string description;
-    public QuestionaireQuestion[] questions;
-
-}
-
-[Serializable]
-public class QuestionaireQuestion
-{
-    public string question;
-    public string helpText;
-    public UitType uielement;
-    public bool valuebool;
-    public float valuefloat;
-    public string[] Options;
-    public string answer;
-}
-
 
 
 
@@ -121,57 +151,3 @@ public class QuestionairePartUpload
     }
 }
 
-[Serializable]
-public class QuestionaireSubPartUpload
-{
-    public string name;
-    public string description;
-    public QuestionaireQuestionUpload[] questions;
-
-    public QuestionaireSubPartUpload(string name, string description, QuestionaireQuestion[] questions1) {
-
-        this.name = name;
-        this.description = description;
-
-        this.questions = new QuestionaireQuestionUpload[questions1.Length];
-
-        for (int i = 0; i < questions1.Length; i++)
-        {
-            this.questions[i] = (QuestionaireQuestionUpload)questions1[i];
-        }
-    }
-
-    public static explicit operator QuestionaireSubPartUpload(QuestionaireSubPart v)
-    {
-        return new QuestionaireSubPartUpload(v.name, v.description, v.questions);
-    }
-}
-
-[Serializable]
-public class QuestionaireQuestionUpload
-{
-    public string question;
-    public string answer;
-
-    public QuestionaireQuestionUpload(string question, string answer)
-    {
-        this.question = question;
-        this.answer = answer;
-    }
-
-
-    public static explicit operator QuestionaireQuestionUpload(QuestionaireQuestion v)
-    {
-        return new QuestionaireQuestionUpload(v.question,v.answer);
-    }
-}
-
-
-
-//enum
-
-public enum UitType
-{
-    Slider,
-    Radio,
-}

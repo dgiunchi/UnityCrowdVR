@@ -7,157 +7,62 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fdbc70ccbedd0674f8ea5e69b0e38079, type: 3}
   m_Name: DataToCollect
   m_EditorClassIdentifier: 
   questionaire:
     parts:
-    - name: In between Trials Questionaire
-      referenceName: ImmersiveReal
-      description: 
-      subparts:
-      - name: Percived Realism
-        description: 
-        questions:
-        - question: Real or fake data ?
-          helpText: 
-          uielement: 1
-          valuebool: 0
-          valuefloat: 0
-          Options:
-          - Real
-          - Fake
-          answer: 
-        - question: How realistic ?
-          helpText: 
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-      - name: Nasa Task Load Index
-        description: "Hart and Staveland\u2019s NASA Task Load Index (TLX) method
-          assesses work load on five 7-point scales. Increments of high, medium and
-          low estimates for each point result in 21 gradations on the scales."
-        questions:
-        - question: How mentally demanding was the task?
-          helpText: Mental Demand
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-        - question: How physically demanding was the task?
-          helpText: Physical Demand
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-        - question: How hurried or rushed was the pace of the task?
-          helpText: Temporal Demand
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-        - question: How successful were you in accomplishing what you were asked
-            to do?
-          helpText: Performance
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-        - question: How hard did you have to work to accomplish your level of performance?
-          helpText: Effort
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-        - question: How insecure, discouraged, irritated, stressed, and annoyed wereyou?
-          helpText: Frustration
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-    - name: In between Trials Questionaire
-      referenceName: ImmersiveSimulated
-      description: 
-      subparts:
-      - name: Realism
-        description: 
-        questions:
-        - question: Real?
-          helpText: 
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-      - name: TLX
-        description: 
-        questions:
-        - question: TLX?
-          helpText: 
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-    - name: In between Trials Questionaire
+    - name: WithinTrialQuestionaire
       referenceName: VideoReal
       description: 
       subparts:
-      - name: Realism
-        description: 
-        questions:
-        - question: Real?
-          helpText: 
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-      - name: TLX
-        description: 
-        questions:
-        - question: TLX
-          helpText: 
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-    - name: In between Trials Questionaire
+      - {fileID: 0}
+      - {fileID: 0}
+      subpartsScripts:
+      - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
+      - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
+    - name: WithinTrialQuestionaire
       referenceName: VideoSimulated
       description: 
       subparts:
-      - name: Perceived Realism
-        description: 
-        questions:
-        - question: Real?
-          helpText: 
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-      - name: Tlx
-        description: 
-        questions:
-        - question: TLX?
-          helpText: 
-          uielement: 0
-          valuebool: 0
-          valuefloat: 0
-          Options: []
-          answer: 
-    - name: Demographics
-      referenceName: Demographics
+      - {fileID: 0}
+      - {fileID: 0}
+      subpartsScripts:
+      - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
+      - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
+    - name: WithinTrialQuestionaire
+      referenceName: ImmersiveSimulated
       description: 
-      subparts: []
+      subparts:
+      - {fileID: 0}
+      - {fileID: 0}
+      subpartsScripts:
+      - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
+      - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
+    - name: WithinTrialQuestionaire
+      referenceName: ImmersiveReal
+      description: 
+      subparts:
+      - {fileID: 0}
+      - {fileID: 0}
+      subpartsScripts:
+      - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
+      - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
+    - name: Pre Experiment Questionaire
+      referenceName: preexperiment
+      description: 
+      subparts:
+      - {fileID: 0}
+      - {fileID: 0}
+      subpartsScripts:
+      - {fileID: 11400000, guid: de359dba64a8536489e5a1b306b1239b, type: 2}
+    - name: Post Experiment Questionaire
+      referenceName: postexperiment
+      description: 
+      subparts:
+      - {fileID: 0}
+      - {fileID: 0}
+      subpartsScripts:
+      - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}

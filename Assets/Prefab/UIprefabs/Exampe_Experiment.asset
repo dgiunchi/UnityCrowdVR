@@ -23,7 +23,7 @@ MonoBehaviour:
       sceneName: VideoSimulated
       questionaireRefName: VideoSimulated
     - name: Immersive- Simulated Data
-      sceneName: ImmersiveReal
+      sceneName: ImmersiveSimulated
       questionaireRefName: ImmersiveSimulated
     - name: Immersive- Real Data
       sceneName: ImmersiveReal

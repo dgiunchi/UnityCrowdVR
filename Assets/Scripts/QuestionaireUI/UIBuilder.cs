@@ -41,35 +41,19 @@ public class UIBuilder : MonoBehaviour
         ui = (QuestionaireUI)useriinterface;
         data = (DataToCollect)dataToCollect;
 
-        cleanQuestionaire();
+        data.Init();
+
     }
 
-    void cleanQuestionaire() {
-
-
-        foreach (QuestionairePart p in data.questionaire.parts) {
-
-            foreach (QuestionaireSubPart sp in p.subparts) {
-
-                foreach(QuestionaireQuestion q in sp.questions)
-                {
-                    q.answer = null;
-                }
-                   
-            }
-        }
-    }
 
     public void EditorBuild(int i) { 
 
 #if UNITY_EDITOR
 
-        ui = (QuestionaireUI)useriinterface;
-        //DataToCollectTest datatest = (DataToCollectTest)dataToCollect;
+        ui = (QuestionaireUI)useriinterface;       
         data = (DataToCollect)dataToCollect;
 
-        cleanQuestionaire();
-
+        data.Init();
 #endif
 
         string referenceName = data.questionaire.parts[i].referenceName;
@@ -100,9 +84,10 @@ public class UIBuilder : MonoBehaviour
 
         GameObject Container = Instantiate(ui.Container, Panel.transform);
         GameObject PanelTitle = Instantiate(ui.PanelTitle, Container.transform);
-        PanelTitle.GetComponent<Text>().text = data.questionaire.parts[partNumber].name;
+        GameObject PanelDescription = Instantiate(ui.Text, Container.transform);
+        PanelTitle.GetComponent<Text>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].name;
+        PanelDescription.GetComponent<Text>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].description;
 
-      
 
         for (int questionNumber = 0; questionNumber < data.questionaire.parts[partNumber].subparts[subPartNumber].questions.Length; questionNumber++)
         {
@@ -185,11 +170,12 @@ public class UIBuilder : MonoBehaviour
         } 
         
     }
-
+    
     string QuestionName(int part, int subPartNumber, int questionNumber) {
 
         return "P" + part.ToString() + "-SP" +subPartNumber.ToString() +"-QN" +questionNumber.ToString();
     }
+    
     int GetQuestionairePartIndex(string referenceName) {
 
 
@@ -233,7 +219,6 @@ public class UIBuilder : MonoBehaviour
 
         }
     }
-
 
     public void MovetoNext(int part,int subpart)
     {

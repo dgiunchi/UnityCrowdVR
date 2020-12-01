@@ -10,22 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
-  m_Name: Nasa TLX
-  m_EditorClassIdentifier: 
-  name: Nasa Task Load Index
-  description: this questionaire ...
+  m_Name: PerceivedRealism
+  m_EditorClassIdentifier: Assembly-CSharp::QuestionaireSubPart
+  name: Perceived realism of trajectories
+  description: The humanoid crowd you just experienced ..
   questions:
-  - question: 2?
+  - question: Do you think the observed trajectories were real or fake ?
     helpText: 
-    uielement: 0
+    uielement: 1
     valuebool: 0
     valuefloat: 0
-    Options: []
+    Options:
+    - Real
+    - Fake
     answer: 
-  - question: 1?
+  - question: 
     helpText: 
-    uielement: 0
+    uielement: 1
     valuebool: 0
     valuefloat: 0
-    Options: []
+    Options:
+    - C
+    - D
     answer: 

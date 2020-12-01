@@ -10,25 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
-  m_Name: Perceived Realism
+  m_Name: Demographics
   m_EditorClassIdentifier: 
-  name: 'Percived Realism '
-  description: in this questionaire we ask you to score information about how realistic
-    the the humanoid trajectories were
+  name: Demographics
+  description: 
   questions:
-  - question: Is it real trajectories
-    helpText: Choose between the two options
+  - question: Gender
+    helpText: 
     uielement: 1
     valuebool: 0
     valuefloat: 0
     Options:
-    - Real
-    - Fake
+    - Male
+    - Female
     answer: 
-  - question: How Realistic were the observed trajectories
-    helpText: Use the slider to define how realistic ...
+  - question: Age
+    helpText: 
     uielement: 0
     valuebool: 0
     valuefloat: 0
-    Options: []
+    Options:
+    - 18-30
+    - 30-40
+    - 40-50
+    - 50-60
+    - Over 60
     answer: 
