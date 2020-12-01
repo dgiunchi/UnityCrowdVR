@@ -10,25 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
-  m_Name: Demographics2
+  m_Name: Demographics1
   m_EditorClassIdentifier: 
-  name: Demographics 2/6
+  name: Demographics 1/6
   description: 'Please give us some information about yourself '
   questions:
-  - question: What is your age?
-    helpText: Use the below radio buttons to chose the appropiate ethnicity
+  - question: What gender do you identify as?
+    helpText: Use the below radio buttons to chose your gender
     uielement: 1
     valuebool: 0
     valuefloat: 0
     Options:
-    - 18-25
-    - 25-30
-    - 30-35
-    - 35-40
-    - 40-45
-    - 45-50
-    - 50-55
-    - 55-60
-    - 60-65
-    - Over 65
+    - Male
+    - Female
+    - Other
+    - Prefer not to answer
     answer: 

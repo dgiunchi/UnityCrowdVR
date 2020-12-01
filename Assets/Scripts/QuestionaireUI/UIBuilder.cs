@@ -27,6 +27,8 @@ public class UIBuilder : MonoBehaviour
 
     protected GameObject Panel;
 
+    protected GameObject Container;
+
     protected QuestionaireUI ui;
 
     protected DataToCollect data;
@@ -71,17 +73,22 @@ public class UIBuilder : MonoBehaviour
             return;
         }
 
-        Panel = new GameObject("Questionaire Panel");
+        if (Panel == null)
+        {
+            Panel = new GameObject("Questionaire Panel");
 
-        if (Parent != null) {
+            if (Parent != null) {
 
-            Panel.transform.position = Parent.transform.position;
-            Panel.transform.rotation = Parent.transform.rotation;
-            Panel.transform.localScale = new Vector3(scale, scale, scale);
-            Panel.transform.Translate(adjust);
+                Panel.transform.position = Parent.transform.position;
+                Panel.transform.rotation = Parent.transform.rotation;
+                Panel.transform.localScale = new Vector3(scale, scale, scale);
+                Panel.transform.Translate(adjust);
+            }
+
         }
 
-        GameObject Container = Instantiate(ui.Container, Panel.transform);
+
+        Container = Instantiate(ui.Container, Panel.transform);
         GameObject PanelTitle = Instantiate(ui.PanelTitle, Container.transform);        
         PanelTitle.GetComponent<Text>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].name;
 
@@ -227,9 +234,7 @@ public class UIBuilder : MonoBehaviour
         if (!triggerNotifactions(part,subpart))
         {
 
-            Destroy();
-
-            //move to next 
+            DestroyKeepPanel();
 
             var nextsubpart = subpart + 1;
 
@@ -316,6 +321,19 @@ public class UIBuilder : MonoBehaviour
 #else
 
     Destroy(Panel);
+#endif 
+
+    }
+
+    void DestroyKeepPanel()
+    {
+
+        
+#if UNITY_EDITOR
+        DestroyImmediate(Container);
+#else
+
+    Destroy(Container);
 #endif 
 
     }

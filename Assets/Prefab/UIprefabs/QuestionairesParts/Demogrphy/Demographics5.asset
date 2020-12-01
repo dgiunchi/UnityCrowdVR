@@ -10,31 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
-  m_Name: Demographics
+  m_Name: Demographics5
   m_EditorClassIdentifier: 
-  name: Demographics 1/3
+  name: Demographics 3/6
   description: 'Please give us some information about yourself '
   questions:
-  - question: What gender do you identify as?
-    helpText: Use the below radio buttons to chose your gender
+  - question: Which is your primary language?
+    helpText: Use the below radio buttons to chose your first language
     uielement: 1
     valuebool: 0
     valuefloat: 0
     Options:
-    - Male
-    - Female
+    - English
+    - Spanish
+    - Portuguese
+    - French
+    - Mandarin
+    - Arabic
+    - Arabic
     - Other
-    - Prefer not to answer
-    answer: 
-  - question: What is your age?
-    helpText: Use the below radio buttons to chose the appropiate age range
-    uielement: 1
-    valuebool: 0
-    valuefloat: 0
-    Options:
-    - 18-30
-    - 30-40
-    - 40-50
-    - 50-60
-    - Over 60
     answer: 
