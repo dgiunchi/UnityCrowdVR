@@ -23,6 +23,8 @@ MonoBehaviour:
       subpartsScripts:
       - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
       - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
+      - {fileID: 11400000, guid: c17efe1455a54264fb82f48597bb8a15, type: 2}
+      - {fileID: 11400000, guid: c9fd0329f4dc8c2468e311005ca5887a, type: 2}
     - name: WithinTrialQuestionaire
       referenceName: VideoSimulated
       description: 
@@ -32,6 +34,8 @@ MonoBehaviour:
       subpartsScripts:
       - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
       - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
+      - {fileID: 11400000, guid: c17efe1455a54264fb82f48597bb8a15, type: 2}
+      - {fileID: 11400000, guid: c9fd0329f4dc8c2468e311005ca5887a, type: 2}
     - name: WithinTrialQuestionaire
       referenceName: ImmersiveSimulated
       description: 
@@ -41,6 +45,8 @@ MonoBehaviour:
       subpartsScripts:
       - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
       - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
+      - {fileID: 11400000, guid: c17efe1455a54264fb82f48597bb8a15, type: 2}
+      - {fileID: 11400000, guid: c9fd0329f4dc8c2468e311005ca5887a, type: 2}
     - name: WithinTrialQuestionaire
       referenceName: ImmersiveReal
       description: 
@@ -50,19 +56,29 @@ MonoBehaviour:
       subpartsScripts:
       - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
       - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
+      - {fileID: 11400000, guid: c17efe1455a54264fb82f48597bb8a15, type: 2}
+      - {fileID: 11400000, guid: c9fd0329f4dc8c2468e311005ca5887a, type: 2}
     - name: Pre Experiment Questionaire
       referenceName: preexperiment
       description: 
       subparts:
       - {fileID: 0}
       - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
+      - {fileID: 0}
       subpartsScripts:
       - {fileID: 11400000, guid: de359dba64a8536489e5a1b306b1239b, type: 2}
+      - {fileID: 11400000, guid: 7613058b9ab72bf468c7149a042f96c8, type: 2}
+      - {fileID: 11400000, guid: 758df51954982a847b4ba0cdb7c7733d, type: 2}
     - name: Post Experiment Questionaire
       referenceName: postexperiment
       description: 
       subparts:
       - {fileID: 0}
       - {fileID: 0}
-      subpartsScripts:
-      - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
+      - {fileID: 0}
+      - {fileID: 0}
+      subpartsScripts: []

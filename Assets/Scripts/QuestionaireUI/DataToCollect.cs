@@ -51,6 +51,8 @@ public class DataToCollect : ScriptableObject
 
         for (int j = 0; j < questionaire.parts.Length; j++)
         {
+            questionaire.parts[j].subparts = new QuestionaireSubPart[questionaire.parts[j].subpartsScripts.Length];
+
             for (int i = 0; i < questionaire.parts[j].subpartsScripts.Length; i++)
             {
                 var newObject = Instantiate(questionaire.parts[j].subpartsScripts[i]);
@@ -68,7 +70,6 @@ public class Questionaire
     public QuestionairePart[] parts;
 }
 
-
 [Serializable]
 public class QuestionairePart
 {
@@ -81,7 +82,6 @@ public class QuestionairePart
    
     public ScriptableObject[] subpartsScripts;
 }
-
 
 
 //upload dataset
@@ -127,14 +127,11 @@ public class QuestionaireUpload
 public class QuestionairePartUpload
 {
     public string name;
-    public string description;
     public QuestionaireSubPartUpload[] subparts;
 
-
-    public QuestionairePartUpload(string name, string description, QuestionaireSubPart[] subparts1)
+    public QuestionairePartUpload(string name,  QuestionaireSubPart[] subparts1)
     {
         this.name = name;
-        this.description = description;
 
         this.subparts = new QuestionaireSubPartUpload[subparts1.Length];
 
@@ -147,7 +144,7 @@ public class QuestionairePartUpload
 
     public static explicit operator QuestionairePartUpload(QuestionairePart v)
     {
-        return new QuestionairePartUpload(v.referenceName, v.description, v.subparts);
+        return new QuestionairePartUpload(v.referenceName, v.subparts);
     }
 }
 

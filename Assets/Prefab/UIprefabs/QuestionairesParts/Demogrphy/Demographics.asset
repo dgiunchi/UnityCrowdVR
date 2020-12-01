@@ -10,26 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
-  m_Name: PerceivedRealism
-  m_EditorClassIdentifier: Assembly-CSharp::QuestionaireSubPart
-  name: Perceived realism of trajectories
-  description: The humanoid crowd you just experienced ..
+  m_Name: Demographics
+  m_EditorClassIdentifier: 
+  name: Demographics 1/3
+  description: 'Please give us some information about yourself '
   questions:
-  - question: Do you think the observed trajectories were real or fake ?
-    helpText: 
+  - question: What gender do you identify as?
+    helpText: Use the below radio buttons to chose your gender
     uielement: 1
     valuebool: 0
     valuefloat: 0
     Options:
-    - Real
-    - Fake
+    - Male
+    - Female
+    - Other
+    - Prefer not to answer
     answer: 
-  - question: 
-    helpText: 
+  - question: What is your age?
+    helpText: Use the below radio buttons to chose the appropiate age range
     uielement: 1
     valuebool: 0
     valuefloat: 0
     Options:
-    - C
-    - D
+    - 18-30
+    - 30-40
+    - 40-50
+    - 50-60
+    - Over 60
     answer: 

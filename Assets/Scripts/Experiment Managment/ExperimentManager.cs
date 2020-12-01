@@ -17,6 +17,11 @@ public class ExperimentManager : MonoBehaviour
 
     public GameObject[] DontDelete;
 
+    public string preQuestionaireRefName;
+
+    public string postQuestionaireRefName;
+
+
     //private 
     private ExperimentScriptableObject e;
 
@@ -46,8 +51,28 @@ public class ExperimentManager : MonoBehaviour
         if (started) return;
         else started = true;
 
+        createQueuePreTrials();
         createQueueTrials();
+        createQueuePostTrials();
+    }
 
+    void createQueuePreTrials()
+    {
+        if (preQuestionaireRefName != null) {
+
+            ExperimentAction questionaire = new ExperimentAction(ExperimentActionType.QuestoinairePart, preQuestionaireRefName);
+            ActionQueue.Enqueue(questionaire);
+        }
+    }
+
+    void createQueuePostTrials()
+    {
+        if (postQuestionaireRefName != null)
+        {
+
+            ExperimentAction questionaire = new ExperimentAction(ExperimentActionType.QuestoinairePart, postQuestionaireRefName);
+            ActionQueue.Enqueue(questionaire);
+        }
     }
 
     void createQueueTrials() {
@@ -57,7 +82,7 @@ public class ExperimentManager : MonoBehaviour
 
             if (s.randomizeTrialsOrder)
             {
-                ActionQueue = RandomizeTrialOrder(s);//here we can have also another method based on partecipant numbers instead
+                AddRandomizeTrialOrder(s);//here we can have also another method based on partecipant numbers instead
             }
             else
             {
@@ -74,9 +99,9 @@ public class ExperimentManager : MonoBehaviour
 
     }
 
-    Queue<ExperimentAction> RandomizeTrialOrder(Session s) {
+    void AddRandomizeTrialOrder(Session s) {
         
-        Queue<ExperimentAction> q = new Queue<ExperimentAction>();
+       
 
         List<int> array = new List<int>();
 
@@ -95,14 +120,13 @@ public class ExperimentManager : MonoBehaviour
         foreach (int i in array) {
 
             ExperimentAction scene = new ExperimentAction(ExperimentActionType.scene, s.trials[i].sceneName);
-            q.Enqueue(scene);
+            ActionQueue.Enqueue(scene);
 
             ExperimentAction questionaire = new ExperimentAction(ExperimentActionType.QuestoinairePart, s.trials[i].questionaireRefName);
-            q.Enqueue(questionaire);
+            ActionQueue.Enqueue(questionaire);
         }
 
 
-        return q;
 
     }
 

@@ -45,7 +45,6 @@ public class UIBuilder : MonoBehaviour
 
     }
 
-
     public void EditorBuild(int i) { 
 
 #if UNITY_EDITOR
@@ -83,11 +82,13 @@ public class UIBuilder : MonoBehaviour
         }
 
         GameObject Container = Instantiate(ui.Container, Panel.transform);
-        GameObject PanelTitle = Instantiate(ui.PanelTitle, Container.transform);
-        GameObject PanelDescription = Instantiate(ui.Text, Container.transform);
+        GameObject PanelTitle = Instantiate(ui.PanelTitle, Container.transform);        
         PanelTitle.GetComponent<Text>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].name;
-        PanelDescription.GetComponent<Text>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].description;
 
+        if (data.questionaire.parts[partNumber].subparts[subPartNumber].description != "") {
+            GameObject PanelDescription = Instantiate(ui.Text, Container.transform); 
+            PanelDescription.GetComponent<Text>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].description;
+        }
 
         for (int questionNumber = 0; questionNumber < data.questionaire.parts[partNumber].subparts[subPartNumber].questions.Length; questionNumber++)
         {

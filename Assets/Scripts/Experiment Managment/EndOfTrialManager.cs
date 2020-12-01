@@ -20,6 +20,7 @@ public class EndOfTrialManager : MonoBehaviour
         {
             invoked = false;
             OnEndOfTrialEvent.Invoke();
+            Destroy(gameObject);
         }
     }
 }

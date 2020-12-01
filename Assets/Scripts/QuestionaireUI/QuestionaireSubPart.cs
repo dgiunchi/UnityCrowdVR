@@ -46,15 +46,12 @@ public class QuestionaireQuestion
 public class QuestionaireSubPartUpload
 {
     public string name;
-    public string description;
     public QuestionaireQuestionUpload[] questions;
 
     public QuestionaireSubPartUpload(string name, string description, QuestionaireQuestion[] questions1)
     {
 
         this.name = name;
-        this.description = description;
-
         this.questions = new QuestionaireQuestionUpload[questions1.Length];
 
         for (int i = 0; i < questions1.Length; i++)
@@ -89,9 +86,7 @@ public class QuestionaireQuestionUpload
 }
 
 
-
 //enum
-
 public enum UitType
 {
     Slider,
