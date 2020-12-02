@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!102 &40287964
 TextMesh:
   serializedVersion: 3
@@ -147,7 +147,8 @@ TextMesh:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40287963}
-  m_Text: 'Start_e
+  m_Text: 'Start
+
 
 '
   m_OffsetZ: 0
@@ -562,7 +563,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.7
+      value: -4.95
       objectReference: {fileID: 0}
     - target: {fileID: 400006, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: m_LocalRotation.x
@@ -599,6 +600,14 @@ PrefabInstance:
     - target: {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: EnableLinearMovement
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: GravityModifier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: Acceleration
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
@@ -658,6 +667,8 @@ MonoBehaviour:
   - {fileID: 2118473837}
   - {fileID: 1024933042}
   - {fileID: 2085946400}
+  preQuestionaireRefName: preexperiment
+  postQuestionaireRefName: postexperiment
 --- !u!114 &1007851323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -768,7 +779,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1087185285}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.01, z: 1}
+  m_LocalPosition: {x: 0, y: 1.77, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5718636868742571967}
@@ -897,8 +908,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 1507226541}
-  scale: 0.25
-  adjust: {x: 0, y: 0, z: 1}
+  scale: 0.35
+  adjust: {x: 0, y: 0, z: 1.5}
   dataToCollect: {fileID: 11400000, guid: 29825e81b39c59d409e4faeb8bf136c3, type: 2}
   useriinterface: {fileID: 11400000, guid: c2578195c2c59844697ac0f206652cbb, type: 2}
   databaseManager: {fileID: 1024933043}
@@ -1026,7 +1037,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1520203897}
-  - component: {fileID: 1520203898}
   m_Layer: 0
   m_Name: Scene
   m_TagString: Untagged
@@ -1043,25 +1053,13 @@ Transform:
   m_GameObject: {fileID: 1520203896}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 207736863}
   - {fileID: 1848959323}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1520203898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1520203896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e277d182b8d5db149b05ef1a6c1e5695, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1848959322
 GameObject:
   m_ObjectHideFlags: 0
@@ -1091,7 +1089,7 @@ Transform:
   m_GameObject: {fileID: 1848959322}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 1520203897}
   m_RootOrder: 1
@@ -1540,7 +1538,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: OnEndOfTrial
+  m_Text: Start Experiment
 --- !u!114 &5681691471701388665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1602,7 +1600,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: OnEndOfTrial
+  m_Text: Start Experiment
 --- !u!114 &5681873792622832375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1686,7 +1684,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Click on the button to trigger OnEndOfTrial
+  m_Text: Press the blue button to start the experiment (using either X or A)
 --- !u!114 &5682127076097729889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1960,7 +1958,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5712820187503277353}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.44, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5499847274849396785}
