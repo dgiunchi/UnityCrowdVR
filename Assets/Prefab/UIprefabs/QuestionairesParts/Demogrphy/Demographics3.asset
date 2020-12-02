@@ -12,35 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
   m_Name: Demographics3
   m_EditorClassIdentifier: 
-  name: Demographics 3/3
+  name: Demographics 3/6
   description: 'Please give us some information about yourself '
   questions:
-  - question: Which is your primary language?
-    helpText: Use the below radio buttons to chose your first language
+  - question: Please specify your ethnicity
+    helpText: Use the below radio buttons to chose the appropiate ethnicity
     uielement: 1
     valuebool: 0
     valuefloat: 0
     Options:
-    - English
-    - Spanish
-    - Portuguese
-    - French
-    - Mandarin
-    - Arabic
-    - Arabic
-    - Other
-    answer: 
-  - question: Place of Birth
-    helpText: Use the below radio buttons to chose your place of birth
-    uielement: 1
-    valuebool: 0
-    valuefloat: 0
-    Options:
-    - North/Central America
-    - South America
-    - Africa
-    - Asia
-    - Australia
-    - Europe
-    - Other
+    - Caucasian
+    - African
+    - Asian (Indian)
+    - Asian (Mongoloid)
+    - Middle Eastern
+    - Australian (Aborigenal)
+    - American (Native)
     answer: 

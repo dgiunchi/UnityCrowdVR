@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
-  m_Name: Consequences
+  m_Name: Consequences 1
   m_EditorClassIdentifier: 
-  name: Consequences
+  name: Consequences 1/2
   description: Please use the sliders to answer the below questions. A fully grey
     slider (slider handle set on the left of slider) indicates a very low value,
     a fully blue slider (slider handle set on the right of the slider) indicates
@@ -50,36 +50,6 @@ MonoBehaviour:
   - question: Sweat
     helpText: I felt an increase of my sweat during my interaction with the virtual
       environment.
-    uielement: 0
-    valuebool: 0
-    valuefloat: 0
-    Options: []
-    answer: 
-  - question: Nausea
-    helpText: I suffered from nausea during my interaction with the virtual environment.
-    uielement: 0
-    valuebool: 0
-    valuefloat: 0
-    Options: []
-    answer: 
-  - question: Fullness of the Head
-    helpText: "I suffered from \u201Cfullness of the head\u201D during my interaction
-      with the virtual environment."
-    uielement: 0
-    valuebool: 0
-    valuefloat: 0
-    Options: []
-    answer: 
-  - question: Dizziness
-    helpText: I suffered from dizziness with eye open during my interaction with
-      the virtual environment.
-    uielement: 0
-    valuebool: 0
-    valuefloat: 0
-    Options: []
-    answer: 
-  - question: Vertigo
-    helpText: I suffered from vertigo during my interaction with the virtual environment.
     uielement: 0
     valuebool: 0
     valuefloat: 0
