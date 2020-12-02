@@ -175,10 +175,19 @@ public class UIBuilder : MonoBehaviour
         else {
 
             Button.GetComponentInChildren<Button>().onClick.AddListener(delegate { MovetoNext(partNumber, subPartNumber); });
-        } 
-        
+        }
+
+#if UNITY_EDITOR
+
+        GameObject DeveloperButton = Instantiate(ui.Button, Container.transform);
+
+        DeveloperButton.GetComponentInChildren<Text>().text = "DevForward";
+
+        DeveloperButton.GetComponentInChildren<Button>().onClick.AddListener(delegate {   OnQuestionairePartCompleted.Invoke(); });
+#endif      
+
     }
-    
+
     string QuestionName(int part, int subPartNumber, int questionNumber) {
 
         return "P" + part.ToString() + "-SP" +subPartNumber.ToString() +"-QN" +questionNumber.ToString();
@@ -321,7 +330,7 @@ public class UIBuilder : MonoBehaviour
 #else
 
     Destroy(Panel);
-#endif 
+#endif
 
     }
 
@@ -334,7 +343,7 @@ public class UIBuilder : MonoBehaviour
 #else
 
     Destroy(Container);
-#endif 
+#endif
 
     }
 
