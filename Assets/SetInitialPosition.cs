@@ -26,7 +26,7 @@ public class SetInitialPosition : MonoBehaviour
 
 
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        bounds = new Bounds(transform.position, Vector3.one);
+        bounds = new Bounds(transform.position, Vector3.zero);
         foreach (Renderer r in renderers)
         {
             bounds.Encapsulate(r.bounds);
