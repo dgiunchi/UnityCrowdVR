@@ -188,7 +188,7 @@ public class ExperimentManager : MonoBehaviour
 
         TransitionManager.Instance.setWaitingView();
         yield return new WaitForSeconds(1.0f);
-
+        
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenename);
 
         // Wait until the asynchronous scene fully loads

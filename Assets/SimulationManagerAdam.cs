@@ -70,6 +70,7 @@ public class SimulationManagerAdam : MonoBehaviour
 
     [HideInInspector]
     public bool sceneLoaded = false;
+    public string sceneName = "Scene";
 
     // Start is called before the first frame update
     void Start()
@@ -397,7 +398,7 @@ public class SimulationManagerAdam : MonoBehaviour
 
         ///////////////////////////////////////////////////////
 
-        GameObject scene = GameObject.Find("Scene");
+        GameObject scene = GameObject.Find(sceneName);
 
         if (Application.isEditor)
             UnityEngine.Object.DestroyImmediate(scene);
@@ -407,16 +408,17 @@ public class SimulationManagerAdam : MonoBehaviour
         ///////////////////////////////////////////////////
 
         scene = Instantiate(scenePrefab);
-        scene.name = "Scene";
+        scene.name = sceneName;
 
-        GameObject Wall_1 = GameObject.Find("Wall_1");
-        GameObject Wall_2 = GameObject.Find("Wall_2");
-        GameObject Wall_3 = GameObject.Find("Wall_3");
-        GameObject Wall_4 = GameObject.Find("Wall_4");
-        GameObject Plane = GameObject.Find("Plane");
+
+        GameObject Wall_1 = scene.transform.FindDeepChild("Wall_1").gameObject;
+        GameObject Wall_2 = scene.transform.FindDeepChild("Wall_2").gameObject;
+        GameObject Wall_3 = scene.transform.FindDeepChild("Wall_3").gameObject;
+        GameObject Wall_4 = scene.transform.FindDeepChild("Wall_4").gameObject;
+        GameObject Plane = scene.transform.FindDeepChild("Ground").gameObject;
 
         /////////////////////////////////////////////////
-        
+
         Bounds b = getCsvTrajectoriesBounds();
 
         float widthX = (b.extents.x * 2) / 10;
@@ -438,6 +440,12 @@ public class SimulationManagerAdam : MonoBehaviour
         Wall_4.transform.localScale = new Vector3(sceneHeight * 0.2f, 0.5f, widthY);
 
 
+
+        GameObject camera = GameObject.Find("ImmersiveCamera");
+        if (camera != null)
+        {
+            camera.GetComponent<MoveCamera>().setCameraParent(scene);
+        }
     }
 
     public Bounds getCsvTrajectoriesBounds() {
@@ -502,7 +510,7 @@ public class SimulationManagerAdam : MonoBehaviour
         }
        
 #endif
-        if(sceneLoaded && TransitionManager.Instance.isWaiting)
+        if(sceneLoaded && TransitionManager.Instance != null && TransitionManager.Instance.isWaiting)
         {
             TransitionManager.Instance.setExperimentView();
         }
@@ -578,7 +586,7 @@ public class SimulationManagerAdam : MonoBehaviour
                 Utility.ResetGUIColor();
 
                 EditorGUILayout.LabelField("Data import");
-
+                Target.sceneName = EditorGUILayout.TextField("Scene name:", Target.sceneName);
                 Target.dataname = EditorGUILayout.TextField("data name to load:", Target.dataname);
                 Target.scaleCsv = EditorGUILayout.FloatField("Scale CSV by:", Target.scaleCsv);
                 Target.sceneHeight = EditorGUILayout.FloatField("Scene Hight:", Target.sceneHeight);

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SetInitialPosition : MonoBehaviour
 {
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -12,14 +13,14 @@ public class SetInitialPosition : MonoBehaviour
 
     void SetPlayerInitialPosition()
     {
-        Collider[] colliders = GetComponentsInChildren<Collider>();
-        Bounds bounds = new Bounds(transform.position, Vector3.one);
-        foreach (Collider c in colliders)
+        Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();
+        Bounds bounds = new Bounds(gameObject.transform.position, Vector3.one);
+        foreach (Renderer r in renderers)
         {
-            bounds.Encapsulate(c.bounds);
+            bounds.Encapsulate(r.bounds);
         }
         Transform target = GameObject.Find("OVRPlayerController").transform;
-        Transform floor = GameObject.Find("Ground").transform;
+        Transform floor =  transform.FindDeepChild("Ground");
         target.position = new Vector3(bounds.center.x, floor.position.y + 2.0f, bounds.center.z);
         Transform ui = GameObject.Find("EndOfTrialManager").transform;
         ui.position = new Vector3(target.position.x, target.position.y, target.position.z + 3f);
@@ -30,4 +31,5 @@ public class SetInitialPosition : MonoBehaviour
     {
         
     }
+    
 }
