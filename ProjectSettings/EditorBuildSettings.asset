@@ -15,10 +15,10 @@ EditorBuildSettings:
     path: Assets/Scene/experiment scenes/Lobby_e.unity
     guid: ee36181a16f8ac0449b46dd282106b7b
   - enabled: 1
-    path: Assets/Scene/experiment scenes/VideoReal_e_new.unity
+    path: Assets/Scene/experiment scenes/bkp_VideoReal_e_new.unity
     guid: e920bee16fadcb742b92617e39f3d9f0
   - enabled: 1
-    path: Assets/Scene/experiment scenes/VideoSimulated_e_new.unity
+    path: Assets/Scene/experiment scenes/bkp_VideoSimulated_e_new.unity
     guid: c6fbaa6340b73684b8e15fa9da21878c
   - enabled: 1
     path: Assets/Scene/experiment scenes/ImmersiveReal_e_new.unity

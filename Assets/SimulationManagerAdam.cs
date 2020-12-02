@@ -63,7 +63,7 @@ public class SimulationManagerAdam : MonoBehaviour
 
     public float currentTime;
 
-    public enum STATUS { RECORD, PLAY, PLAYCSV, PAUSE, STOP, LOADED, NONE};
+    public enum STATUS { RECORD, PLAY, PLAYCSV, PAUSE, STOP, LOADED, NONE, FINISHED};
     public static STATUS status = STATUS.NONE;
 
     bool triggerPlay = false;
@@ -215,6 +215,18 @@ public class SimulationManagerAdam : MonoBehaviour
         status = STATUS.LOADED;
         serializer.Init();
         serializer.LoadFromCSV();
+
+    }
+
+    public void checkForImmersiveCamera() {
+
+        GameObject camera = GameObject.Find("ImmersiveCamera");
+        if (camera != null)
+        {
+            GameObject scene = GameObject.Find(sceneName);
+            camera.GetComponent<MoveCamera>().setCameraParent(scene);
+        }
+
     }
 
     public void Record()
@@ -228,6 +240,8 @@ public class SimulationManagerAdam : MonoBehaviour
     public void Play()
     {
         status = STATUS.PLAY;
+
+        serializer.ResetSimulation();
     }
 
     public void PlayCsv() {
@@ -439,13 +453,6 @@ public class SimulationManagerAdam : MonoBehaviour
         Wall_4.transform.position = new Vector3(b.min.x, sceneHeight, b.center.z);
         Wall_4.transform.localScale = new Vector3(sceneHeight * 0.2f, 0.5f, widthY);
 
-
-
-        GameObject camera = GameObject.Find("ImmersiveCamera");
-        if (camera != null)
-        {
-            camera.GetComponent<MoveCamera>().setCameraParent(scene);
-        }
     }
 
     public Bounds getCsvTrajectoriesBounds() {
@@ -502,17 +509,19 @@ public class SimulationManagerAdam : MonoBehaviour
     {
 
 #if UNITY_ANDROID
-        if (OVRInput.Get(OVRInput.Button.Three) && triggerPlay==false)
-        {
-            Debug.Log("pressed");
-            triggerPlay = true;
-            Play();
-        }
+
+        //if (OVRInput.Get(OVRInput.Button.Three) && triggerPlay==false)
+        //{
+        //    Debug.Log("pressed");
+        //    triggerPlay = true;
+        //    Play();
+        //}
        
 #endif
         if(sceneLoaded && TransitionManager.Instance != null && TransitionManager.Instance.isWaiting)
         {
             TransitionManager.Instance.setExperimentView();
+            checkForImmersiveCamera();
         }
 
 

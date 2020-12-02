@@ -173,9 +173,6 @@ public class PositionSerializerAdam : MonoBehaviour
 
         lastCountPlay = -1;
 
-    
-    int frameStartIndex;
-
 }
     static public List<Transform> getJoints(GameObject skeleton) {
 
@@ -323,6 +320,17 @@ public class PositionSerializerAdam : MonoBehaviour
         }
         
         Setup();
+    }
+
+    public void ResetSimulation()
+    {
+
+        count = 0;
+        countPlay = 0;
+        currentTime = 0;
+        initSimulationTime = -1.0f;
+        lastCountPlay = -1;
+
     }
 
     void Setup()
@@ -771,9 +779,11 @@ public class PositionSerializerAdam : MonoBehaviour
 
         ConversionFromPositionsToVariations();
         CalculateInitialAndEndingTime();
+
 #if UNITY_EDITOR
-        SimulationManagerAdam.Instance.ResizeScene();
+        //SimulationManagerAdam.Instance.ResizeScene();
 #endif
+
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
         {
             SimulationManagerAdam.Instance.currentTime = 0.0f;
@@ -799,6 +809,8 @@ public class PositionSerializerAdam : MonoBehaviour
         float currentSimulationTime = (Time.time - initSimulationTime);
         if (currentSimulationTime >= simulationTimeLength)
         {
+            SimulationManagerAdam.status = SimulationManagerAdam.STATUS.FINISHED;
+            OnEndOfTrialEvent.Invoke();
             return;
         }
 
@@ -807,7 +819,7 @@ public class PositionSerializerAdam : MonoBehaviour
         
         if(lastCountPlay == countPlay)
         {
-            OnEndOfTrialEvent.Invoke();
+            
             return;
         } else
         {

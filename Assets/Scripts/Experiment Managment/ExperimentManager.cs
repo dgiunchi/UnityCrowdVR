@@ -172,11 +172,39 @@ public class ExperimentManager : MonoBehaviour
 
             //find end of trialobject and link to OnEndOfTrialEvent
             //GameObject.Find("[REPLACEWITHCORRECTNAME]").GetComponent<PositionSerializerAdam>().OnEndOfTrialEvent.AddListener(NextAction);
-            GameObject.Find("EndOfTrialManager").GetComponent<EndOfTrialManager>().OnEndOfTrialEvent.AddListener(NextAction);
-            
+            //GameObject.Find("EndOfTrialManager").GetComponent<EndOfTrialManager>().OnEndOfTrialEvent.AddListener(NextAction);
+
+            if (!findAndListen("UiContainer")) 
+            {
+                if (!findAndListen("EndOfTrialManager"))  Debug.LogError("No Event End of trial FOund");                
+            }
+         
+
         }
         
         Executing = false;
+    }
+
+    bool findAndListen(string name) {
+
+        GameObject container = GameObject.Find(name);
+
+        bool found  = false;
+
+        if (container != null)
+        {
+            EndOfTrialManager[] eList = container.GetComponentsInChildren<EndOfTrialManager>(true);
+
+            foreach (EndOfTrialManager e in eList)
+            {
+                e.OnEndOfTrialEvent.AddListener(NextAction);
+                found = true;
+            }
+
+        }
+
+        return found;
+
     }
 
     IEnumerator LoadYourAsyncScene(string scenename)
