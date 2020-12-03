@@ -215,6 +215,7 @@ public class ExperimentManager : MonoBehaviour
         // a sceneBuildIndex of 1 as shown in Build Settings.
 
         TransitionManager.Instance.setWaitingView();
+        Debug.Log("=============== " + scenename);
         yield return new WaitForSeconds(1.0f);
         
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenename);
