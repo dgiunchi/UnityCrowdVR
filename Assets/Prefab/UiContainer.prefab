@@ -434,6 +434,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 993894893461356026, guid: 222e9d70da6fff24db4896894ec96b0e,
+        type: 3}
+      propertyPath: m_text
+      value: Repeat
+      objectReference: {fileID: 0}
+    - target: {fileID: 993894893461356026, guid: 222e9d70da6fff24db4896894ec96b0e,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3583686824103235969, guid: 222e9d70da6fff24db4896894ec96b0e,
         type: 3}
       propertyPath: m_isTextTruncated
@@ -518,6 +528,27 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.lineCount
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4384148062382910697, guid: 222e9d70da6fff24db4896894ec96b0e,
+        type: 3}
+      propertyPath: m_text
+      value: You can still rewatch the crowd once if you like (by clicking repeat),
+        otherwise you can proceed to the questionaire by clicking (continue)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4384148062382910697, guid: 222e9d70da6fff24db4896894ec96b0e,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 139
+      objectReference: {fileID: 0}
+    - target: {fileID: 4384148062382910697, guid: 222e9d70da6fff24db4896894ec96b0e,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 4384148062382910697, guid: 222e9d70da6fff24db4896894ec96b0e,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 4987215921557265044, guid: 222e9d70da6fff24db4896894ec96b0e,
         type: 3}
@@ -1122,6 +1153,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 15.65
       objectReference: {fileID: 0}
+    - target: {fileID: 1333680387187545371, guid: ecdb405852eef1b42a6e6d215c62f83c,
+        type: 3}
+      propertyPath: m_Name
+      value: End
+      objectReference: {fileID: 0}
     - target: {fileID: 2156454324824409288, guid: ecdb405852eef1b42a6e6d215c62f83c,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -1231,6 +1267,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.lineCount
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5235556395389360079, guid: ecdb405852eef1b42a6e6d215c62f83c,
+        type: 3}
+      propertyPath: m_text
+      value: The simulation is over to proceed to the questionaire clicking  on continue.
+      objectReference: {fileID: 0}
+    - target: {fileID: 5235556395389360079, guid: ecdb405852eef1b42a6e6d215c62f83c,
+        type: 3}
+      propertyPath: m_textInfo.characterCount
+      value: 76
+      objectReference: {fileID: 0}
+    - target: {fileID: 5235556395389360079, guid: ecdb405852eef1b42a6e6d215c62f83c,
+        type: 3}
+      propertyPath: m_textInfo.spaceCount
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5235556395389360079, guid: ecdb405852eef1b42a6e6d215c62f83c,
+        type: 3}
+      propertyPath: m_textInfo.wordCount
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7160926020579737001, guid: ecdb405852eef1b42a6e6d215c62f83c,
         type: 3}
