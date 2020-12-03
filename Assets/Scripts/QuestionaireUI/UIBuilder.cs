@@ -122,7 +122,7 @@ public class UIBuilder : MonoBehaviour
 #if UNITY_EDITOR
                     DestroyImmediate(QuestionUiElementChild.gameObject);
 #else
-                Destroy(QuestionUiElementChild.gameObject);
+                    Destroy(QuestionUiElementChild.gameObject);
 #endif
                 }
 
@@ -346,6 +346,7 @@ public class UIBuilder : MonoBehaviour
 #endif
 
     }
+
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(UIBuilder))]
