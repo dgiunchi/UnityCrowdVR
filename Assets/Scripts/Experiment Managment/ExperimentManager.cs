@@ -214,6 +214,7 @@ public class ExperimentManager : MonoBehaviour
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
 
+        TransitionManager.Instance.setLogoLocation();
         TransitionManager.Instance.setWaitingView();
         Debug.Log("=============== " + scenename);
         yield return new WaitForSeconds(1.0f);
