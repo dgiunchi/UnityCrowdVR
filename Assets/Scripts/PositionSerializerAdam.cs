@@ -146,8 +146,8 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     public void Init()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         path = Application.streamingAssetsPath;
 
@@ -187,8 +187,8 @@ public class PositionSerializerAdam : MonoBehaviour
 }
     static public List<Transform> getJoints(GameObject skeleton) {
 
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         List<Transform> joints = new List<Transform>();
 
@@ -283,8 +283,8 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     public int getJointsNumber(GameObject Skeleton) {
 
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         int number = getJoints(Skeleton).Count;
 
@@ -293,15 +293,15 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     public float GetInitialTime()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         return initialTime;
     }
     public void UpdateSkeletons(List<GameObject> sks)
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         skeletonsList = new List<GameObject>(sks);
         seconds = endingTime - initialTime;
@@ -335,8 +335,8 @@ public class PositionSerializerAdam : MonoBehaviour
     public void UpdateRigidAvatars(List<GameObject> ra)
     {
 
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         rigidAvatars = new List<Transform>();
 
@@ -350,8 +350,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public void ResetSimulation()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         count = 0;
         countPlay = 0;
@@ -363,8 +363,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     void Setup()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD) 
         {
@@ -394,8 +394,8 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         if (!CSVLoaded()) return;
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD)
@@ -426,16 +426,16 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     void LoadDatasetTest()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         StartCoroutine(DeserializeOnAndroid());
     }
 
     void SerializeAll()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         if (serializationDone) return;
         serializationDone = true;
@@ -531,8 +531,8 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     void Serialize() //used in UNITY_EDITOR, SO path should be UNITY_EDITOR
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         Debug.Log("Begin Of Serialisation");
 
@@ -567,16 +567,16 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public void LoadFromCSV()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         StartCoroutine(DeserializeFromCSVOnAndroid());
     }
 
     void ConversionFromPositionsToVariations()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         // this function changes the data loaded from CSV ans stored in csvCoordinates
         // in a similar array where position data is converted in variation from frame to frame
@@ -636,8 +636,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public void CalculateInitialAndEndingTime()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         for (int i = 0; i < personsOriginal.Count; i++)
         {
@@ -658,8 +658,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public static float[] ConvertByteToFloat(byte[] array)
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         float[] floatArr = new float[array.Length / 4];
         for (int i = 0; i < floatArr.Length; i++)
@@ -675,8 +675,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     IEnumerator DeserializeOnAndroid()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         www = new WWW(Path.Combine(path, datafile));
         yield return www;
@@ -686,8 +686,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public bool BinaryLoaded()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         if (binaryDidLoad == true) return true;
         if (binaryLoaded == false) return false;
@@ -706,8 +706,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public void DeserializeCSV()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         numberOfPesonsFromCSVLoad = 0;
 
@@ -773,8 +773,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     IEnumerator DeserializeFromCSVOnAndroid()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         file = new WWW(Path.Combine(path, csvFileName));
         yield return file;
@@ -783,8 +783,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public bool CSVLoaded()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         if (csvDidLoad == true) return true;
         if (csvLoaded == false) return false;
@@ -869,8 +869,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public void ReadDataFromSimulationPerFrame() // rewrite the function with a different cumulative data that take in account the timeframe
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         if (initSimulationTime == -1.0f)
         {
@@ -964,8 +964,8 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public void ReadDataPerFrameCsv() // rewrite the function with a different cumulative data that take in account the timeframe
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         if (initSimulationTime == -1.0f)
         {
@@ -997,8 +997,8 @@ public class PositionSerializerAdam : MonoBehaviour
     
     void DelegatedCumulateData()
     {
-        Debug.Log(__LINE__());
-        Debug.Log(__FILE__());
+        
+        
 
         if (skeletonsList.Count == 0) return;
         bool lastSerialization = true;
