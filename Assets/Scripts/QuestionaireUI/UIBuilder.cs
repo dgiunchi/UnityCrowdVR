@@ -12,6 +12,7 @@ using SpaceBear.VRUI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
 
+using TMPro;
 public class UIBuilder : MonoBehaviour
 {
 
@@ -90,11 +91,11 @@ public class UIBuilder : MonoBehaviour
 
         Container = Instantiate(ui.Container, Panel.transform);
         GameObject PanelTitle = Instantiate(ui.PanelTitle, Container.transform);        
-        PanelTitle.GetComponent<Text>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].name;
+        PanelTitle.GetComponent<TextMeshProUGUI>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].name;
 
         if (data.questionaire.parts[partNumber].subparts[subPartNumber].description != "") {
             GameObject PanelDescription = Instantiate(ui.Text, Container.transform); 
-            PanelDescription.GetComponent<Text>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].description;
+            PanelDescription.GetComponent<TextMeshProUGUI>().text = data.questionaire.parts[partNumber].subparts[subPartNumber].description;
         }
 
         for (int questionNumber = 0; questionNumber < data.questionaire.parts[partNumber].subparts[subPartNumber].questions.Length; questionNumber++)
@@ -103,9 +104,9 @@ public class UIBuilder : MonoBehaviour
             QuestionaireQuestion question = data.questionaire.parts[partNumber].subparts[subPartNumber].questions[questionNumber];
 
             GameObject QuestionTitle = Instantiate(ui.Title, Container.transform);
-            QuestionTitle.GetComponent<Text>().text = question.question;
+            QuestionTitle.GetComponent<TextMeshProUGUI>().text = question.question;
             GameObject QuestionText = Instantiate(ui.Text, Container.transform);
-            QuestionText.GetComponent<Text>().text = question.helpText;
+            QuestionText.GetComponent<TextMeshProUGUI>().text = question.helpText;
 
             if (question.uielement == UitType.Radio)
             {
@@ -140,7 +141,7 @@ public class UIBuilder : MonoBehaviour
                     if (i == 0) Option = ChildOption.gameObject;
                     else Option = Instantiate(ChildOption.gameObject, QuestionUiElement.transform);
 
-                    Option.GetComponentInChildren<Text>().text = question.Options[i];
+                    Option.GetComponentInChildren<TextMeshProUGUI>().text = question.Options[i];
                     VRUIRadio vruiradio = Option.GetComponentInChildren<VRUIRadio>();
                     vruiradio.onPointerClick.AddListener(delegate { RadioValueChanged(newPart, newSubPart, newQuestionNumber, newOptionNumber); });
 
@@ -181,7 +182,7 @@ public class UIBuilder : MonoBehaviour
 
         GameObject DeveloperButton = Instantiate(ui.Button, Container.transform);
 
-        DeveloperButton.GetComponentInChildren<Text>().text = "DevForward";
+        DeveloperButton.GetComponentInChildren<TextMeshProUGUI>().text = "DevForward";
 
         DeveloperButton.GetComponentInChildren<Button>().onClick.AddListener(delegate {   OnQuestionairePartCompleted.Invoke(); });
 #endif      
