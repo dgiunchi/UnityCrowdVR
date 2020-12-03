@@ -7,7 +7,10 @@ public class TransitionToVisualisation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        TransitionManager.Instance.setExperimentView();
+        if (TransitionManager.Instance.isWaiting)
+        {
+            TransitionManager.Instance.setExperimentView();
+        }
     }
 
     // Update is called once per frame

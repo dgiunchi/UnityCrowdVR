@@ -780,9 +780,9 @@ public class PositionSerializerAdam : MonoBehaviour
         ConversionFromPositionsToVariations();
         CalculateInitialAndEndingTime();
 
-#if UNITY_EDITOR
-        //SimulationManagerAdam.Instance.ResizeScene();
-#endif
+//#if UNITY_EDITOR
+        SimulationManagerAdam.Instance.ResizeSceneNoDestroy();
+//#endif
 
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
         {

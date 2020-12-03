@@ -645,8 +645,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1520203897}
   - component: {fileID: 1520203898}
-  - component: {fileID: 1520203899}
   - component: {fileID: 1520203900}
+  - component: {fileID: 1520203899}
   m_Layer: 0
   m_Name: Scene
   m_TagString: Untagged

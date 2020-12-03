@@ -6,7 +6,7 @@ public class ExchangeControls : MonoBehaviour
 {
     GameObject player;
 
-    void Awake()
+    void Start()
     {
         player = GameObject.Find("OVRPlayerController");
         player.GetComponent<CharacterController>().enabled = false;
@@ -15,10 +15,12 @@ public class ExchangeControls : MonoBehaviour
     }
 
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        player.GetComponent<CharacterController>().enabled = true;
-        player.GetComponent<OVRPlayerController>().enabled = true;
-
+        if (player)
+        {
+            player.GetComponent<CharacterController>().enabled = true;
+            player.GetComponent<OVRPlayerController>().enabled = true;
+        }
     }
 }

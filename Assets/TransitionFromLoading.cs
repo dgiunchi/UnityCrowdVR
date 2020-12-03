@@ -10,6 +10,8 @@ public class TransitionFromLoading : MonoBehaviour
     private bool startLoad = false;
     Camera camera;
     private GameObject logo;
+
+    public bool forceVisualise = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +29,7 @@ public class TransitionFromLoading : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SimulationManagerAdam.Instance.sceneLoaded)
+        if (SimulationManagerAdam.Instance.sceneLoaded || forceVisualise)
         {
             //show the scene
             logo.SetActive(false);

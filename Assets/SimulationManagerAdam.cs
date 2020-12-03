@@ -79,6 +79,7 @@ public class SimulationManagerAdam : MonoBehaviour
     }
     private void SetSerializerOptions()
     {
+        serializer = GameObject.Find("AnimationSerializerAdam").GetComponent<PositionSerializerAdam>();
         serializer.Name = dataname;
         serializer.scaleValue = scaleCsv;
     }
@@ -455,6 +456,48 @@ public class SimulationManagerAdam : MonoBehaviour
 
     }
 
+    public void ResizeSceneNoDestroy()
+    {
+
+
+        ///////////////////////////////////////////////////////
+
+        GameObject scene = GameObject.Find(sceneName);
+
+        ///////////////////////////////////////////////////
+        scene.name = sceneName;
+
+
+        GameObject Wall_1 = scene.transform.FindDeepChild("Wall_1").gameObject;
+        GameObject Wall_2 = scene.transform.FindDeepChild("Wall_2").gameObject;
+        GameObject Wall_3 = scene.transform.FindDeepChild("Wall_3").gameObject;
+        GameObject Wall_4 = scene.transform.FindDeepChild("Wall_4").gameObject;
+        GameObject Plane = scene.transform.FindDeepChild("Ground").gameObject;
+
+        /////////////////////////////////////////////////
+
+        Bounds b = getCsvTrajectoriesBounds();
+
+        float widthX = (b.extents.x * 2) / 10;
+        float widthY = (b.extents.z * 2) / 10;
+
+        Plane.transform.position = new Vector3(b.center.x, 0f, b.center.z);
+        Plane.transform.localScale = new Vector3(widthX, 1f, widthY);
+
+        Wall_1.transform.position = new Vector3(b.max.x, sceneHeight, b.center.z);
+        Wall_1.transform.localScale = new Vector3(sceneHeight * 0.2f, 0.5f, widthY);
+
+        Wall_2.transform.position = new Vector3(b.center.x, sceneHeight, b.min.z);
+        Wall_2.transform.localScale = new Vector3(sceneHeight * 0.2f, 1f, widthX);
+
+        Wall_3.transform.position = new Vector3(b.center.x, sceneHeight, b.max.z);
+        Wall_3.transform.localScale = new Vector3(sceneHeight * 0.2f, 1f, widthX);
+
+        Wall_4.transform.position = new Vector3(b.min.x, sceneHeight, b.center.z);
+        Wall_4.transform.localScale = new Vector3(sceneHeight * 0.2f, 0.5f, widthY);
+
+    }
+
     public Bounds getCsvTrajectoriesBounds() {
         
         if (Application.isPlaying == false)
@@ -518,7 +561,7 @@ public class SimulationManagerAdam : MonoBehaviour
         //}
        
 #endif
-        if(sceneLoaded && TransitionManager.Instance != null && TransitionManager.Instance.isWaiting)
+        if(sceneLoaded && TransitionManager.Instance.isWaiting)
         {
             TransitionManager.Instance.setExperimentView();
             checkForImmersiveCamera();
