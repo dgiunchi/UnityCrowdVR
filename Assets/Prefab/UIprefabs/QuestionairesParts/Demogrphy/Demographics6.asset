@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
   m_Name: Demographics6
   m_EditorClassIdentifier: 
-  name: Demographics 6/6
+  name: Demographics 6/7
   description: 'Please give us some information about yourself '
   questions:
   - question: Place of Birth

@@ -31,8 +31,11 @@ MonoBehaviour:
     - Real trajectories
     - Simulated (Artificially created) trajectories
     answer: 
-  - question: How relaitsic would you say these trajectories were ?
-    helpText: How realistic the trajectories of the crowd you just observed w
+  - question: How relaitsic would you say these trajectories were?
+    helpText: Please use the sliders to answer the above questions. A fully grey
+      slider (slider handle set on the left of slider) indicates a very low value
+      of perceived realism, a fully blue slider (slider handle set on the right of
+      the slider) indicates a very high value of perceived realism.
     uielement: 0
     valuebool: 0
     valuefloat: 0

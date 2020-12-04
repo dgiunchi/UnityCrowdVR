@@ -27,10 +27,8 @@ MonoBehaviour:
       subpartsScripts:
       - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
       - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
-      - {fileID: 11400000, guid: 6be6fa0aad1553648bd404c8a3c336be, type: 2}
-      - {fileID: 11400000, guid: f733caa70eab3a045a1f0339e128cc53, type: 2}
       - {fileID: 11400000, guid: 979859e141e77f1498554a8cd3c65ba6, type: 2}
-      - {fileID: 11400000, guid: 979859e141e77f1498554a8cd3c65ba6, type: 2}
+      - {fileID: 11400000, guid: d193ca38351ab4148a528e7488c6b4b0, type: 2}
     - name: WithinTrialQuestionaire
       referenceName: VideoSimulated
       description: 
@@ -44,8 +42,6 @@ MonoBehaviour:
       subpartsScripts:
       - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
       - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
-      - {fileID: 11400000, guid: 6be6fa0aad1553648bd404c8a3c336be, type: 2}
-      - {fileID: 11400000, guid: f733caa70eab3a045a1f0339e128cc53, type: 2}
       - {fileID: 11400000, guid: 979859e141e77f1498554a8cd3c65ba6, type: 2}
       - {fileID: 11400000, guid: d193ca38351ab4148a528e7488c6b4b0, type: 2}
     - name: WithinTrialQuestionaire
@@ -61,8 +57,6 @@ MonoBehaviour:
       subpartsScripts:
       - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
       - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
-      - {fileID: 11400000, guid: 6be6fa0aad1553648bd404c8a3c336be, type: 2}
-      - {fileID: 11400000, guid: f733caa70eab3a045a1f0339e128cc53, type: 2}
       - {fileID: 11400000, guid: 979859e141e77f1498554a8cd3c65ba6, type: 2}
       - {fileID: 11400000, guid: d193ca38351ab4148a528e7488c6b4b0, type: 2}
     - name: WithinTrialQuestionaire
@@ -78,8 +72,6 @@ MonoBehaviour:
       subpartsScripts:
       - {fileID: 11400000, guid: 395d26a19bc11ef4cb88998ef55791c7, type: 2}
       - {fileID: 11400000, guid: 17bbd9b4a7105a04d831c4c178659077, type: 2}
-      - {fileID: 11400000, guid: 6be6fa0aad1553648bd404c8a3c336be, type: 2}
-      - {fileID: 11400000, guid: f733caa70eab3a045a1f0339e128cc53, type: 2}
       - {fileID: 11400000, guid: 979859e141e77f1498554a8cd3c65ba6, type: 2}
       - {fileID: 11400000, guid: d193ca38351ab4148a528e7488c6b4b0, type: 2}
     - name: Pre Experiment Questionaire
@@ -99,9 +91,15 @@ MonoBehaviour:
       - {fileID: 11400000, guid: 50e59459c2da6274aab5790bb3611969, type: 2}
       - {fileID: 11400000, guid: c427f25ed976cfb4aad65fdda7bd8e93, type: 2}
       - {fileID: 11400000, guid: 80fef9c96e92f324ebc9d9e9c113515f, type: 2}
+      - {fileID: 11400000, guid: eef1fba24d62dda44958730cdd6c36e7, type: 2}
+      - {fileID: 11400000, guid: 6be6fa0aad1553648bd404c8a3c336be, type: 2}
+      - {fileID: 11400000, guid: f733caa70eab3a045a1f0339e128cc53, type: 2}
     - name: Post Experiment Questionaire
       referenceName: postexperiment
       description: 
-      subparts: []
+      subparts:
+      - {fileID: 0}
       subpartsScripts:
+      - {fileID: 11400000, guid: 6be6fa0aad1553648bd404c8a3c336be, type: 2}
+      - {fileID: 11400000, guid: f733caa70eab3a045a1f0339e128cc53, type: 2}
       - {fileID: 11400000, guid: 87992e0b9676e2f468d4026613b71c96, type: 2}

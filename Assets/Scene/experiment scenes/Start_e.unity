@@ -1050,6 +1050,18 @@ PrefabInstance:
       propertyPath: Acceleration
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: SnapRotation
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: EnableRotation
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: RotationEitherThumbstick
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 14300000, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: m_Radius
       value: 0.1
@@ -3373,10 +3385,10 @@ MonoBehaviour:
     Sheet, and understand what the study involves.\r\n\u2022understand that if I
     decide at any time that I no longer wish to take part in this project, I can
     notify the researches involved and withdraw immediately.\r\n \u2022 consent to
-    the processing of my personal information for the purposes of this research study.\r\n
-    \u2022 understand that such information will be treated as strictly confidential
-    and handled in accordance with the provisions of the Data Protection Act 1998.\r\n
-    \u2022 agree that the research project named above has been explained to my satisfaction
+    the processing of my personal information for the purposes of this research study.\r\n\u2022
+    understand that such information will be treated as strictly confidential and
+    handled in accordance with the provisions of the Data Protection Act 1998.\r\n\u2022
+    agree that the research project named above has been explained to my satisfaction
     and I agree to take part in this study.\r\n \u2022 understand that the information
     I have submitted will be published as a report and I may request a copy. Confidentiality
     and anonymity will be maintained and it will not be possible to identify me from
@@ -3453,9 +3465,9 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 2021176180}
-    characterCount: 1738
+    characterCount: 1736
     spriteCount: 0
-    spaceCount: 305
+    spaceCount: 303
     wordCount: 289
     linkCount: 0
     lineCount: 21
