@@ -8,6 +8,12 @@ using UnityEngine.Networking;
 public class Firebase : MonoBehaviour
 {
 
+    public GameObject WaitForConnectionMessage;
+
+    public GameObject InternetNotWorking;
+
+    public GameObject NextStep;
+
     public string apiKey = "AIzaSyDzrVNvuBRWkMcxh2xF4cbQWYaYIAG6BHo";
 
     private string identitytoolkitUri = "https://identitytoolkit.googleapis.com/";
@@ -49,10 +55,16 @@ public class Firebase : MonoBehaviour
 
         if (request.error != null)
         {
+            WaitForConnectionMessage.SetActive(false);
+            InternetNotWorking.SetActive(true);
+
             Debug.Log("Anonymous Authorization Erro: " + request.error);
         }
         else
         {
+            WaitForConnectionMessage.SetActive(false);
+            NextStep.SetActive(true);
+
             Debug.Log("Anonymous Authorization OK");
             Debug.Log("Status Code: " + request.responseCode);
             authResponse = JsonUtility.FromJson<AuthenticateAnonymouseResponse>(request.downloadHandler.text);
@@ -87,6 +99,7 @@ public class Firebase : MonoBehaviour
 
         if (request.error != null)
         {
+
             Debug.Log("Put Data Erro: " + request.error);
         }
         else
