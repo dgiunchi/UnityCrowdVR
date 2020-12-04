@@ -28,3 +28,9 @@ MonoBehaviour:
     - name: Immersive- Real Data
       sceneName: ImmersiveReal_e_new
       questionaireRefName: ImmersiveReal
+    - name: Bird Eye - Real Data
+      sceneName: BirdEyeReal_e_new
+      questionaireRefName: BirdEyeReal
+    - name: BirdEye - Simulated Data
+      sceneName: BirdEyeSimulated_e_new
+      questionaireRefName: BirdEyeSimulated
