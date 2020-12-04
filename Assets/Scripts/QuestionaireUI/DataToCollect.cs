@@ -10,11 +10,14 @@ public class DataToCollect : ScriptableObject
     [SerializeField]
     public Questionaire questionaire;
 
+    public string[] sequence; 
+
+
+
     private void Awake()
     {
         Init();
     }
-
     public void Init() {
 
         loadScriptableObjects();
