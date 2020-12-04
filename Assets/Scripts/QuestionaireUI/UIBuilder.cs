@@ -32,7 +32,8 @@ public class UIBuilder : MonoBehaviour
 
     protected QuestionaireUI ui;
 
-    protected DataToCollect data;
+    [HideInInspector]
+    public DataToCollect data;
 
     public Firebase databaseManager;
 

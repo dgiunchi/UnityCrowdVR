@@ -26,6 +26,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/experiment scenes/VideoSimulated_e_new.unity
     guid: 15877b7960ecb854eab556b0128168ac
+  - enabled: 1
+    path: Assets/Scene/experiment scenes/BirdEyeReal_e_new.unity
+    guid: d49bfc85b1dc4694e90dd53f5acc6102
+  - enabled: 1
+    path: Assets/Scene/experiment scenes/BirdEyeSimulated_e_new.unity
+    guid: aac0f558c09a1b8479eedf6502a29038
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 10fd3cf6e90fb6541af008bf8baf3279,
       type: 2}

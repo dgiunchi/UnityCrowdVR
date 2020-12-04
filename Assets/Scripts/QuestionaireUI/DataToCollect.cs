@@ -10,9 +10,11 @@ public class DataToCollect : ScriptableObject
     [SerializeField]
     public Questionaire questionaire;
 
-    public string[] sequence; 
+    [HideInInspector]
+    public string[] sequenceExp;
 
-
+    [HideInInspector]
+    public int[] sequenceImp;
 
     private void Awake()
     {
@@ -93,14 +95,22 @@ public class DataToCollectUpload : ScriptableObject
     [SerializeField]
     public QuestionaireUpload questionaire;
 
-    public DataToCollectUpload(Questionaire v)
+    [HideInInspector]
+    public string[] sequenceExp;
+
+    [HideInInspector]
+    public int[] sequenceImp;
+
+    public DataToCollectUpload(Questionaire v, int[] sequenceImp, string[] sequenceExp)
     {
         this.questionaire = (QuestionaireUpload)v;
+        this.sequenceExp = sequenceExp;
+        this.sequenceImp = sequenceImp;
     }
 
     public static explicit operator DataToCollectUpload(DataToCollect v)
     {
-        return new DataToCollectUpload(v.questionaire);
+        return new DataToCollectUpload(v.questionaire,v.sequenceImp,v.sequenceExp);
     }
 
 }

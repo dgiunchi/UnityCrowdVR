@@ -77,12 +77,15 @@ public class ExperimentManager : MonoBehaviour
 
     void createQueueTrials() {
 
+        List<string> stringlist = new List<string>();
+        
         foreach (Session s in e.Session)
         {
 
             if (s.randomizeTrialsOrder)
             {
                 AddRandomizeTrialOrder(s);//here we can have also another method based on partecipant numbers instead
+
             }
             else
             {
@@ -101,9 +104,10 @@ public class ExperimentManager : MonoBehaviour
 
     void AddRandomizeTrialOrder(Session s) {
         
-       
-
+     
         List<int> array = new List<int>();
+
+        List<string> arrayString = new List<string>();
 
         while (array.Count< s.trials.Length) {
 
@@ -114,10 +118,11 @@ public class ExperimentManager : MonoBehaviour
                 array.Add(newindex);
             }
           
-           
         }
 
         foreach (int i in array) {
+
+            arrayString.Add(s.trials[i].sceneName);
 
             ExperimentAction scene = new ExperimentAction(ExperimentActionType.scene, s.trials[i].sceneName);
             ActionQueue.Enqueue(scene);
@@ -126,7 +131,8 @@ public class ExperimentManager : MonoBehaviour
             ActionQueue.Enqueue(questionaire);
         }
 
-
+        uimanager.data.sequenceImp = array.ToArray();
+        uimanager.data.sequenceExp = arrayString.ToArray();
 
     }
 
