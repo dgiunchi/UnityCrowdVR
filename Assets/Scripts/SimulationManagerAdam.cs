@@ -68,6 +68,8 @@ public class SimulationManagerAdam : MonoBehaviour
 
     bool triggerPlay = false;
 
+    DataCache cache;
+
     [HideInInspector]
     public bool sceneLoaded = false;
     public string sceneName = "Scene";
@@ -75,6 +77,11 @@ public class SimulationManagerAdam : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameObject go = GameObject.Find("ExperimentManager");
+        if (go)
+        {
+            cache = go.GetComponent<DataCache>();
+        }
         SetSerializerOptions();
     }
     private void SetSerializerOptions()
@@ -133,32 +140,63 @@ public class SimulationManagerAdam : MonoBehaviour
     public void OnStartPlay()
     {
         group = GameObject.Find("ToPlay").transform;
-        
-        int numberOfPersons = serializer.persons.Count;
-        for (int i = 0; i < numberOfPersons; ++i)
+        if(cache == null)
         {
-            float initTime = serializer.personsOriginal[i].Keys.Min();
-            float endingTime = serializer.personsOriginal[i].Keys.Max();
-            Vector2 initialPosition = serializer.personsOriginal[i][initTime];
-            Vector2 initialOrientation = serializer.persons[i][initTime];
-            if(initialOrientation == Vector2.zero)
+            int numberOfPersons = serializer.persons.Count;
+            for (int i = 0; i < numberOfPersons; ++i)
             {
-                initialOrientation = serializer.personsOriginal[i][endingTime] - serializer.personsOriginal[i][initTime];
-            }
-            Vector3 newDirection = new Vector3(initialOrientation.x, 0.0f, initialOrientation.y);
-            var avatarNumber = UnityEngine.Random.Range(0, skeletonPlayPrefab.Length) ;
-            GameObject obj = Instantiate(skeletonPlayPrefab[avatarNumber], new Vector3(initialPosition.x, skeletonPlayPrefab[avatarNumber].transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));//@@TOODorientation??
-            obj.transform.parent = group;
-            obj.name = "Skeleton " + i.ToString();
-            skeletons.Add(obj);
+                float initTime = serializer.personsOriginal[i].Keys.Min();
+                float endingTime = serializer.personsOriginal[i].Keys.Max();
+                Vector2 initialPosition = serializer.personsOriginal[i][initTime];
+                Vector2 initialOrientation = serializer.persons[i][initTime];
+                if(initialOrientation == Vector2.zero)
+                {
+                    initialOrientation = serializer.personsOriginal[i][endingTime] - serializer.personsOriginal[i][initTime];
+                }
+                Vector3 newDirection = new Vector3(initialOrientation.x, 0.0f, initialOrientation.y);
+                var avatarNumber = UnityEngine.Random.Range(0, skeletonPlayPrefab.Length) ;
+                GameObject obj = Instantiate(skeletonPlayPrefab[avatarNumber], new Vector3(initialPosition.x, skeletonPlayPrefab[avatarNumber].transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));
+                obj.transform.parent = group;
+                obj.name = "Skeleton " + i.ToString();
+                skeletons.Add(obj);
 
-            if (initTime != serializer.GetInitialTime())
-            {
-                obj.SetActive(false);
+                if (initTime != serializer.GetInitialTime())
+                {
+                    obj.SetActive(false);
+                }
             }
+
+            serializer.UpdateSkeletons(skeletons);
+        } else
+        {
+            DataCache.CSVInfo info = cache.GetInfo(dataname);
+            int numberOfPersons = info.personsOriginal.Count;
+            for (int i = 0; i < numberOfPersons; ++i)
+            {
+                float initTime = info.personsOriginal[i].Keys.Min();
+                float endingTime = info.personsOriginal[i].Keys.Max();
+                Vector2 initialPosition = info.personsOriginal[i][initTime];
+                Vector2 initialOrientation = info.personsRecord[i][0].direction;
+                if (initialOrientation == Vector2.zero)
+                {
+                    initialOrientation = info.personsOriginal[i][endingTime] - info.personsOriginal[i][initTime];
+                }
+                Vector3 newDirection = new Vector3(initialOrientation.x, 0.0f, initialOrientation.y);
+                var avatarNumber = UnityEngine.Random.Range(0, skeletonPlayPrefab.Length);
+                GameObject obj = Instantiate(skeletonPlayPrefab[avatarNumber], new Vector3(initialPosition.x, skeletonPlayPrefab[avatarNumber].transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));//@@TOODorientation??
+                obj.transform.parent = group;
+                obj.name = "Skeleton " + i.ToString();
+                skeletons.Add(obj);
+
+                if (initTime != info.initialTime)
+                {
+                    obj.SetActive(false);
+                }
+            }
+
+            serializer.UpdateSkeletons(skeletons);
         }
-
-        serializer.UpdateSkeletons(skeletons);
+        
     }
 
     void ClearAll()
@@ -214,8 +252,17 @@ public class SimulationManagerAdam : MonoBehaviour
     public void LoadScene()
     {
         status = STATUS.LOADED;
+        currentTime = 0.0f;
         serializer.Init();
-        serializer.LoadFromCSV();
+
+        if(cache == null)
+        {
+            serializer.LoadFromCSV();
+        } else
+        {
+            OnStartPlay();
+        }
+        
 
     }
 
@@ -265,9 +312,9 @@ public class SimulationManagerAdam : MonoBehaviour
 
     public void Show()
     {
-        foreach (GameObject go in skeletons)
+        for (int m=0; m<skeletons.Count; m++)
         {
-            go.SetActive(!go.activeSelf);
+            skeletons[m].SetActive(!skeletons[m].activeSelf);
         }
     }
 
@@ -297,8 +344,8 @@ public class SimulationManagerAdam : MonoBehaviour
 
         int j = 0;
 
-        foreach (var person in serializer.personsOriginal)
-        {
+         for (int m = 0; m < serializer.personsOriginal.Count; m++)
+            {
             GameObject myLine = new GameObject();
 
             float c = UnityEngine.Random.Range(0f, 1f);
@@ -314,11 +361,11 @@ public class SimulationManagerAdam : MonoBehaviour
             lr.SetColors(color, color);
             lr.SetWidth(0.05f, 0.05f);
 
-            lr.positionCount = person.Count;
+            lr.positionCount = serializer.personsOriginal[m].Count;
 
             int i = 0;
 
-            foreach (var entry in person)
+            foreach (var entry in serializer.personsOriginal[m])
             {
                 var entryValue = (Vector2)entry.Value;
 
@@ -507,10 +554,10 @@ public class SimulationManagerAdam : MonoBehaviour
 
         int j = 0;
 
-        foreach (var person in serializer.personsOriginal)
+        for (int m=0; m<serializer.personsOriginal.Count; m++)
         {
 
-            foreach (var entry in person)
+            foreach (var entry in serializer.personsOriginal[m])
             {
                 var entryValue = (Vector2)entry.Value;
 
@@ -553,7 +600,7 @@ public class SimulationManagerAdam : MonoBehaviour
         //}
        
 #endif
-        if(sceneLoaded && TransitionManager.Instance.isWaiting)
+        if(sceneLoaded && TransitionManager.Instance && TransitionManager.Instance.isWaiting)
         {
             TransitionManager.Instance.setExperimentView();
             //checkForImmersiveCamera();

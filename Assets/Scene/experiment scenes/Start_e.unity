@@ -1507,6 +1507,7 @@ GameObject:
   - component: {fileID: 1007851321}
   - component: {fileID: 1007851322}
   - component: {fileID: 1007851323}
+  - component: {fileID: 1007851324}
   m_Layer: 0
   m_Name: ExperimentManager
   m_TagString: Untagged
@@ -1567,6 +1568,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logo: {fileID: 3174787647473633987}
+--- !u!114 &1007851324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007851320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf80e4eeeed6da45b9dcae71a7d2f0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  datanames:
+  - data_2
+  - data_2_navMesh
+  scaleValue:
+  - 0.04
+  - 1
+  allLoaded: 0
 --- !u!1 &1024933042
 GameObject:
   m_ObjectHideFlags: 0
@@ -2031,6 +2051,7 @@ MonoBehaviour:
   adjust: {x: 0, y: 0, z: 2}
   dataToCollect: {fileID: 11400000, guid: 29825e81b39c59d409e4faeb8bf136c3, type: 2}
   useriinterface: {fileID: 11400000, guid: c2578195c2c59844697ac0f206652cbb, type: 2}
+  data: {fileID: 0}
   databaseManager: {fileID: 1024933043}
   OnQuestionairePartCompleted:
     m_PersistentCalls:

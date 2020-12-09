@@ -21,12 +21,14 @@ public class PositionSerializerAdam : MonoBehaviour
     public List<Transform> rigidAvatars;
     List<GameObject> skeletonsList;
 
-
+    DataCache cache;
     private string csvFileName;
     private string datafile;
     private string txtFileName;
+    private string dataname;
     public string Name {
         set {
+            dataname = value;
             csvFileName = value + ".csv";
             datafile = value + ".dat";
             txtFileName = value + ".txt";
@@ -102,6 +104,8 @@ public class PositionSerializerAdam : MonoBehaviour
     bool binaryLoaded = false;
     bool binaryDidLoad = false;
 
+    bool avatarsLoaded = false;
+
     private void Awake()
     {
         d["Skeleton"] = "Bip01";
@@ -143,12 +147,16 @@ public class PositionSerializerAdam : MonoBehaviour
     void Start()
     {
         jointsNumbers = getJointsNumber(SimulationManagerAdam.Instance.skeletonRecordPrefab);
+        GameObject go = GameObject.Find("ExperimentManager");
+        if (go)
+        {
+            cache = go.GetComponent<DataCache>();
+        }
+        
     }
     public void Init()
     {
         
-        
-
         path = Application.streamingAssetsPath;
 
         file = null;
@@ -186,10 +194,6 @@ public class PositionSerializerAdam : MonoBehaviour
 
 }
     static public List<Transform> getJoints(GameObject skeleton) {
-
-        
-        
-
         List<Transform> joints = new List<Transform>();
 
         if (skeleton.transform.Find("Skeleton") != null)
@@ -282,45 +286,44 @@ public class PositionSerializerAdam : MonoBehaviour
         return joints;
     }
     public int getJointsNumber(GameObject Skeleton) {
-
-        
-        
-
         int number = getJoints(Skeleton).Count;
-
         return number;
-
     }
     public float GetInitialTime()
     {
-        
-        
-
         return initialTime;
     }
-    public void UpdateSkeletons(List<GameObject> sks)
-    {
-        
-        
 
+    public void UpdateSkeletons(List<GameObject> sks) // @@ HERE THE LOGIC FOR INCREMENTAL AVATAR
+    {
         skeletonsList = new List<GameObject>(sks);
-        seconds = endingTime - initialTime;
+        if(cache != null)
+        {
+            DataCache.CSVInfo info = cache.GetInfo(dataname);
+            seconds = info.endingTime - info.initialTime;
+            timeStep = info.timeStep;
+            simulationTimeLength = info.simulationTimeLength;
+        } else
+        {
+            seconds = endingTime - initialTime;
+        }
+        
         skeletonNumbers = skeletonsList.Count;
 
         numberOfValuesPerFrame = (jointsNumbers+1) * (timeAndIndex + positionCoord); // the + one on the joints number is related to position 
 
-        List<GameObject> skeletons = new List<GameObject>(sks);
+        //List<GameObject> skeletons = new List<GameObject>(sks);
         skeletonJoints = new List<List<Transform>>();
         int index = 0;
-        foreach (GameObject skeleton in skeletons)
+        for (int m = 0; m < sks.Count(); m++)
         {
             
-            List<Transform> joints = getJoints(skeleton);
+            List<Transform> joints = getJoints(sks[m]);
 
             skeletonJoints.Add(joints);
 
             // need for new serialization
-            SIGGRAPH_2017.BioAnimation_Adam_Simulation component = skeleton.GetComponent<SIGGRAPH_2017.BioAnimation_Adam_Simulation>();
+            SIGGRAPH_2017.BioAnimation_Adam_Simulation component = sks[m].GetComponent<SIGGRAPH_2017.BioAnimation_Adam_Simulation>();
             if (component != null)
             {
                 component.InitWithCSVData(index, timeStep);
@@ -329,20 +332,18 @@ public class PositionSerializerAdam : MonoBehaviour
         }
 
         //coordinates = new float[total];
-        coordinates = new float[0];
+        avatarsLoaded = true;
         Setup();
     }
+
     public void UpdateRigidAvatars(List<GameObject> ra)
     {
-
         
-        
-
         rigidAvatars = new List<Transform>();
 
-        foreach (GameObject rigidAvatar in ra)
+        for (int m = 0; m <= ra.Count(); m++)
         {          
-            rigidAvatars.Add(rigidAvatar.transform);
+            rigidAvatars.Add(ra[m].transform);
         }
         
         Setup();
@@ -363,9 +364,6 @@ public class PositionSerializerAdam : MonoBehaviour
 
     void Setup()
     {
-        
-        
-
         if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD) 
         {
             Time.captureDeltaTime = 1.0f / framerate;
@@ -394,49 +392,71 @@ public class PositionSerializerAdam : MonoBehaviour
     }
     void Update()
     {
-        
-        
-
-        if (!CSVLoaded()) return;
-        if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD)
+        if(cache == null)
         {
-            SimulationManagerAdam.Instance.sceneLoaded = true;
-            DelegatedCumulateData();
-        }
-        else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAYCSV)
-        {
-            SimulationManagerAdam.Instance.sceneLoaded = true;
-            ReadDataPerFrameCsv();
-        }
-        else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
-        {
-            if (BinaryLoaded())
+            if (!CSVLoaded()) return;
+            if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.RECORD)
             {
                 SimulationManagerAdam.Instance.sceneLoaded = true;
-                ReadDataFromSimulationPerFrame();
+                DelegatedCumulateData();
             }
-        }
-        else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
-        {
-            if (BinaryLoaded())
+            else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAYCSV)
             {
                 SimulationManagerAdam.Instance.sceneLoaded = true;
+                ReadDataPerFrameCsv();
+            }
+            else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
+            {
+                if (BinaryLoaded())
+                {
+                    SimulationManagerAdam.Instance.sceneLoaded = true;
+                    ReadDataFromSimulationPerFrame();
+                }
+            }
+            else if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
+            {
+                if (BinaryLoaded())
+                {
+                    SimulationManagerAdam.Instance.sceneLoaded = true;
+                }
             }
         }
+        else
+        {
+            if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.PLAY)
+            {
+                if (cache.allLoaded && avatarsLoaded)
+                {
+                    SimulationManagerAdam.Instance.sceneLoaded = true;
+                    ReadDataFromSimulationPerFrame();
+                }
+            }
+            if (SimulationManagerAdam.status == SimulationManagerAdam.STATUS.LOADED)
+            {
+                if (cache.allLoaded && avatarsLoaded)
+                {
+                    SimulationManagerAdam.Instance.sceneLoaded = true;
+                }
+            }
+        }
+        
     }
     void LoadDatasetTest()
     {
-        
-        
 
-        StartCoroutine(DeserializeOnAndroid());
+        if (cache == null)
+        {
+            StartCoroutine(DeserializeOnAndroid());
+        } else
+        {
+            cache.GetDataFromCache(dataname, out coordinates);
+        }
+
+        
     }
 
     void SerializeAll()
     {
-        
-        
-
         if (serializationDone) return;
         serializationDone = true;
 
@@ -562,15 +582,15 @@ public class PositionSerializerAdam : MonoBehaviour
         using (var outf = new StreamWriter(Path.Combine(path, txtFileName)))
             for (int i = 0; i < coordinates.Length; i=i+4)
                 outf.WriteLine(formatString, coordinates[i], coordinates[i+1], coordinates[i+2], coordinates[i+3]);*/
-         
+                
     }
 
     public void LoadFromCSV()
     {
-        
-        
-
-        StartCoroutine(DeserializeFromCSVOnAndroid());
+        if(cache == null)
+        {
+            StartCoroutine(DeserializeFromCSVOnAndroid());
+        }
     }
 
     void ConversionFromPositionsToVariations()
@@ -604,6 +624,8 @@ public class PositionSerializerAdam : MonoBehaviour
                 int yPosIndex = index + 3;
                 if (j == 1) {
                     timeStep = (float)System.Math.Round(csvCoordinates[index + 7] - csvCoordinates[index + 7 - dataPerPersonAndFrameFromCSVLoad], precisionFloatLoad);
+                    csvVariationsCoordinates[xPosIndex] = csvCoordinates[xPosIndex + dataPerPersonAndFrameFromCSVLoad] - csvCoordinates[xPosIndex];
+                    csvVariationsCoordinates[yPosIndex] = csvCoordinates[yPosIndex + dataPerPersonAndFrameFromCSVLoad] - csvCoordinates[yPosIndex];
                 }
                 else if (j != numberOfFramesFromCSVLoad-1)
                 {
@@ -676,8 +698,6 @@ public class PositionSerializerAdam : MonoBehaviour
     IEnumerator DeserializeOnAndroid()
     {
         
-        
-
         www = new WWW(Path.Combine(path, datafile));
         yield return www;
         binaryLoaded = true;
@@ -686,9 +706,6 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public bool BinaryLoaded()
     {
-        
-        
-
         if (binaryDidLoad == true) return true;
         if (binaryLoaded == false) return false;
 
@@ -696,9 +713,10 @@ public class PositionSerializerAdam : MonoBehaviour
         binaryDidLoad = true;
 
         MemoryStream ms = new MemoryStream(www.bytes);
-        //Debug.Log("Data size: " + www.bytes.Length.ToString());
         BinaryFormatter formatter = new BinaryFormatter();
+
         coordinates = (float[])formatter.Deserialize(ms);
+        
         ms.Close();
         //MapTimeFrameToIndex();
         return true;
@@ -707,8 +725,6 @@ public class PositionSerializerAdam : MonoBehaviour
     public void DeserializeCSV()
     {
         
-        
-
         numberOfPesonsFromCSVLoad = 0;
 
         CrowdCSVReader reader = new CrowdCSVReader();
@@ -729,9 +745,9 @@ public class PositionSerializerAdam : MonoBehaviour
         int lastId = -1;
         int frameCount = 0;
 
-        foreach (CrowdCSVReader.Row row in list)
+        for (int m = 0; m < list.Count; m ++)
         {
-            csvCoordinates[count] = row.id != "" ? float.Parse(row.id) : float.MinValue;
+            csvCoordinates[count] = list[m].id != "" ? float.Parse(list[m].id) : float.MinValue;
 
             if (lastId != (int)csvCoordinates[count])
             {
@@ -751,13 +767,13 @@ public class PositionSerializerAdam : MonoBehaviour
 
             }
 
-            csvCoordinates[count + 1] = row.gid != "" ? float.Parse(row.gid) : float.MinValue;
-            csvCoordinates[count + 2] = row.x != "" ? float.Parse(row.x) * scaleValue : float.MinValue;
-            csvCoordinates[count + 3] = row.y != "" ? float.Parse(row.y) * scaleValue : float.MinValue;
-            csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) * scaleValue : float.MinValue;
-            csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y) * scaleValue : float.MinValue;
-            csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius) * scaleValue : float.MinValue;
-            csvCoordinates[count + 7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time), precisionFloatLoad) : float.MinValue;
+            csvCoordinates[count + 1] = list[m].gid != "" ? float.Parse(list[m].gid) : float.MinValue;
+            csvCoordinates[count + 2] = list[m].x != "" ? float.Parse(list[m].x) * scaleValue : float.MinValue;
+            csvCoordinates[count + 3] = list[m].y != "" ? float.Parse(list[m].y) * scaleValue : float.MinValue;
+            csvCoordinates[count + 4] = list[m].dir_x != "" ? float.Parse(list[m].dir_x) * scaleValue : float.MinValue;
+            csvCoordinates[count + 5] = list[m].dir_y != "" ? float.Parse(list[m].dir_y) * scaleValue : float.MinValue;
+            csvCoordinates[count + 6] = list[m].radius != "" ? float.Parse(list[m].radius) * scaleValue : float.MinValue;
+            csvCoordinates[count + 7] = list[m].time != "" ? (float)System.Math.Round(float.Parse(list[m].time), precisionFloatLoad) : float.MinValue;
 
             personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
 
@@ -773,9 +789,6 @@ public class PositionSerializerAdam : MonoBehaviour
 
     IEnumerator DeserializeFromCSVOnAndroid()
     {
-        
-        
-
         file = new WWW(Path.Combine(path, csvFileName));
         yield return file;
         csvLoaded = true;
@@ -783,14 +796,10 @@ public class PositionSerializerAdam : MonoBehaviour
 
     public bool CSVLoaded()
     {
-        
-        
-
         if (csvDidLoad == true) return true;
         if (csvLoaded == false) return false;
 
         csvDidLoad = true;
-
         csvAsset = new TextAsset(file.text);
         CrowdCSVReader reader = new CrowdCSVReader();
         reader.Load(csvAsset);
@@ -809,10 +818,9 @@ public class PositionSerializerAdam : MonoBehaviour
         int count = 0;
         int lastId = -1;
         int frameCount = 0;
-
-        foreach (CrowdCSVReader.Row row in list)
+        for (int m = 0; m < list.Count; m++)
         {
-            csvCoordinates[count] = row.id != "" ? float.Parse(row.id) : float.MinValue;
+            csvCoordinates[count] = list[m].id != "" ? float.Parse(list[m].id) : float.MinValue;
 
             if (lastId != (int)csvCoordinates[count])
             {
@@ -831,13 +839,13 @@ public class PositionSerializerAdam : MonoBehaviour
 
             }
 
-            csvCoordinates[count + 1] = row.gid != "" ? float.Parse(row.gid) : float.MinValue;
-            csvCoordinates[count + 2] = row.x != "" ? float.Parse(row.x) * scaleValue : float.MinValue;
-            csvCoordinates[count + 3] = row.y != "" ? float.Parse(row.y) * scaleValue : float.MinValue;
-            csvCoordinates[count + 4] = row.dir_x != "" ? float.Parse(row.dir_x) * scaleValue : float.MinValue;
-            csvCoordinates[count + 5] = row.dir_y != "" ? float.Parse(row.dir_y) * scaleValue : float.MinValue;
-            csvCoordinates[count + 6] = row.radius != "" ? float.Parse(row.radius) * scaleValue : float.MinValue;
-            csvCoordinates[count + 7] = row.time != "" ? (float)System.Math.Round(float.Parse(row.time), precisionFloatLoad) : float.MinValue;
+            csvCoordinates[count + 1] = list[m].gid != "" ? float.Parse(list[m].gid) : float.MinValue;
+            csvCoordinates[count + 2] = list[m].x != "" ? float.Parse(list[m].x) * scaleValue : float.MinValue;
+            csvCoordinates[count + 3] = list[m].y != "" ? float.Parse(list[m].y) * scaleValue : float.MinValue;
+            csvCoordinates[count + 4] = list[m].dir_x != "" ? float.Parse(list[m].dir_x) * scaleValue : float.MinValue;
+            csvCoordinates[count + 5] = list[m].dir_y != "" ? float.Parse(list[m].dir_y) * scaleValue : float.MinValue;
+            csvCoordinates[count + 6] = list[m].radius != "" ? float.Parse(list[m].radius) * scaleValue : float.MinValue;
+            csvCoordinates[count + 7] = list[m].time != "" ? (float)System.Math.Round(float.Parse(list[m].time), precisionFloatLoad) : float.MinValue;
 
             personsOriginal[personsOriginal.Count - 1][csvCoordinates[count + 7]] = new Vector2(csvCoordinates[count + 2], csvCoordinates[count + 3]);
 
@@ -867,9 +875,42 @@ public class PositionSerializerAdam : MonoBehaviour
         return true;
     }
 
+    void DestroyAll()
+    {
+        if (skeletonsList != null)
+        {
+            for(int i=0; i< skeletonsList.Count; i++)
+            {
+                Destroy(skeletonsList[i].gameObject);
+            }
+            skeletonsList.Clear();
+        }
+
+        /*if (skeletonJoints != null)
+        {
+            for (int i = 0; i < skeletonJoints.Count; i++)
+            {
+                for (int j = 0; j < skeletonJoints[i].Count; j++)
+                {
+                    Destroy(skeletonJoints[i][j].gameObject);
+                }
+                skeletonJoints[i].Clear();
+            }
+            skeletonJoints.Clear();
+        }*/
+
+        if (csvNumberOfFramesPerPerson != null)
+        {
+            for (int i = 0; i < rigidAvatars.Count; i++)
+            {
+                Destroy(rigidAvatars[i].gameObject);
+            }
+            rigidAvatars.Clear();
+        }
+    }
+
     public void ReadDataFromSimulationPerFrame() // rewrite the function with a different cumulative data that take in account the timeframe
     {
-        
         
 
         if (initSimulationTime == -1.0f)
@@ -881,6 +922,7 @@ public class PositionSerializerAdam : MonoBehaviour
         if (currentSimulationTime >= simulationTimeLength)
         {
             SimulationManagerAdam.status = SimulationManagerAdam.STATUS.FINISHED;
+            //DestroyAll();
             OnEndOfTrialEvent.Invoke();
             return;
         }
@@ -899,15 +941,16 @@ public class PositionSerializerAdam : MonoBehaviour
 
 
         frameStartIndex = countPlay * n1; //countplay maximum is seconds * framerate 
-        
 
+        
         for (int s = 0; s < skeletonNumbers; s++)
         {
             GameObject parent = skeletonJoints[s][0].parent.gameObject;
 
             for (int j = 0; j < jointsNumbers; j++)
             {
-
+                Vector3 temp;
+                Quaternion tempQ;
                 if (skeletonJoints[s][j] == null)
                 {
                     if (j == 0) j++;
@@ -932,9 +975,18 @@ public class PositionSerializerAdam : MonoBehaviour
                     parent.SetActive(visible);
 
                     if (!visible) break;
+                    temp = skeletonJoints[s][j].parent.transform.position;
+                    temp.x = coordinates[v[1]];
+                    temp.y = coordinates[v[2]];
+                    temp.z = coordinates[v[3]];
+                    skeletonJoints[s][j].parent.transform.position = temp;
 
-                    skeletonJoints[s][j].parent.transform.position = new Vector3(coordinates[v[1]], coordinates[v[2]], coordinates[v[3]]);
-                    skeletonJoints[s][j].parent.transform.rotation = new Quaternion(coordinates[v[4]], coordinates[v[5]], coordinates[v[6]], coordinates[v[7]]);
+                    tempQ = skeletonJoints[s][j].parent.transform.rotation;
+                    tempQ.x = coordinates[v[4]];
+                    tempQ.y = coordinates[v[5]];
+                    tempQ.z = coordinates[v[6]];
+                    tempQ.w = coordinates[v[7]];
+                    skeletonJoints[s][j].parent.transform.rotation = tempQ;
 
                 }
                 else
@@ -951,7 +1003,12 @@ public class PositionSerializerAdam : MonoBehaviour
 
                     if (!visible) break;
 
-                    skeletonJoints[s][j].localRotation = new Quaternion(coordinates[v[0]], coordinates[v[1]], coordinates[v[2]], coordinates[v[3]]);
+                    tempQ = skeletonJoints[s][j].localRotation;
+                    tempQ.x = coordinates[v[0]];
+                    tempQ.y = coordinates[v[1]];
+                    tempQ.z = coordinates[v[2]];
+                    tempQ.w = coordinates[v[3]];
+                    skeletonJoints[s][j].localRotation = tempQ;
                 }
 
             }
