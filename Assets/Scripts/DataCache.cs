@@ -23,7 +23,7 @@ public class DataCache : MonoBehaviour
     List<WWW> www = new List<WWW>();
     List<bool> binaryLoaded = new List<bool> { false, false };
     List<bool> binaryDidLoad = new List<bool> { false, false };
-
+    
     public class CSVInfo
     {
         public string dataname;
@@ -40,6 +40,9 @@ public class DataCache : MonoBehaviour
         public float timeStep;
     };
     List<CSVInfo> infos = new List<CSVInfo>();
+
+
+    public GameObject playGroup;
 
     public CSVInfo GetInfo(string dataname)
     {
@@ -70,6 +73,8 @@ public class DataCache : MonoBehaviour
     private void Start()
     {
         path = Application.streamingAssetsPath;
+        playGroup = GameObject.Find("ToPlay");
+        DontDestroyOnLoad(playGroup);
 
         for (int i = 0; i < datanames.Length; i++)
         {

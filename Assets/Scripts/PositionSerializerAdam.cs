@@ -875,37 +875,14 @@ public class PositionSerializerAdam : MonoBehaviour
         return true;
     }
 
-    void DestroyAll()
+    void DeactivateAllAvatars()
     {
         if (skeletonsList != null)
         {
             for(int i=0; i< skeletonsList.Count; i++)
             {
-                Destroy(skeletonsList[i].gameObject);
+                skeletonsList[i].SetActive(false);
             }
-            skeletonsList.Clear();
-        }
-
-        /*if (skeletonJoints != null)
-        {
-            for (int i = 0; i < skeletonJoints.Count; i++)
-            {
-                for (int j = 0; j < skeletonJoints[i].Count; j++)
-                {
-                    Destroy(skeletonJoints[i][j].gameObject);
-                }
-                skeletonJoints[i].Clear();
-            }
-            skeletonJoints.Clear();
-        }*/
-
-        if (csvNumberOfFramesPerPerson != null)
-        {
-            for (int i = 0; i < rigidAvatars.Count; i++)
-            {
-                Destroy(rigidAvatars[i].gameObject);
-            }
-            rigidAvatars.Clear();
         }
     }
 
@@ -922,7 +899,7 @@ public class PositionSerializerAdam : MonoBehaviour
         if (currentSimulationTime >= simulationTimeLength)
         {
             SimulationManagerAdam.status = SimulationManagerAdam.STATUS.FINISHED;
-            //DestroyAll();
+            DeactivateAllAvatars();
             OnEndOfTrialEvent.Invoke();
             return;
         }

@@ -171,6 +171,11 @@ public class SimulationManagerAdam : MonoBehaviour
         {
             DataCache.CSVInfo info = cache.GetInfo(dataname);
             int numberOfPersons = info.personsOriginal.Count;
+
+            int skeletonNumbersBefore = group.transform.childCount;
+            int avatarNeededToCreate = numberOfPersons - skeletonNumbersBefore;
+
+
             for (int i = 0; i < numberOfPersons; ++i)
             {
                 float initTime = info.personsOriginal[i].Keys.Min();
@@ -182,10 +187,20 @@ public class SimulationManagerAdam : MonoBehaviour
                     initialOrientation = info.personsOriginal[i][endingTime] - info.personsOriginal[i][initTime];
                 }
                 Vector3 newDirection = new Vector3(initialOrientation.x, 0.0f, initialOrientation.y);
-                var avatarNumber = UnityEngine.Random.Range(0, skeletonPlayPrefab.Length);
-                GameObject obj = Instantiate(skeletonPlayPrefab[avatarNumber], new Vector3(initialPosition.x, skeletonPlayPrefab[avatarNumber].transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));//@@TOODorientation??
-                obj.transform.parent = group;
-                obj.name = "Skeleton " + i.ToString();
+
+                GameObject obj = GameObject.Find("Skeleton " + i.ToString());
+                if (obj == null)
+                {
+                    var avatarNumber = UnityEngine.Random.Range(0, skeletonPlayPrefab.Length);
+                    obj = Instantiate(skeletonPlayPrefab[avatarNumber], new Vector3(initialPosition.x, skeletonPlayPrefab[avatarNumber].transform.position.y, initialPosition.y), Quaternion.FromToRotation(transform.forward, newDirection));//@@TOODorientation??
+                    obj.transform.parent = group;
+                    obj.name = "Skeleton " + i.ToString();
+
+                } else
+                {
+                    obj.transform.position = new Vector3(initialPosition.x, obj.transform.position.y, initialPosition.y);
+                    obj.transform.rotation = Quaternion.FromToRotation(transform.forward, newDirection);
+                }
                 skeletons.Add(obj);
 
                 if (initTime != info.initialTime)
