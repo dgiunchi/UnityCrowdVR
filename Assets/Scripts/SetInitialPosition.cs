@@ -13,7 +13,7 @@ public class SetInitialPosition : MonoBehaviour
     Bounds bounds;
     OVRPlayerController ovrpc;
     CharacterController cc;
-    bool set;
+    public bool set;
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +67,13 @@ public class SetInitialPosition : MonoBehaviour
         {
             SetUiInitialPosition();
         }
+
+        yield return new WaitForSeconds(0.5f);
+        if (SimulationManagerAdam.Instance.sceneLoaded && TransitionManager.Instance && TransitionManager.Instance.isWaiting)
+        {
+            TransitionManager.Instance.setExperimentView();
+        }
+
     }
 
     void getui()
