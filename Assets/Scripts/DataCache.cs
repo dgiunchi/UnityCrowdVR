@@ -23,6 +23,8 @@ public class DataCache : MonoBehaviour
     List<WWW> www = new List<WWW>();
     List<bool> binaryLoaded = new List<bool> { false, false };
     List<bool> binaryDidLoad = new List<bool> { false, false };
+
+    bool oneShotAllLoaded = true;
     
     public class CSVInfo
     {
@@ -75,10 +77,16 @@ public class DataCache : MonoBehaviour
         path = Application.streamingAssetsPath;
         playGroup = GameObject.Find("ToPlay");
         DontDestroyOnLoad(playGroup);
+        StartCoroutine(LoadOnStart());
+    }
 
+    IEnumerator LoadOnStart()
+    {
+        TransitionManager.Instance.setLogoLocation(1.5f);
+        TransitionManager.Instance.setWaitingView();
+        yield return new WaitForSeconds(1.0f);
         for (int i = 0; i < datanames.Length; i++)
         {
-            TransitionManager.Instance.setWaitingView();
             www.Add(null);
             StartCoroutine(DeserializeOnAndroid(i));
             CSVInfo info = new CSVInfo();
@@ -320,9 +328,10 @@ public class DataCache : MonoBehaviour
         }
         allLoaded = all;
         //Debug.Log(allLoaded);
-        if(allLoaded)
+        if(allLoaded && oneShotAllLoaded)
         {
             TransitionManager.Instance.setExperimentView();
+            oneShotAllLoaded = false;
         }
         
     }

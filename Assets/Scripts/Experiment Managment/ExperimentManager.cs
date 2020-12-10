@@ -182,7 +182,7 @@ public class ExperimentManager : MonoBehaviour
 
             if (!findAndListen("UiContainer")) 
             {
-                if (!findAndListen("EndOfTrialManager"))  Debug.LogError("No Event End of trial FOund");                
+                if (!findAndListen("EndOfTrialManager"))  Debug.LogError("No Event End of trial Found");                
             }
          
 
@@ -222,7 +222,7 @@ public class ExperimentManager : MonoBehaviour
 
         TransitionManager.Instance.setLogoLocation();
         TransitionManager.Instance.setWaitingView();
-        Debug.Log("=============== " + scenename);
+        //Debug.Log("=============== " + scenename);
         yield return new WaitForSeconds(1.0f);
         
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scenename);

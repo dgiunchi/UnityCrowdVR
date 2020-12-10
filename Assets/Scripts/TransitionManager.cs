@@ -53,7 +53,7 @@ public class TransitionManager : MonoBehaviour
          logo.SetActive(false);
     }
 
-    public void setLogoLocation() {
+    public void setLogoLocation(float upOffset = 0.0f) {
 
         GameObject cameraobj = GameObject.Find("CenterEyeAnchor");
      
@@ -63,6 +63,7 @@ public class TransitionManager : MonoBehaviour
             logo.transform.position = cameraobj.transform.position;
             logo.transform.rotation = cameraobj.transform.rotation;
             logo.transform.Translate(logo.transform.forward * 1.5f);
+            logo.transform.Translate(logo.transform.up * upOffset);
         }
        
     }

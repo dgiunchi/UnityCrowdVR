@@ -615,13 +615,7 @@ public class SimulationManagerAdam : MonoBehaviour
         //}
        
 #endif
-        if(sceneLoaded && TransitionManager.Instance && TransitionManager.Instance.isWaiting)
-        {
-            TransitionManager.Instance.setExperimentView();
-            //checkForImmersiveCamera();
-        }
-
-
+        
         if (status == STATUS.RECORD)
         {
             if(initTime == 0)

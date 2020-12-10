@@ -229,14 +229,22 @@ public class UIBuilder : MonoBehaviour
     public void SaveQuestionaire(int part, int subpart)
     {
 
-        if (!triggerNotifactions(part, subpart)) { 
-
-            databaseManager.SaveQuestionaire(data);
-            Destroy();
-
-            OnQuestionairePartCompleted.Invoke();
-
+        if (!triggerNotifactions(part, subpart)) {
+            TransitionManager.Instance.setLogoLocation();
+            TransitionManager.Instance.setWaitingView();
+            StartCoroutine(SaveQuestionaireveCoroutine());
         }
+    }
+
+    IEnumerator SaveQuestionaireveCoroutine()
+    {
+        
+        yield return new WaitForSeconds(1.0f);
+
+        databaseManager.SaveQuestionaire(data);
+        Destroy();
+
+        OnQuestionairePartCompleted.Invoke();
     }
 
     public void MovetoNext(int part,int subpart)
