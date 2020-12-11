@@ -21,6 +21,7 @@ public class ExperimentManager : MonoBehaviour
 
     public string postQuestionaireRefName;
 
+    public GameObject firsttrigger;
 
     //private 
     private ExperimentScriptableObject e;
@@ -38,7 +39,7 @@ public class ExperimentManager : MonoBehaviour
         foreach (GameObject g in DontDelete) DontDestroyOnLoad(g);
 
         //find end of trialobject and link to OnEndOfTrialEvent
-        GameObject.Find("EndOfTrialManager").GetComponent<EndOfTrialManager>().OnEndOfTrialEvent.AddListener(NextAction);
+        firsttrigger.GetComponent<EndOfTrialManager>().OnEndOfTrialEvent.AddListener(NextAction);
     }
 
     private void Start()
