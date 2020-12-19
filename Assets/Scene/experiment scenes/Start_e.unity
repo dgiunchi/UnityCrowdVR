@@ -1804,7 +1804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   datanames:
   - data_2
-  - data_2_navMesh
+  - data_3
   scaleValue:
   - 0.04
   - 1
