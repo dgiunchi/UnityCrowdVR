@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a63d3daa78898c740ba39ce9ae54e02c, type: 3}
+  m_Name: PerceivedCrowdDensity
+  m_EditorClassIdentifier: Assembly-CSharp::QuestionaireSubPart
+  name: Perceived Crowd Features
+  description: In this section the focus is crowd density and size.
+  questions:
+  - question: What is your perceived  average crowd density?
+    helpText: Density is measured in Number of pedestrians per squared meter (N/m^2)
+    uielement: 1
+    valuebool: 0
+    valuefloat: 0
+    Options:
+    - 1
+    - 1.5
+    - 2
+    - 2.5
+    answer: 
+  - question: What is the perceived level of crowd density?
+    helpText: 'Crowd density level is how you perceived the density with the following
+      words: low,medium, high extreme density. '
+    uielement: 1
+    valuebool: 0
+    valuefloat: 0
+    Options:
+    - low
+    - medium
+    - high
+    answer: 
+  - question: How many humanoids do you estimate were in the simulation?
+    helpText: Some ranges of values are provided
+    uielement: 1
+    valuebool: 0
+    valuefloat: 0
+    Options:
+    - 0-100
+    - 100-200
+    - 200-300
+    - 300-400
+    - +400
+    answer: 
+  - question: What is the perceived size of the crowd?
+    helpText: Crowd size can be small, medium, large.
+    uielement: 1
+    valuebool: 0
+    valuefloat: 0
+    Options:
+    - small
+    - medium
+    - large
+    answer: 
