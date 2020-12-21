@@ -56,8 +56,7 @@ sysinfo.txt
 *.unitypackage
 Parameters.asset
 Parameters_Adam.asset
-DataFile.dat
-DataFile.txt
+*.dat
 [Aa]ssets/[Ss]treamingAssets/**/*.dat
 [Aa]ssets/[Ss]treamingAssets/**/*.txt
 [Aa]ssets/[Ss]treamingAssetsAlt/**/*.dat
@@ -69,32 +68,4 @@ DataFile.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-Assets/StreamingAssetAlt/crowds_zara01_corrected - Copy.csv
-Assets/StreamingAssetAlt/crowds_zara01_corrected - Copy.csv.meta
-Assets/StreamingAssetAlt/Arrow.mat
-Assets/StreamingAssetAlt/Arrow.mat.meta
-Assets/StreamingAssetAlt/crowds_zara01_corrected.csv
-Assets/StreamingAssetAlt/crowds_zara01_corrected.csv.meta
-Assets/StreamingAssetAlt/data_1.csv
-Assets/StreamingAssetAlt/data_1.csv.meta
-Assets/StreamingAssetAlt/data_1.dat
-Assets/StreamingAssetAlt/data_1.dat.meta
-Assets/StreamingAssetAlt/data_1.txt
-Assets/StreamingAssetAlt/data_1.txt.meta
-Assets/StreamingAssetAlt/data_2.txt
-Assets/StreamingAssetAlt/data_2.txt.meta
-Assets/StreamingAssetAlt/data_2_new.csv
-Assets/StreamingAssetAlt/data_2_new.csv.meta
-Assets/StreamingAssetAlt/data_2_reduced_1.csv
-Assets/StreamingAssetAlt/data_2_reduced_1.csv.meta
-Assets/StreamingAssetAlt/data_2_reduced_1.dat
-Assets/StreamingAssetAlt/data_2_reduced_1.dat.meta
-Assets/StreamingAssetAlt/data_2_reduced_1.txt
-Assets/StreamingAssetAlt/data_2_reduced_1.txt.meta
-Assets/StreamingAssetAlt/data_2_reduced_3.csv
-Assets/StreamingAssetAlt/data_2_reduced_3.csv.meta
-Assets/StreamingAssetAlt/data_2_reduced_3.dat
-Assets/StreamingAssetAlt/data_2_reduced_3.dat.meta
-Assets/StreamingAssetAlt/data_2_reduced_3.txt
-Assets/StreamingAssetAlt/data_2_reduced_3.txt.meta
-Assets/StreamingAssetAlt/navMesh.csv
+Assets/StreamingAssetAlt/
